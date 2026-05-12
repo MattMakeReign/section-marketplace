@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "track": "experimental",
   "lifecycle": "Submitted",
-  "description": "Centred heading above a three-column table with hairline row dividers and a double-weight header border. Built for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic weight.",
+  "description": "Centred heading above a three-column table with hairline row dividers and a double-weight header border. Designed for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic treatment.",
   "dependencies": [
     "@/components/section",
     "@/components/section-grid"
@@ -23,9 +23,9 @@
     "table",
     "awards",
     "press",
+    "recognition",
     "editorial",
-    "list",
-    "recognition"
+    "list"
   ],
   "created": "2026-05-12",
   "updated": "2026-05-12",
@@ -36,13 +36,13 @@
     "submittedAt": "2026-05-12"
   },
   "curation": {
-    "intent": "Centred-heading + full-width three-column table for structured records — awards, press, or recognitions.",
-    "structuralPattern": "single-column centred: h2 above full-width 3-col table",
+    "intent": "Centred-heading + three-column tabular list for structured records such as awards or press features.",
+    "structuralPattern": "single-col heading above full-width 3-column table",
     "structuralSlots": [
       "h2",
       "eyebrow",
       "table-header",
-      "card-grid"
+      "table-rows"
     ],
     "pageTypes": [
       "about",
@@ -56,7 +56,7 @@
       "minimal",
       "premium"
     ],
-    "visualDensity": "balanced",
+    "visualDensity": "airy",
     "imageryDependence": "none",
     "copyDensity": "tight",
     "composition": {
@@ -67,8 +67,8 @@
       ],
       "pairsBelow": [
         "cta",
-        "testimonials",
-        "contact"
+        "footer",
+        "testimonials"
       ],
       "antiPairs": [
         "carousel",

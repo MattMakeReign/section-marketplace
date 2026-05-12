@@ -1,20 +1,20 @@
 # Awards Table
 
-Centred heading above a three-column table with hairline row dividers and a double-weight header border. Built for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic weight.
+Centred heading above a three-column table with hairline row dividers and a double-weight header border. Designed for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic treatment.
 
 ## When to use
 
-- The page needs to surface a structured list of awards, press mentions, or recognition records where each row shares identical shape (e.g. year · outlet · title).
-- An editorial or restrained tone is required — hairline dividers and typographic hierarchy carry the weight without imagery.
-- The record count is medium (5–20 rows); enough to warrant a table rather than a card grid, not so many that pagination is needed.
-- Placement mid-page to substantiate credibility after an intro or hero section.
+- The page needs to surface a list of awards, press mentions, recognitions, or any fixed-schema records where each entry shares the same three data points (e.g. year, title, publisher).
+- A typographically restrained, editorial tone is required — no cards, no imagery, just structured text rows.
+- The section sits mid-page as a supporting proof point after an intro or stats block.
+- Scroll-reveal entrance is desired to bring rows in without heavy animation.
 
 ## When not to use
 
-- Records have unequal column shapes or require rich content per row (images, long body copy, nested data) — use a card grid or editorial list instead.
-- Fewer than 3 rows exist; a simple list or inline callout is more proportionate.
-- The page tone is playful or maximalist — the hairline-divider aesthetic will feel out of register.
-- A filterable or sortable data table is needed; this layout has no interactive data controls.
+- Records have more than three columns or highly variable row shapes — a more flexible data table component is needed.
+- The list is fewer than three rows; a simple bullet list or inline mention is less heavy-handed.
+- The page tone is playful or maximalist — hairline-divider tables read as cold in those contexts.
+- Imagery or logos per row are required (e.g. publication logos); this layout has no image slot.
 
 ## Props
 
@@ -38,16 +38,14 @@ desktop / mobile-stacked.
 
 ## Adaptation notes
 
-- **Tokens to change per project:** heading typeface and size, divider colour and weight, row text size, background colour (currently off-white).
-- **Column labels:** replace default header strings (e.g. Year / Publication / Award) with project-specific vocabulary without altering column count.
-- **Row count:** the scroll-reveal entrance is calibrated for ~8–15 rows; adjust stagger duration if row count deviates significantly.
-- **Structural constants:** three-column layout, centred heading, double-weight header border, and hairline row dividers are load-bearing — do not collapse to one column on desktop.
-- **Mobile:** on narrow viewports the table should either allow horizontal scroll or reflow each row into a stacked label/value pair; confirm which behaviour is implemented before deploying.
+- **Tokens to change per project:** typeface, font size scale, divider colour, heading weight, background colour (off-white in scaffold).
+- **Column labels** (e.g. Year / Award / Organisation) should be updated to match the actual record schema — the three-slot structure is fixed but labels are free-form.
+- **Row count** is variable; the scroll-reveal stagger timing may need adjustment beyond ~12 rows to avoid feeling slow.
+- **Mobile:** on narrow viewports the three columns should stack or collapse to a definition-list pattern — verify the responsive treatment matches the brand's mobile typographic scale.
 
 ## Failure modes
 
-- Heading breaks to three or more lines at mobile widths if the heading string exceeds ~40 characters — keep heading copy concise.
-- Very long cell strings (e.g. verbose award titles) cause uneven column widths and break the grid rhythm — truncate or cap cell copy.
-- More than ~25 rows makes the section disproportionately tall and the scroll-reveal stagger feels slow — paginate or filter at that scale.
-- If the host page has a dark background, hairline dividers at default opacity may vanish — divider colour must be swapped explicitly.
-- Three-column structure assumes roughly equal content weight per column; a column that is consistently near-empty (e.g. year as a 4-digit number vs. a long title) creates awkward whitespace.
+- Heading lines exceeding ~40 characters will break the centred single-line assumption and may need left-alignment or a tighter max-width.
+- Very long cell strings (e.g. award titles > 60 chars) cause uneven row heights that disrupt the grid rhythm — apply line-clamp or truncation.
+- If the table is placed at the very top of a page the scroll-reveal entrance may never trigger on short screens — ensure an offset threshold or use an in-view alternative.
+- More than ~20 rows without pagination or a 'show more' toggle makes the section disproportionately tall on mobile.
