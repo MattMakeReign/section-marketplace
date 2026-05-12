@@ -1,0 +1,33 @@
+{
+  "id": "hero-split-bold",
+  "name": "Hero — Split Bold",
+  "category": "hero",
+  "version": "1.0.0",
+  "track": "stable",
+  "lifecycle": "Promoted",
+  "description": "Two-column hero. Bold display headline left, supporting copy and a CTA pair right. The default opening section for editorial / agency / portfolio work.",
+  "props": {
+    "headline": { "type": "string", "default": "A bold hero, split clean down the middle." },
+    "supporting": { "type": "string", "default": "Drop a line of supporting copy here that explains what this site is and who it's for." },
+    "primaryCta": { "type": "object", "properties": { "label": { "type": "string" }, "href": { "type": "string" } } },
+    "secondaryCta": { "type": "object", "properties": { "label": { "type": "string" }, "href": { "type": "string" } } }
+  },
+  "dependencies": ["@/components/section", "@/components/section-grid"],
+  "motionDensity": ["minimal", "restrained"],
+  "responsive": {
+    "profile": "desktop-cinematic / mobile-stacked",
+    "breakpoints": ["mobile", "tablet", "desktop"],
+    "notes": "Stacks single-column under md; columns separate at md+. No horizontal scroll at any width."
+  },
+  "previews": { "static": "preview.svg" },
+  "tags": ["editorial", "agency", "portfolio", "minimal"],
+  "created": "2026-05-09",
+  "updated": "2026-05-11",
+  "submittedBy": "techo",
+  "attribution": {
+    "originalCreator": "techo",
+    "originatingProject": "starter-pack",
+    "submittedAt": "2026-05-09",
+    "promotedAt": "2026-05-09"
+  }
+}

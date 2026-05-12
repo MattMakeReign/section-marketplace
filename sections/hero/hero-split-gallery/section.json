@@ -1,0 +1,81 @@
+{
+  "id": "hero-split-gallery",
+  "name": "Hero — Split Gallery",
+  "category": "hero",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Two-column hero. Left: eyebrow, display headline, supporting copy, single CTA. Right: a dual-column vertical-marquee gallery of images that scroll in opposite directions inside a faded frame.",
+  "props": {
+    "eyebrow": {
+      "type": "string",
+      "default": "About us"
+    },
+    "headline": {
+      "type": "string",
+      "default": "We bridge the gap between concept and creation."
+    },
+    "supporting": {
+      "type": "string",
+      "default": "Helping you unlock business potential with strategic consulting every step of the way."
+    },
+    "cta": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "leftImages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "rightImages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "restrained",
+    "cinematic"
+  ],
+  "responsive": {
+    "profile": "desktop-split / mobile-stacked",
+    "breakpoints": [
+      "mobile",
+      "tablet",
+      "desktop"
+    ],
+    "notes": "At md+ the gallery sits to the right of the text. Below md the layout stacks and the secondary image column hides on the smallest viewport."
+  },
+  "previews": {
+    "static": "preview.svg"
+  },
+  "tags": [
+    "editorial",
+    "agency",
+    "portfolio",
+    "marquee",
+    "imagery"
+  ],
+  "created": "2026-05-11",
+  "updated": "2026-05-11",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "demo-warm-editorial",
+    "submittedAt": "2026-05-11"
+  }
+}

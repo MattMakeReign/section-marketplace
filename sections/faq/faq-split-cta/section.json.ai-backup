@@ -1,0 +1,42 @@
+{
+  "id": "faq-split-cta",
+  "name": "FAQ — Split with CTA",
+  "category": "faq",
+  "version": "1.0.0",
+  "track": "stable",
+  "description": "Two-column FAQ. Left column carries an eyebrow, heading, short lede, and a single CTA — a stable anchor that doesn't move as questions expand. Right column stacks accordion items; one open at a time. Uses a CSS-grid row-template animation so panel reveal stays smooth at any answer length.",
+  "props": {
+    "eyebrow": { "type": "string" },
+    "heading": { "type": "string" },
+    "body": { "type": "string" },
+    "cta": {
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" },
+        "href": { "type": "string" }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": { "type": "string" },
+          "answer": { "type": "string" }
+        }
+      }
+    }
+  },
+  "dependencies": ["@/components/section", "@/components/section-grid"],
+  "motionDensity": ["minimal", "restrained"],
+  "responsive": {
+    "profile": "two-column split on tablet+; single column on mobile with left card stacked above",
+    "breakpoints": ["mobile", "tablet", "desktop"],
+    "notes": "Left column spans 5 of 12 from `min-[48rem]` up. Below that, both columns stack full-width. The accordion panel uses a `grid-template-rows: 0fr / 1fr` transition so reveal works at any answer length without measuring scrollHeight."
+  },
+  "previews": { "static": "preview.svg" },
+  "tags": ["editorial", "faq", "accordion", "split", "cta-paired"],
+  "created": "2026-05-12",
+  "updated": "2026-05-12",
+  "submittedBy": "techo"
+}

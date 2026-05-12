@@ -1,0 +1,104 @@
+{
+  "id": "process-steps",
+  "name": "Process Steps",
+  "category": "process",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Numbered process explainer with eyebrow, optional heading, and a 4-up ordered list of steps. Each step exposes a zero-padded index, a short label, and a body paragraph. Desktop: horizontal 4-column row. Mobile: single-column stack.",
+  "props": {
+    "eyebrow": {
+      "type": "string",
+      "default": "Process"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "minimal",
+    "restrained"
+  ],
+  "responsive": {
+    "profile": "desktop-4up row / mobile-stacked"
+  },
+  "previews": {
+    "static": "preview.svg"
+  },
+  "tags": [
+    "process",
+    "how-we-work",
+    "numbered-steps",
+    "agency",
+    "editorial"
+  ],
+  "created": "2026-05-12",
+  "updated": "2026-05-12",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "demo-warm-editorial",
+    "submittedAt": "2026-05-12"
+  },
+  "curation": {
+    "intent": "Horizontal 4-up numbered step grid with eyebrow, optional heading, and per-step label + body.",
+    "structuralPattern": "full-width header block above 4-column ordered list grid",
+    "structuralSlots": [
+      "eyebrow",
+      "h2",
+      "list-numbered"
+    ],
+    "pageTypes": [
+      "process",
+      "services",
+      "about",
+      "landing"
+    ],
+    "tonalAffordances": [
+      "editorial",
+      "minimal",
+      "restrained",
+      "technical",
+      "cool"
+    ],
+    "visualDensity": "balanced",
+    "imageryDependence": "none",
+    "copyDensity": "balanced",
+    "composition": {
+      "pairsAbove": [
+        "hero",
+        "intro",
+        "cta"
+      ],
+      "pairsBelow": [
+        "testimonials",
+        "cta",
+        "team",
+        "contact"
+      ],
+      "antiPairs": [
+        "gallery",
+        "carousel",
+        "stats"
+      ]
+    }
+  }
+}

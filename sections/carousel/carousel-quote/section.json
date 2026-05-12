@@ -1,0 +1,40 @@
+{
+  "id": "carousel-quote",
+  "name": "Carousel — Quote",
+  "category": "carousel",
+  "version": "1.0.0",
+  "track": "stable",
+  "lifecycle": "Promoted",
+  "description": "Horizontal scroll-snap carousel of quote cards. Pure CSS, no client JS. Each card snap-aligns center; users swipe / scroll horizontally. Works as a testimonial slider, a press-quote band, or a project highlights reel.",
+  "props": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quote": { "type": "string" },
+          "attribution": { "type": "string" },
+          "role": { "type": "string" }
+        }
+      }
+    }
+  },
+  "dependencies": ["@/components/section", "@/components/section-grid"],
+  "motionDensity": ["minimal", "restrained", "cinematic"],
+  "responsive": {
+    "profile": "horizontal-scroll-snap at all widths",
+    "breakpoints": ["mobile", "tablet", "desktop"],
+    "notes": "Card width clamps between 280px and 560px so content never feels cramped or stranded. Scroll snap uses `snap-mandatory` on mobile, `snap-proximity` on desktop to feel less mechanical."
+  },
+  "previews": { "static": "preview.svg" },
+  "tags": ["editorial", "minimal", "scroll-snap", "client-free"],
+  "created": "2026-05-09",
+  "updated": "2026-05-11",
+  "submittedBy": "techo",
+  "attribution": {
+    "originalCreator": "techo",
+    "originatingProject": "starter-pack",
+    "submittedAt": "2026-05-09",
+    "promotedAt": "2026-05-09"
+  }
+}

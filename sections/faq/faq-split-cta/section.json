@@ -1,0 +1,119 @@
+{
+  "id": "faq-split-cta",
+  "name": "FAQ Split with CTA",
+  "category": "faq",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Two-column split: left column anchors eyebrow, heading, lede copy, and a single CTA button; right column stacks an accordion list of FAQ items, one panel open at a time, with a +/× toggle icon per row.",
+  "props": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "restrained"
+  ],
+  "responsive": {
+    "profile": "desktop-2col split (5/7 grid); mobile single-column stacked, left card above accordion"
+  },
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [
+    "faq",
+    "accordion",
+    "split-layout",
+    "cta-paired",
+    "editorial",
+    "two-column"
+  ],
+  "created": "2026-05-12",
+  "updated": "2026-05-12",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "demo-warm-editorial",
+    "submittedAt": "2026-05-12"
+  },
+  "curation": {
+    "intent": "Split two-column FAQ section — fixed editorial anchor left, expandable accordion list right, with inline CTA.",
+    "structuralPattern": "split-2col: editorial-anchor-left (5 cols), accordion-list-right (7 cols)",
+    "structuralSlots": [
+      "eyebrow",
+      "h2",
+      "body",
+      "cta-primary",
+      "card-grid"
+    ],
+    "pageTypes": [
+      "landing",
+      "about",
+      "services",
+      "contact",
+      "pricing"
+    ],
+    "tonalAffordances": [
+      "editorial",
+      "warm",
+      "restrained",
+      "premium",
+      "minimal"
+    ],
+    "visualDensity": "balanced",
+    "imageryDependence": "none",
+    "copyDensity": "balanced",
+    "composition": {
+      "pairsAbove": [
+        "hero",
+        "services",
+        "process"
+      ],
+      "pairsBelow": [
+        "cta",
+        "footer",
+        "contact"
+      ],
+      "antiPairs": [
+        "gallery",
+        "carousel",
+        "testimonials"
+      ]
+    }
+  }
+}

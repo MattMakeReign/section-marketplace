@@ -1,0 +1,289 @@
+/*
+ * @mr/section-library-ui — shared CSS for the editorial Section Library card,
+ * filter pills, badges, and spec rows. Imported once at the root of any app
+ * that renders the library UI (the App and the Preview Tool).
+ *
+ * Consumers must define the `--chrome-*` tokens (ground / surface / fg /
+ * borders / type / spacing / radii / track + lifecycle accents). Both apps
+ * that consume this package already do.
+ *
+ * Class-name prefix `mr-sl-*` (Section Library) so the rules never collide
+ * with either app's local chrome.
+ */
+
+/* ── Filter pill ────────────────────────────────────────────── */
+
+.mr-sl-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--chrome-space-2);
+  height: 36px;
+  padding: 0 var(--chrome-space-3);
+  background: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-pill);
+  font-family: var(--chrome-font-body);
+  font-size: 13px;
+  color: var(--chrome-fg);
+  cursor: pointer;
+  transition: border-color 80ms ease;
+}
+.mr-sl-pill:hover { border-color: var(--chrome-border-strong); }
+.mr-sl-pill[aria-expanded="true"] { border-color: var(--chrome-border-strong); }
+.mr-sl-pill--active {
+  background: var(--chrome-surface-inverse);
+  color: var(--chrome-fg-inverse);
+  border-color: var(--chrome-surface-inverse);
+}
+.mr-sl-pill--active:hover { border-color: var(--chrome-surface-inverse); }
+.mr-sl-pill__icon { color: var(--chrome-fg-muted); display: inline-flex; }
+.mr-sl-pill--active .mr-sl-pill__icon { color: var(--chrome-fg-inverse); opacity: 0.85; }
+
+.mr-sl-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 220px;
+  background: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  padding: var(--chrome-space-1);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--chrome-font-body);
+}
+.mr-sl-pop__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--chrome-space-2) var(--chrome-space-3);
+  border-radius: var(--chrome-radius-1);
+  font-size: 13px;
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+.mr-sl-pop__item:hover { background: var(--chrome-surface-muted); }
+.mr-sl-pop__item--active { background: var(--chrome-surface-muted); font-weight: 500; }
+.mr-sl-pop__item-meta {
+  font-family: var(--chrome-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  color: var(--chrome-fg-subtle);
+}
+.mr-sl-pop__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot, var(--chrome-fg-subtle));
+  margin-right: var(--chrome-space-2);
+}
+
+/* ── Card wrapper + window ─────────────────────────────────── */
+
+.mr-sl-card-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.mr-sl-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--chrome-ground);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-card);
+  padding: var(--chrome-space-3);
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 100ms ease, transform 200ms ease;
+}
+.mr-sl-card:hover { border-color: var(--chrome-border-strong); }
+.mr-sl-card:focus-visible {
+  outline: 2px solid var(--chrome-fg);
+  outline-offset: 2px;
+}
+
+.mr-sl-card__window {
+  background: var(--chrome-surface-muted);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-3);
+  overflow: hidden;
+}
+.mr-sl-card__chrome {
+  display: flex;
+  align-items: center;
+  gap: var(--chrome-space-2);
+  padding: 9px var(--chrome-space-3);
+  border-bottom: 1px solid var(--chrome-border);
+  background: var(--chrome-ground);
+}
+.mr-sl-card__dots { display: flex; gap: 5px; }
+.mr-sl-card__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chrome-border);
+}
+.mr-sl-card__urlbar {
+  flex: 1;
+  height: 16px;
+  background: var(--chrome-surface-muted);
+  border: 1px solid var(--chrome-border);
+  border-radius: 4px;
+}
+.mr-sl-card__viewport {
+  aspect-ratio: 16 / 9;
+  background: var(--chrome-ground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.mr-sl-card__viewport img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mr-sl-card__fallback {
+  font-family: var(--chrome-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--chrome-fg-subtle);
+}
+
+.mr-sl-card__body {
+  padding: var(--chrome-space-4) var(--chrome-space-2) var(--chrome-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--chrome-space-2);
+}
+.mr-sl-card__name {
+  font-family: var(--chrome-font-display);
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  color: var(--chrome-fg);
+}
+.mr-sl-card__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--chrome-space-2);
+  font-family: var(--chrome-font-body);
+  font-size: 13px;
+  color: var(--chrome-fg-muted);
+}
+.mr-sl-card__brand-mark {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--chrome-fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--chrome-fg-inverse);
+  font-family: var(--chrome-font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* CTA slot — rendered inside the card body, below the badges. The Preview
+ * Tool uses this for "Add section". Spans full card width.
+ */
+.mr-sl-card__cta {
+  margin-top: var(--chrome-space-3);
+  display: flex;
+}
+.mr-sl-card__cta > * {
+  flex: 1;
+}
+.mr-sl-card--with-cta {
+  /* Card stops being a button — no hover/cursor on the wrapper itself.
+   * Only the inner CTA reacts. */
+  cursor: default;
+}
+.mr-sl-card--with-cta:hover { border-color: var(--chrome-border); }
+
+/* ── Badges (Track · Lifecycle · Category · Version) ───────── */
+
+.mr-sl-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--chrome-space-1);
+}
+.mr-sl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px var(--chrome-space-2);
+  border-radius: var(--chrome-radius-1);
+  background: var(--chrome-surface-muted);
+  font-family: var(--chrome-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--chrome-fg-muted);
+}
+.mr-sl-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--chrome-fg-subtle);
+}
+.mr-sl-badge[data-track="stable"] .mr-sl-badge__dot       { background: var(--chrome-track-stable); }
+.mr-sl-badge[data-track="experimental"] .mr-sl-badge__dot { background: var(--chrome-track-experimental); }
+.mr-sl-badge[data-track="legacy"] .mr-sl-badge__dot       { background: var(--chrome-track-legacy); }
+
+.mr-sl-badge[data-lifecycle="Local"] .mr-sl-badge__dot      { background: var(--chrome-lifecycle-local); }
+.mr-sl-badge[data-lifecycle="Draft"] .mr-sl-badge__dot      { background: var(--chrome-lifecycle-draft); }
+.mr-sl-badge[data-lifecycle="Submitted"] .mr-sl-badge__dot  { background: var(--chrome-lifecycle-submitted); }
+.mr-sl-badge[data-lifecycle="InReview"] .mr-sl-badge__dot   { background: var(--chrome-lifecycle-inreview); }
+.mr-sl-badge[data-lifecycle="Approved"] .mr-sl-badge__dot   { background: var(--chrome-lifecycle-approved); }
+.mr-sl-badge[data-lifecycle="Promoted"] .mr-sl-badge__dot   { background: var(--chrome-lifecycle-promoted); }
+.mr-sl-badge[data-lifecycle="Deprecated"] .mr-sl-badge__dot { background: var(--chrome-lifecycle-deprecated); }
+.mr-sl-badge[data-lifecycle="Archived"] .mr-sl-badge__dot   { background: var(--chrome-lifecycle-archived); }
+.mr-sl-badge[data-lifecycle="Archived"] { opacity: 0.7; }
+
+/* ── Spec rows (used inside detail modals) ─────────────────── */
+
+.mr-sl-spec {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: var(--chrome-space-4);
+  padding: var(--chrome-space-3) 0;
+  border-bottom: 1px solid var(--chrome-border);
+  align-items: baseline;
+}
+.mr-sl-spec:last-child { border-bottom: 0; }
+.mr-sl-spec__label {
+  font-family: var(--chrome-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--chrome-fg-subtle);
+}
+.mr-sl-spec__value {
+  font-family: var(--chrome-font-body);
+  font-size: 14px;
+  color: var(--chrome-fg);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--chrome-space-2);
+}

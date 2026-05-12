@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "jsx": "preserve",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "incremental": true,
+    "types": ["node"],
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./*"],
+      "@mr/section-library-ui": ["./lib/section-library-ui/index.ts"],
+      "@mr/section-library-ui/styles.css": ["./lib/section-library-ui/styles.css"]
+    }
+  },
+  "include": ["scripts/**/*.ts", "app/**/*.ts", "app/**/*.tsx", "components/**/*.tsx", "sections/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

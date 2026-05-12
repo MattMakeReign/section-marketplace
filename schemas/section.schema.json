@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://makereign.dev/schemas/section.schema.json",
+  "title": "MakeReign Marketplace Section",
+  "description": "Manifest for a reusable section in the MakeReign marketplace. Every section folder ships one of these.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "category",
+    "version",
+    "description",
+    "motionDensity",
+    "responsive",
+    "previews",
+    "created",
+    "updated",
+    "submittedBy"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Stable, globally unique slug. Lowercase hyphenated. e.g. 'hero-split-bold'."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human display name. e.g. 'Hero — Split Bold'."
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Marketplace category. Free-form at submission time — designers ship whatever local category their project uses. A curator assigns a canonical marketplace category as part of the curation flow. Conventional categories include: hero, intro, carousel, testimonials, gallery, features, forms, cta, footer, navigation."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$",
+      "description": "Semver. e.g. '1.0.0', '1.2.0-beta.1'."
+    },
+    "track": {
+      "type": "string",
+      "enum": ["stable", "experimental", "legacy"],
+      "description": "Optional release track. Defaults to 'stable'. Quality band — orthogonal to lifecycle."
+    },
+    "lifecycle": {
+      "type": "string",
+      "enum": ["Local", "Draft", "Submitted", "InReview", "Approved", "Promoted", "Deprecated", "Archived"],
+      "description": "Lifecycle position. `mr submit` sets this to 'Submitted'; a curator merging the PR promotes to 'Approved' (then 'Promoted'); deprecation / archival are explicit curator actions. Optional for backward compatibility; sections without a lifecycle are treated as 'Promoted' (the legacy default)."
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Authorship + provenance trail. Populated by `mr submit` at submission time; `promotedAt` set by curator on promotion.",
+      "properties": {
+        "originalCreator": { "type": "string", "description": "Handle of the designer who first built this section." },
+        "originatingProject": { "type": "string", "description": "Slug of the project where the section was first built." },
+        "submittedAt": { "type": "string", "format": "date", "description": "ISO date of `mr submit`." },
+        "promotedAt": { "type": "string", "format": "date", "description": "ISO date when the curator promoted the section into the catalogue." }
+      }
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "description": "One-paragraph human + AI summary. What the section is, when to use it, what it expects."
+    },
+    "props": {
+      "type": "object",
+      "description": "JSON Schema fragment describing the component's props. Freeform; validated only as 'is an object'.",
+      "additionalProperties": true
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Required packages (e.g. 'gsap') or starter-pack components (e.g. '@/components/Section') the section relies on."
+    },
+    "motionDensity": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["minimal", "restrained", "cinematic", "energetic", "motion-heavy"]
+      },
+      "description": "Motion-density tiers this section supports. Mirrors GLOSSARY.md."
+    },
+    "responsive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile"],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Short label for the responsive behaviour. e.g. 'desktop-cinematic / mobile-stacked'."
+        },
+        "breakpoints": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Breakpoint labels the section is tested against. e.g. ['mobile', 'tablet', 'desktop']."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Free-form notes about responsive trade-offs."
+        }
+      }
+    },
+    "previews": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["static"],
+      "properties": {
+        "static": {
+          "type": "string",
+          "pattern": "\\.(png|jpg|jpeg|webp|svg)$",
+          "description": "Path (relative to the section folder) to the static preview image. SVG is permitted for procedurally-generated placeholders; PNG/JPG/WebP for captured screenshots."
+        },
+        "live": {
+          "type": "boolean",
+          "description": "Whether the section supports live iframe preview against a project's design system."
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Marketplace metadata vocabulary — creative style, industry, storytelling role, emotional tone, etc."
+    },
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date when the section was first submitted."
+    },
+    "updated": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date of the most recent change."
+    },
+    "submittedBy": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Git handle of the submitter."
+    },
+    "curation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Curator-authored AI-legibility metadata. Populated during the review/enrichment pass. Describes the layout (structure, slots, page-fit, tonal affordances) — never the brand. An AI given a project brief uses these signals to pick or reject a section, then adapts it to the project's tokens at install time.",
+      "properties": {
+        "intent": {
+          "type": "string",
+          "description": "Single-line structural intent — what the section IS, beyond `category`. e.g. 'Statement-piece hero with split layout — large headline left, structural image right.'"
+        },
+        "structuralPattern": {
+          "type": "string",
+          "description": "Short layout shape descriptor. e.g. 'split-2col: text-left, image-right', '3-up card grid with header', 'centered-hero + tab-nav'."
+        },
+        "structuralSlots": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Named content slots the layout exposes. e.g. ['eyebrow','h1','subtitle','cta-primary','image-hero','tab-nav','card-grid','quote-pull']."
+        },
+        "pageTypes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Page types where the layout fits naturally. e.g. ['landing','about','services','contact','case-study','products','blog-listing','blog-post']."
+        },
+        "tonalAffordances": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tones the layout CAN credibly carry (plural by definition). e.g. ['editorial','premium','minimal','warm']. Not 'is' — 'can'. A layout that only carries one tone is over-specified."
+        },
+        "visualDensity": {
+          "type": "string",
+          "enum": ["airy", "balanced", "dense"],
+          "description": "How packed the layout reads."
+        },
+        "imageryDependence": {
+          "type": "string",
+          "enum": ["required", "optional", "none"],
+          "description": "How much the layout relies on imagery to work."
+        },
+        "copyDensity": {
+          "type": "string",
+          "enum": ["tight", "balanced", "verbose"],
+          "description": "Copy length the layout is built for."
+        },
+        "composition": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Page-assembly hints. Section IDs or category names.",
+          "properties": {
+            "pairsAbove": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "What goes above this naturally."
+            },
+            "pairsBelow": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "What goes below this naturally."
+            },
+            "antiPairs": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Sections / categories NOT to put adjacent. e.g. two heroes in a row."
+            }
+          }
+        }
+      }
+    }
+  }
+}

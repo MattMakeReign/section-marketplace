@@ -1,0 +1,52 @@
+/*
+ * /render/* — neutral preview shell.
+ *
+ * Loads Tailwind + the bundled design system (tokens, theme, components)
+ * so sections render against the canonical baseline. This is the same
+ * starter-pack design system every new project ships with — sections see
+ * EXACTLY the contract they were authored against.
+ */
+
+@import "tailwindcss";
+@source "../../sections/**/*.tsx";
+@source "../../components/**/*.tsx";
+@import "../../design-system/tokens.css";
+@import "../../design-system/theme.css";
+@import "../../design-system/components.css";
+
+/* Pin the light theme so the dark-mode @media block in tokens.css
+   doesn't out-specificity these baseline values on a curator's OS-dark
+   machine. (Token-override gotcha documented in MEMORY.md.) */
+:root,
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html, body {
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.mr-render-shell {
+  min-height: 100vh;
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.mr-render-loading {
+  min-height: 320px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--surface-muted) 0%,
+      var(--surface) 50%,
+      var(--surface-muted) 100%
+    );
+  background-size: 200% 100%;
+  animation: mr-render-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes mr-render-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@mr/section-marketplace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "MakeReign Section Marketplace — Git-backed registry of reusable, design-system-adaptive sections, plus a standalone Next.js gallery app for browsing the catalogue.",
+  "scripts": {
+    "dev": "next dev -p 3020",
+    "build:app": "next build",
+    "start:app": "next start -p 3020",
+    "build": "tsx scripts/build-manifest.ts",
+    "validate": "tsx scripts/validate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.95.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "marked": "^14.1.3",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^20.11.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.0"
+  }
+}

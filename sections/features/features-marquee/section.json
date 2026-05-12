@@ -1,0 +1,79 @@
+{
+  "id": "features-marquee",
+  "name": "Features — Marquee",
+  "category": "features",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Centered editorial header (label pill + display heading) over a full-width horizontal infinite-scroll marquee of large portrait image cards. Each card has a darkening gradient at the bottom with bullet-pointed labels. Heading fades in on scroll entrance; images parallax-shift while in viewport.",
+  "props": {
+    "eyebrow": {
+      "type": "string",
+      "default": "Featured"
+    },
+    "heading": {
+      "type": "string",
+      "default": "A few essentials."
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "src": {
+            "type": "string"
+          },
+          "srcSet": {
+            "type": "string"
+          },
+          "alt": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "restrained",
+    "energetic"
+  ],
+  "responsive": {
+    "profile": "edge-to-edge marquee / mobile-shrink",
+    "breakpoints": [
+      "mobile",
+      "tablet",
+      "desktop"
+    ],
+    "notes": "Cards 573x680 desktop. Scale to 380x480 at <992px, 320x400 at <768px, 280x320 at <480px. Marquee speed unchanged across breakpoints."
+  },
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [
+    "features",
+    "marquee",
+    "editorial",
+    "agency",
+    "imagery",
+    "horizontal-scroll",
+    "parallax"
+  ],
+  "created": "2026-05-11",
+  "updated": "2026-05-11",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "demo-warm-editorial",
+    "submittedAt": "2026-05-11"
+  }
+}

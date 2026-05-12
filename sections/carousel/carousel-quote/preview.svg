@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Carousel — Quote preview">
+  <!--
+    Procedural preview placeholder. Suggests the layout structure of the
+    Carousel — Quote section: horizontal scroll-snap row of quote cards
+    with partial overflow at the trailing edge to imply scrollability.
+    Replace with a real screenshot once available.
+  -->
+  <rect width="1600" height="900" fill="#fdfcfc"/>
+
+  <!-- Hairline section frame -->
+  <rect x="0.5" y="0.5" width="1599" height="899" fill="none" stroke="#e5e5e5" stroke-width="1"/>
+
+  <!-- Eyebrow -->
+  <text x="96" y="172" font-family="ui-sans-serif, system-ui" font-size="13" font-weight="500" letter-spacing="0.7" fill="#a59f97">SECTION 02 · CAROUSEL</text>
+
+  <!-- Section heading -->
+  <g fill="#000000">
+    <rect x="96" y="200" width="420" height="40" rx="2"/>
+  </g>
+
+  <!-- Three full quote cards, plus a partial card at right to imply scroll -->
+  <g>
+    <!-- Card 1 -->
+    <g>
+      <rect x="96" y="296" width="420" height="380" rx="6" fill="#ffffff" stroke="#e5e5e5"/>
+      <!-- Quote glyph -->
+      <text x="128" y="378" font-family="Georgia, serif" font-size="88" font-weight="300" fill="#000000">“</text>
+      <!-- Body lines -->
+      <g fill="#000000">
+        <rect x="128" y="404" width="356" height="14" rx="1"/>
+        <rect x="128" y="430" width="332" height="14" rx="1"/>
+        <rect x="128" y="456" width="288" height="14" rx="1"/>
+      </g>
+      <!-- Attribution -->
+      <line x1="128" y1="588" x2="156" y2="588" stroke="#000000" stroke-width="1.5"/>
+      <text x="128" y="618" font-family="ui-sans-serif, system-ui" font-size="14" font-weight="500" fill="#000000">Person Name</text>
+      <text x="128" y="640" font-family="ui-sans-serif, system-ui" font-size="13" fill="#777169">Role · Company</text>
+    </g>
+
+    <!-- Card 2 -->
+    <g>
+      <rect x="540" y="296" width="420" height="380" rx="6" fill="#ffffff" stroke="#e5e5e5"/>
+      <text x="572" y="378" font-family="Georgia, serif" font-size="88" font-weight="300" fill="#000000">“</text>
+      <g fill="#000000">
+        <rect x="572" y="404" width="356" height="14" rx="1"/>
+        <rect x="572" y="430" width="312" height="14" rx="1"/>
+        <rect x="572" y="456" width="356" height="14" rx="1"/>
+        <rect x="572" y="482" width="252" height="14" rx="1"/>
+      </g>
+      <line x1="572" y1="588" x2="600" y2="588" stroke="#000000" stroke-width="1.5"/>
+      <text x="572" y="618" font-family="ui-sans-serif, system-ui" font-size="14" font-weight="500" fill="#000000">Person Name</text>
+      <text x="572" y="640" font-family="ui-sans-serif, system-ui" font-size="13" fill="#777169">Role · Company</text>
+    </g>
+
+    <!-- Card 3 -->
+    <g>
+      <rect x="984" y="296" width="420" height="380" rx="6" fill="#ffffff" stroke="#e5e5e5"/>
+      <text x="1016" y="378" font-family="Georgia, serif" font-size="88" font-weight="300" fill="#000000">“</text>
+      <g fill="#000000">
+        <rect x="1016" y="404" width="356" height="14" rx="1"/>
+        <rect x="1016" y="430" width="328" height="14" rx="1"/>
+        <rect x="1016" y="456" width="296" height="14" rx="1"/>
+      </g>
+      <line x1="1016" y1="588" x2="1044" y2="588" stroke="#000000" stroke-width="1.5"/>
+      <text x="1016" y="618" font-family="ui-sans-serif, system-ui" font-size="14" font-weight="500" fill="#000000">Person Name</text>
+      <text x="1016" y="640" font-family="ui-sans-serif, system-ui" font-size="13" fill="#777169">Role · Company</text>
+    </g>
+
+    <!-- Partial card 4 — implies more sliding right -->
+    <g opacity="0.55">
+      <rect x="1428" y="296" width="172" height="380" rx="6" fill="#ffffff" stroke="#e5e5e5"/>
+      <text x="1460" y="378" font-family="Georgia, serif" font-size="88" font-weight="300" fill="#000000">“</text>
+    </g>
+  </g>
+
+  <!-- Bottom spec strip -->
+  <line x1="96" y1="780" x2="1504" y2="780" stroke="#e5e5e5"/>
+  <text x="96" y="816" font-family="ui-sans-serif, system-ui" font-size="12" font-weight="500" letter-spacing="0.7" fill="#a59f97">CAROUSEL · QUOTE · v1.0.0 · STABLE</text>
+  <text x="1504" y="816" text-anchor="end" font-family="ui-sans-serif, system-ui" font-size="12" font-weight="500" letter-spacing="0.7" fill="#a59f97">SCROLL-SNAP · CLIENT-FREE</text>
+</svg>
