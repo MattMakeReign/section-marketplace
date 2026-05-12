@@ -1,6 +1,6 @@
 {
-  "generated": "2026-05-12T08:09:30.810Z",
-  "count": 10,
+  "generated": "2026-05-12T08:14:52.112Z",
+  "count": 11,
   "sections": [
     {
       "id": "banner-acme",
@@ -37,6 +37,42 @@
         "submittedAt": "2026-05-12"
       },
       "path": "sections/cta/banner-acme"
+    },
+    {
+      "id": "banner-acme",
+      "name": "Banner — Acme End-to-End Test",
+      "category": "cta",
+      "version": "0.0.1",
+      "track": "experimental",
+      "lifecycle": "Submitted",
+      "description": "A banner section created via the acme-test project to prove the end-to-end remote marketplace loop works. Bold colour band, single CTA.",
+      "dependencies": [
+        "@/components/section",
+        "@/components/section-grid"
+      ],
+      "motionDensity": [
+        "restrained"
+      ],
+      "responsive": {
+        "profile": "desktop / mobile-stacked"
+      },
+      "previews": {
+        "static": "preview.svg"
+      },
+      "tags": [
+        "test",
+        "remote-jump",
+        "acme"
+      ],
+      "created": "2026-05-12",
+      "updated": "2026-05-12",
+      "submittedBy": "mattthompson",
+      "attribution": {
+        "originalCreator": "mattthompson",
+        "originatingProject": "mr-acme-test",
+        "submittedAt": "2026-05-12"
+      },
+      "path": "sections/cta/banner-acme.mr-submit-backup-1778573691798"
     },
     {
       "id": "carousel-quote",

@@ -14,7 +14,7 @@ export function BannerAcme({ position }: { position?: number }) {
     >
       <SectionGrid>
         <div className="col-span-12 py-section-md text-center">
-          <h2 className="text-heading-2 font-display">Remote jump shipped</h2>
+          <h2 className="text-heading-2 font-display">Remote jump shipped, end-to-end</h2>
           <p className="mt-4 text-body-medium opacity-80">
             This section was authored in mr-acme-test, submitted via mr submit,
             and now lives in the live marketplace on Vercel.
