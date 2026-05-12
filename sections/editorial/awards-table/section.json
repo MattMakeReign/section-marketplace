@@ -1,0 +1,80 @@
+{
+  "id": "awards-table",
+  "name": "Awards Table",
+  "category": "editorial",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Centred heading above a three-column table with hairline row dividers and a double-weight header border. Built for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic weight.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "restrained"
+  ],
+  "responsive": {
+    "profile": "desktop / mobile-stacked"
+  },
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [
+    "table",
+    "awards",
+    "press",
+    "editorial",
+    "list",
+    "recognition"
+  ],
+  "created": "2026-05-12",
+  "updated": "2026-05-12",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-atlas",
+    "submittedAt": "2026-05-12"
+  },
+  "curation": {
+    "intent": "Centred-heading + full-width three-column table for structured records — awards, press, or recognitions.",
+    "structuralPattern": "single-column centred: h2 above full-width 3-col table",
+    "structuralSlots": [
+      "h2",
+      "eyebrow",
+      "table-header",
+      "card-grid"
+    ],
+    "pageTypes": [
+      "about",
+      "case-study",
+      "landing",
+      "services"
+    ],
+    "tonalAffordances": [
+      "editorial",
+      "restrained",
+      "minimal",
+      "premium"
+    ],
+    "visualDensity": "balanced",
+    "imageryDependence": "none",
+    "copyDensity": "tight",
+    "composition": {
+      "pairsAbove": [
+        "hero",
+        "intro",
+        "stats"
+      ],
+      "pairsBelow": [
+        "cta",
+        "testimonials",
+        "contact"
+      ],
+      "antiPairs": [
+        "carousel",
+        "gallery",
+        "image-marquee"
+      ]
+    }
+  }
+}

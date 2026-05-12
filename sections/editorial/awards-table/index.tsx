@@ -1,0 +1,1 @@
+export { AwardsTable } from "./AwardsTable";
