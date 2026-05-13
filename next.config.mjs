@@ -6,6 +6,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Suppress the floating Next.js dev-mode badge so it doesn't appear
+  // twice on the section detail page (once for the marketplace shell,
+  // once inside the same-origin `/render/<id>` iframe).
+  devIndicators: false,
   // The marketplace app reads section folders directly from the file system
   // (server components). No image optimization on the SVG previews — they're
   // procedurally generated and already small.

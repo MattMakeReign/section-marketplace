@@ -22,24 +22,17 @@
  *   - Spec strip + install command (bottom)
  */
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Manifest } from "./marketplace-data";
 import {
   // Filter row icons
   IconCategory, IconAnimation, IconTag, IconTrack, IconSort, IconLifecycle,
-  // Detail modal icons (kept locally — modal isn't shared yet)
-  IconDesktop, IconTablet, IconMobile,
-  IconCopy, IconClose, IconChevronLeft, IconChevronRight, IconHeart,
   // Shared types / helpers / presentational components
   type ManifestEntry, type Track, type Lifecycle,
   TRACKS, LIFECYCLES, getLifecycle, lifecycleLabel, capitalize,
-  FilterPill, SectionCard, Spec,
-  // State-machine for curator actions.
-  transitionsFrom, type Transition,
-  // Curation gate — Approve is blocked until required metadata is filled.
-  missingForApproval,
+  FilterPill, SectionCard,
 } from "@mr/section-library-ui";
 import { CANONICAL_CATEGORIES, CANONICAL_IDS } from "@/lib/canonical-categories";
 
@@ -51,19 +44,12 @@ const SORTS: Array<{ id: Sort; label: string }> = [
   { id: "track", label: "Track" },
   { id: "newest", label: "Newest" },
 ];
-type Viewport = "desktop" | "tablet" | "mobile";
 
 export function Gallery({ manifest }: { manifest: Manifest }) {
-  // Overlay map of curator-mutated sections. Applied on top of the
-  // server-provided manifest so transition clicks reflect immediately
-  // without waiting for the server-component refresh round-trip.
-  const [overlay, setOverlay] = useState<Record<string, ManifestEntry>>({});
-
-  const sections = useMemo(() => {
-    const base = manifest.sections ?? [];
-    if (Object.keys(overlay).length === 0) return base;
-    return base.map((s) => overlay[s.id] ?? s);
-  }, [manifest, overlay]);
+  // Detail route fires `router.refresh()` after curator transitions, so the
+  // gallery picks up state changes via the server-component re-render — no
+  // need for a local optimistic overlay anymore.
+  const sections = manifest.sections ?? [];
 
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>(ALL);
@@ -72,8 +58,9 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
   const [animation, setAnimation] = useState<string>(ALL);
   const [tag, setTag] = useState<string>(ALL);
   const [sort, setSort] = useState<Sort>("name-asc");
-  const [openId, setOpenId] = useState<string | null>(null);
   const [curatorMode, setCuratorMode] = useState(false);
+  const [density, setDensity] = useState<2 | 3 | 4>(3);
+  const router = useRouter();
 
   // Pick up `?lifecycle=<state>` and `?mode=curate` from the URL.
   //  - `?lifecycle=…` deep-links from elsewhere (e.g. the Submit-for-curation
@@ -86,12 +73,6 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
     if (l && LIFECYCLES.includes(l as Lifecycle)) setLifecycle(l);
     if (params.get("mode") === "curate") setCuratorMode(true);
   }, []);
-
-  // Curator action handler — passed down to Detail. Optimistically writes
-  // into the overlay so the badge/action bar reflect immediately.
-  const handleSectionUpdate = (updated: ManifestEntry) => {
-    setOverlay((prev) => ({ ...prev, [updated.id]: updated }));
-  };
 
   // Derived filter option lists.
   //
@@ -188,79 +169,135 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
     setQuery(""); setCategory(ALL); setTrack(ALL); setLifecycle(ALL); setAnimation(ALL); setTag(ALL); setSort("name-asc");
   }
 
-  // Modal navigation state.
-  const openIndex = openId ? filtered.findIndex((s) => s.id === openId) : -1;
-  const open = openIndex >= 0 ? filtered[openIndex] : null;
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpenId(null);
-      else if (e.key === "ArrowLeft" && openIndex > 0) setOpenId(filtered[openIndex - 1].id);
-      else if (e.key === "ArrowRight" && openIndex < filtered.length - 1) setOpenId(filtered[openIndex + 1].id);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, openIndex, filtered]);
+  // Card click handler — navigates to the full-page section detail route.
+  // Curator mode is preserved through the query string.
+  const openSection = (id: string) => {
+    const qs = curatorMode ? "?mode=curate" : "";
+    router.push(`/sections/${id}${qs}`);
+  };
 
   return (
     <>
       <header className="mr-mk-topbar">
-        <div className="mr-mk-topbar__brand">
-          <span className="mr-mk-topbar__sub">MakeReign</span>
-          <span className="mr-mk-topbar__wordmark">Section Library</span>
-          {curatorMode ? <span className="mr-mk-curator-flag">Curator mode</span> : null}
+        <div className="mr-mk-topbar__left">
+          <Link href="/" className="mr-mk-topbar__logo" aria-label="MakeReign Section Library">
+            <span aria-hidden>M</span>
+          </Link>
+          {curatorMode ? (
+            <nav className="mr-mk-topbar__tabs" aria-label="Curator">
+              <Link
+                href="/?mode=curate"
+                className="mr-mk-topbar__tab mr-mk-topbar__tab--active"
+              >
+                Catalogue
+              </Link>
+              <Link href="/review?mode=curate" className="mr-mk-topbar__tab">
+                Review queue
+              </Link>
+            </nav>
+          ) : (
+            <nav className="mr-mk-topbar__tabs" aria-label="Primary">
+              <span
+                className="mr-mk-topbar__tab mr-mk-topbar__tab--muted"
+                aria-disabled
+                data-tooltip="Coming soon"
+              >
+                Pages
+              </span>
+              <span className="mr-mk-topbar__tab mr-mk-topbar__tab--active">
+                Sections
+              </span>
+              <span
+                className="mr-mk-topbar__tab mr-mk-topbar__tab--muted"
+                aria-disabled
+                data-tooltip="Coming soon"
+              >
+                Components
+              </span>
+            </nav>
+          )}
         </div>
-        {curatorMode ? (
-          <nav className="mr-mk-topbar__nav">
-            <Link href="/?mode=curate" className="mr-mk-topbar__navlink mr-mk-topbar__navlink--active">Catalogue</Link>
-            <Link href="/review?mode=curate" className="mr-mk-topbar__navlink">Review queue</Link>
-          </nav>
-        ) : null}
+
+        <div className="mr-mk-topbar__search-wrap">
+          <label className="mr-mk-topbar__search">
+            <span className="mr-mk-topbar__search-icon" aria-hidden>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M11 11l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </span>
+            <input
+              type="search"
+              placeholder="Search sections…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              aria-label="Search marketplace"
+            />
+          </label>
+        </div>
+
         <div className="mr-mk-topbar__right">
-          <span>{sections.length} sections</span>
-          <span>v{manifest.generated ? "1.0" : "1.0"}</span>
+          <button
+            type="button"
+            className="mr-mk-topbar__icon-btn"
+            aria-label="Bookmarks"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path
+                d="M4.5 3.5h9v11l-4.5-3-4.5 3v-11z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="mr-mk-topbar__icon-btn"
+            aria-label="Help"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="6.75" stroke="currentColor" strokeWidth="1.5" />
+              <path
+                d="M7.25 7.25a1.75 1.75 0 113.05 1.17c-.4.42-1.3.86-1.3 1.7"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <circle cx="9" cy="12.75" r="0.6" fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="mr-mk-topbar__icon-btn"
+            aria-label="Notifications"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path
+                d="M4.5 12.5h9l-1-1.5V8a3.5 3.5 0 10-7 0v3l-1 1.5z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M7.5 14a1.5 1.5 0 003 0"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+          <ProfileMenu sections={sections.length} curatorMode={curatorMode} />
         </div>
       </header>
 
-      <section className="mr-mk-header">
-        <div className="mr-mk-header__eyebrow">Sections / All</div>
-        <h1 className="mr-mk-header__title">
-          Reusable sections, <em>adapted to your project.</em>
-        </h1>
-        <p className="mr-mk-header__sub">
-          Browse the catalogue. Each section adapts to the project it lands in — local typography, colours,
-          spacing, motion. Open any section to inspect its specs and copy the install command.
-        </p>
-      </section>
-
       <div className="mr-mk-filters">
-        <input
-          type="search"
-          className="mr-mk-search"
-          placeholder="Search sections, tags, descriptions…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          aria-label="Search marketplace"
-        />
-
         <FilterPill
           label="Category"
           icon={<IconCategory />}
           value={category}
           options={[{ id: ALL, label: "All categories", count: sections.length }, ...categories.map((c) => ({ id: c.id, label: c.label, count: c.count }))]}
           onChange={setCategory}
-        />
-
-        <FilterPill
-          label="Track"
-          icon={<IconTrack />}
-          value={track}
-          options={[
-            { id: ALL, label: "All tracks", count: sections.length },
-            ...TRACKS.map((t) => ({ id: t, label: capitalize(t), count: trackCounts[t] ?? 0, dot: `var(--chrome-track-${t})` })),
-          ]}
-          onChange={setTrack}
         />
 
         <FilterPill
@@ -297,17 +334,26 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
 
         <div className="mr-mk-filters__spacer" />
 
-        <FilterPill
-          label={SORTS.find((s) => s.id === sort)?.label ?? "Sort"}
-          icon={<IconSort />}
-          value={sort}
-          options={SORTS.map((s) => ({ id: s.id, label: s.label }))}
-          onChange={(v) => setSort(v as Sort)}
-        />
+        <div
+          className="mr-mk-density"
+          role="radiogroup"
+          aria-label="Grid density"
+        >
+          {[2, 3, 4].map((n) => (
+            <button
+              key={n}
+              type="button"
+              role="radio"
+              aria-checked={density === n}
+              aria-label={`${n}-column grid`}
+              className={`mr-mk-density__btn${density === n ? " mr-mk-density__btn--active" : ""}`}
+              onClick={() => setDensity(n as 2 | 3 | 4)}
+            >
+              <DensityIcon cols={n as 2 | 3 | 4} />
+            </button>
+          ))}
+        </div>
 
-        {filtersDirty ? (
-          <button type="button" className="mr-mk-clear" onClick={clearAll}>Clear all</button>
-        ) : null}
       </div>
 
       {filtered.length === 0 ? (
@@ -324,436 +370,204 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           )}
         </div>
       ) : (
-        <div className="mr-mk-grid">
+        <div className="mr-mk-grid" data-density={density}>
           {filtered.map((s) => (
             <SectionCard
               key={s.id}
               section={s}
               previewSrc={s.previews?.static ? `/preview/${s.id}` : undefined}
-              onOpen={() => setOpenId(s.id)}
+              onOpen={() => openSection(s.id)}
             />
           ))}
         </div>
       )}
 
-      {open ? (
-        <Detail
-          section={open}
-          hasPrev={openIndex > 0}
-          hasNext={openIndex < filtered.length - 1}
-          onPrev={() => setOpenId(filtered[openIndex - 1].id)}
-          onNext={() => setOpenId(filtered[openIndex + 1].id)}
-          onClose={() => setOpenId(null)}
-          curatorMode={curatorMode}
-          onSectionUpdate={handleSectionUpdate}
-        />
-      ) : null}
     </>
   );
 }
 
-/* ─────────────────────────── Detail ────────────────────────── */
-
+/* ─────────────────────────── ProfileMenu ─────────────────────────── */
 /**
- * Preview pipeline is SAME-ORIGIN. The marketplace bundles its own copy
- * of the section primitives + a neutral design system, and renders any
- * section at `/render/<id>`. No sibling project has to be running for
- * the catalogue to show what a section looks like — which is the only
- * shape that works once the Library App is hosted in the cloud.
+ * Avatar in the top bar + click-to-open dropdown. Functional surface for the
+ * theme switcher (light / dark / system). Everything else is a visual stub —
+ * View profile / Workspace / Request content / Give feedback / Settings / Log out
+ * all render as inert rows so the auth-bound work can land later without
+ * reshaping the menu.
  *
- * The viewport toggle sets a REAL device width on the iframe; the
- * surrounding frame scales it down via CSS transform if the stage is
- * narrower than the device target. So the section sees a true desktop /
- * tablet / mobile viewport and renders its actual responsive breakpoints.
+ * Avatar renders as an empty dark circle for now. When auth lands it shows a
+ * profile photo (or initials as a fallback).
  */
-const DEVICE_WIDTH: Record<Viewport, number> = {
-  desktop: 1440,
-  tablet: 768,
-  mobile: 390,
-};
+type ThemeChoice = "light" | "dark" | "system";
+// (The "light" theme IS the Mobbin-derived achromatic look. The token
+// override block in styles.css is keyed to `data-theme="light"` so the
+// iframe at /render/<id> also inherits it — which prevents the design-
+// system's dark @media block from over-specificity-winning when the OS
+// is in dark mode. Documented gotcha in MEMORY.md.)
 
-function Detail({
-  section, hasPrev, hasNext, onPrev, onNext, onClose, curatorMode, onSectionUpdate,
-}: {
-  section: ManifestEntry;
-  hasPrev: boolean;
-  hasNext: boolean;
-  onPrev: () => void;
-  onNext: () => void;
-  onClose: () => void;
-  curatorMode: boolean;
-  onSectionUpdate: (s: ManifestEntry) => void;
-}) {
-  const sectionTrack = (section.track ?? "stable") as Track;
-  const sectionLifecycle = getLifecycle(section);
-  const [viewport, setViewport] = useState<Viewport>("desktop");
-  const [copied, setCopied] = useState(false);
-  const [tab, setTab] = useState<"preview" | "about" | "specs">("preview");
-  const [readme, setReadme] = useState<{ html: string } | null>(null);
-  const [readmeLoading, setReadmeLoading] = useState(false);
-  const [readmeError, setReadmeError] = useState<string | null>(null);
+function useTheme(): [ThemeChoice, (t: ThemeChoice) => void] {
+  const [choice, setChoice] = useState<ThemeChoice>("light");
 
-  // Iframe scale-to-fit. The iframe renders at the device's REAL pixel width
-  // (1440 / 768 / 390); the visual scale is computed against the stage's
-  // available width so it always fits inside the modal.
-  const frameRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-
-  // Reset viewport + tab + cached README when navigating between sections.
+  // Read persisted choice once, on mount. SSR-safe.
   useEffect(() => {
-    setViewport("desktop");
-    setTab("preview");
-    setReadme(null);
-    setReadmeError(null);
-  }, [section.id]);
+    const stored = (typeof window !== "undefined" ? window.localStorage.getItem("mr-mk-theme") : null) as ThemeChoice | null;
+    if (stored === "light" || stored === "dark" || stored === "system") setChoice(stored);
+  }, []);
 
-  // Recompute scale when viewport changes or the frame resizes.
+  // Apply the effective theme to <html data-theme>. For "system" we follow
+  // prefers-color-scheme and update live when the OS flips.
   useEffect(() => {
-    if (tab !== "preview") return;
-    const frame = frameRef.current;
-    if (!frame) return;
-    const targetW = DEVICE_WIDTH[viewport];
-    const update = () => {
-      const available = frame.clientWidth;
-      // Never scale UP — a 390px mobile iframe at 1.0 inside a 1200px stage
-      // should look like a mobile-sized phone, not a stretched billboard.
-      setScale(Math.min(1, available / targetW));
+    const root = document.documentElement;
+    window.localStorage.setItem("mr-mk-theme", choice);
+
+    if (choice !== "system") {
+      root.dataset.theme = choice;
+      return;
+    }
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => { root.dataset.theme = mq.matches ? "dark" : "light"; };
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, [choice]);
+
+  return [choice, setChoice];
+}
+
+function ProfileMenu({ sections, curatorMode }: { sections: number; curatorMode: boolean }) {
+  const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useTheme();
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  // Click-outside + Escape close.
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (!ref.current) return;
+      if (!ref.current.contains(e.target as Node)) setOpen(false);
     };
-    update();
-    const obs = new ResizeObserver(update);
-    obs.observe(frame);
-    return () => obs.disconnect();
-  }, [tab, viewport]);
-
-  // Lazy-fetch README the first time the About tab is visible.
-  useEffect(() => {
-    if (tab !== "about") return;
-    if (readme || readmeLoading) return;
-    let cancelled = false;
-    setReadmeLoading(true);
-    fetch(`/readme/${section.id}`)
-      .then(async (r) => {
-        const json = await r.json();
-        if (cancelled) return;
-        if (!r.ok || !json.ok) {
-          setReadmeError(json.error ?? `HTTP ${r.status}`);
-        } else {
-          setReadme({ html: json.html });
-        }
-      })
-      .catch((e) => { if (!cancelled) setReadmeError(String(e)); })
-      .finally(() => { if (!cancelled) setReadmeLoading(false); });
-    return () => { cancelled = true; };
-  }, [tab, readme, readmeLoading, section.id]);
-
-  async function copyInstall() {
-    try {
-      await navigator.clipboard.writeText(`mr add ${section.id}`);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // Clipboard blocked — silent.
-    }
-  }
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("mousedown", onClick);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onClick);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   return (
-    <div className="mr-mk-modal-backdrop" role="dialog" aria-label={`${section.name} details`} onClick={onClose}>
-      <div className="mr-mk-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="mr-mk-modal__head">
-          <div className="mr-mk-modal__head-left">
-            <h2 className="mr-mk-modal__title">{section.name}</h2>
-            <span className="mr-mk-modal__brand">
-              <span className="mr-mk-card__brand-mark" aria-hidden>MR</span>
-              MakeReign · {section.submittedBy ?? "core"}
-            </span>
+    <div className="mr-mk-profile" ref={ref}>
+      <button
+        type="button"
+        className="mr-mk-topbar__avatar"
+        aria-label="Account"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        title={`${sections} sections${curatorMode ? " · Curator mode" : ""}`}
+        onClick={() => setOpen((o) => !o)}
+      />
+
+      {open ? (
+        <div className="mr-mk-profile-menu" role="menu">
+          <div className="mr-mk-profile-menu__header">
+            <span className="mr-mk-profile-menu__badge">ADMIN</span>
+            <div className="mr-mk-profile-menu__name">Matt Thompson</div>
+            <div className="mr-mk-profile-menu__email">matt@makereign.com</div>
+            <button type="button" className="mr-mk-profile-menu__view">View profile</button>
           </div>
-          <div className="mr-mk-modal__actions">
-            <button type="button" className="mr-mk-cta" onClick={copyInstall}>
-              <IconCopy />
-              {copied ? "Copied" : "Copy install"}
-            </button>
-            <button type="button" className="mr-mk-iconbtn" aria-label="Favourite">
-              <IconHeart />
-            </button>
-            <button type="button" className="mr-mk-iconbtn" aria-label="Close" onClick={onClose}>
-              <IconClose />
-            </button>
-          </div>
-        </div>
 
-        {curatorMode ? (
-          <CuratorActionBar section={section} onSectionUpdate={onSectionUpdate} />
-        ) : null}
+          <hr className="mr-mk-profile-menu__divider" />
 
-        <div className="mr-mk-tabs" role="tablist">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === "preview"}
-            className="mr-mk-tab"
-            onClick={() => setTab("preview")}
-          >
-            Preview
+          <button type="button" className="mr-mk-profile-menu__item">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M8 5v6M5 8h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            Request content
           </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === "about"}
-            className="mr-mk-tab"
-            onClick={() => setTab("about")}
-          >
-            About
+          <button type="button" className="mr-mk-profile-menu__item">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5H2.5v-7z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+            </svg>
+            Give feedback
           </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === "specs"}
-            className="mr-mk-tab"
-            onClick={() => setTab("specs")}
-          >
-            Specs
+          <button type="button" className="mr-mk-profile-menu__item">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M8 1.5v2M8 12.5v2M3.5 8h-2M14.5 8h-2M4.5 4.5l-1.5-1.5M13 13l-1.5-1.5M4.5 11.5L3 13M13 3l-1.5 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            Settings
           </button>
-          <div className="mr-mk-tabs__spacer" />
-          <button
-            type="button"
-            className="mr-mk-tabs__nav"
-            onClick={onPrev}
-            disabled={!hasPrev}
-            aria-label="Previous section"
-          >
-            <IconChevronLeft />
-          </button>
-          <button
-            type="button"
-            className="mr-mk-tabs__nav"
-            onClick={onNext}
-            disabled={!hasNext}
-            aria-label="Next section"
-          >
-            <IconChevronRight />
-          </button>
-        </div>
 
-        {tab === "preview" ? (
-          <div className="mr-mk-modal__stage" role="tabpanel">
-            <div className="mr-mk-viewport-toggle" role="tablist" aria-label="Preview viewport">
-              <ViewportBtn active={viewport === "desktop"} onClick={() => setViewport("desktop")}>
-                <IconDesktop /> Desktop
-              </ViewportBtn>
-              <ViewportBtn active={viewport === "tablet"} onClick={() => setViewport("tablet")}>
-                <IconTablet /> Tablet
-              </ViewportBtn>
-              <ViewportBtn active={viewport === "mobile"} onClick={() => setViewport("mobile")}>
-                <IconMobile /> Mobile
-              </ViewportBtn>
-            </div>
+          <hr className="mr-mk-profile-menu__divider" />
 
-            <div className="mr-mk-preview-frame" data-viewport={viewport} ref={frameRef}>
-              <iframe
-                key={`${section.id}-${viewport}`}
-                src={`/render/${section.id}`}
-                title={`${section.name} live preview`}
-                className="mr-mk-preview-iframe"
-                style={{
-                  width: `${DEVICE_WIDTH[viewport]}px`,
-                  height: `${100 / scale}%`,
-                  transform: `scale(${scale})`,
-                } as CSSProperties}
-                loading="lazy"
-              />
-            </div>
-
-            <div className="mr-mk-preview-source" title="Section rendered by the Library App itself">
-              <span className="mr-mk-preview-source__dot" /> neutral preview
-            </div>
-          </div>
-        ) : tab === "about" ? (
-          <div className="mr-mk-tabpanel" role="tabpanel">
-            {readmeLoading ? (
-              <span className="mr-mk-prose-loading">Loading…</span>
-            ) : readmeError ? (
-              <div className="mr-mk-prose">
-                <p>
-                  No README found for this section. The marketplace expects a <code>README.md</code>
-                  next to <code>section.json</code> with <em>when to use</em>, <em>when not to use</em>,
-                  and motion / responsive notes — that file becomes the AI-readable layer when Claude
-                  adapts the section into a project.
-                </p>
-              </div>
-            ) : readme ? (
-              <div className="mr-mk-prose" dangerouslySetInnerHTML={{ __html: readme.html }} />
-            ) : null}
-          </div>
-        ) : (
-          <div className="mr-mk-modal__specs" role="tabpanel">
-            <Spec label="Category" value={capitalize(section.category)} />
-            <Spec label="Version" value={`v${section.version}`} />
-            <Spec
-              label="Track"
-              value={
-                <span className="mr-sl-badge" data-track={sectionTrack}>
-                  <span className="mr-sl-badge__dot" />
-                  {sectionTrack}
-                </span>
-              }
-            />
-            <Spec
-              label="Lifecycle"
-              value={
-                <span className="mr-sl-badge" data-lifecycle={sectionLifecycle}>
-                  <span className="mr-sl-badge__dot" />
-                  {lifecycleLabel(sectionLifecycle)}
-                </span>
-              }
-            />
-            {section.attribution?.originalCreator ? (
-              <Spec label="Original creator" value={section.attribution.originalCreator} />
-            ) : null}
-            {section.attribution?.originatingProject ? (
-              <Spec label="Originating project" value={section.attribution.originatingProject} />
-            ) : null}
-            {section.attribution?.submittedAt ? (
-              <Spec label="Submitted" value={section.attribution.submittedAt} />
-            ) : null}
-            {section.attribution?.promotedAt ? (
-              <Spec label="Promoted" value={section.attribution.promotedAt} />
-            ) : null}
-            {section.motionDensity?.length ? (
-              <Spec label="Motion density" value={section.motionDensity.join(" · ")} />
-            ) : null}
-            {section.responsive?.profile ? (
-              <Spec label="Responsive" value={section.responsive.profile} />
-            ) : null}
-            {section.tags?.length ? (
-              <Spec
-                label="Tags"
-                value={<>{section.tags.map((t) => <span key={t} className="mr-mk-tag">{t}</span>)}</>}
-              />
-            ) : null}
-            <Spec label="Install" value={<code className="mr-mk-spec__install">mr add {section.id}</code>} />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ViewportBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={active}
-      className={`mr-mk-viewport-toggle__btn${active ? " mr-mk-viewport-toggle__btn--active" : ""}`}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
-
-/* ─────────────────────────── CuratorActionBar ─────────────────────────── */
-/**
- * Lifecycle transition strip rendered in the detail modal when the gallery
- * is opened with `?mode=curate`. Reads the section's current state, looks up
- * the valid next states from the shared state-machine, and POSTs to the
- * lifecycle API on click. Optimistically writes the response back into the
- * Gallery's overlay map AND fires router.refresh() so the manifest re-flows
- * from the server next render.
- */
-function CuratorActionBar({
-  section,
-  onSectionUpdate,
-}: {
-  section: ManifestEntry;
-  onSectionUpdate: (s: ManifestEntry) => void;
-}) {
-  const router = useRouter();
-  const current = getLifecycle(section);
-  const transitions = transitionsFrom(current);
-  const missing = missingForApproval(section.curation);
-  const [busy, setBusy] = useState<Lifecycle | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  async function go(t: Transition) {
-    setBusy(t.to);
-    setError(null);
-    try {
-      const res = await fetch(`/api/sections/${section.id}/lifecycle`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to: t.to }),
-      });
-      const json = (await res.json()) as
-        | { ok: true; section: ManifestEntry }
-        | { ok: false; error: string; code: string };
-      if (!res.ok || !json.ok) {
-        throw new Error("error" in json ? json.error : `HTTP ${res.status}`);
-      }
-      onSectionUpdate(json.section);
-      router.refresh();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  return (
-    <div className="mr-mk-curator-bar" role="toolbar" aria-label="Lifecycle actions">
-      <div className="mr-mk-curator-bar__current">
-        <span className="mr-mk-curator-bar__eyebrow">Lifecycle</span>
-        <span className="mr-sl-badge" data-lifecycle={current}>
-          <span className="mr-sl-badge__dot" />
-          {lifecycleLabel(current)}
-        </span>
-      </div>
-      <div className="mr-mk-curator-bar__actions">
-        {transitions.length === 0 ? (
-          <span className="mr-mk-curator-bar__empty">Terminal state — no transitions</span>
-        ) : (
-          transitions.map((t) => {
-            // Approve is gated on curation completeness — but ONLY on the
-            // forward transition (InReview → Approved). Backward moves like
-            // Promoted → Approved (Unpromote) are restores and shouldn't be
-            // blocked: the section was already approved at some point and
-            // we're just walking it back.
-            const gatedByCuration =
-              t.to === "Approved" && t.kind === "forward" && missing.length > 0;
-            return (
+          <div className="mr-mk-profile-menu__theme-row">
+            <span className="mr-mk-profile-menu__theme-label">Theme</span>
+            <div className="mr-mk-profile-menu__theme-toggle" role="radiogroup" aria-label="Theme">
               <button
-                key={t.to}
                 type="button"
-                className={`mr-mk-curator-btn mr-mk-curator-btn--${t.kind}`}
-                onClick={() => go(t)}
-                disabled={busy !== null || gatedByCuration}
-                title={gatedByCuration
-                  ? `Curation incomplete — fill in ${missing.length} required field${missing.length === 1 ? "" : "s"} first`
-                  : t.hint ?? ""}
-                data-target={t.to}
+                role="radio"
+                aria-checked={theme === "light"}
+                aria-label="Light"
+                className={`mr-mk-profile-menu__theme-btn${theme === "light" ? " mr-mk-profile-menu__theme-btn--active" : ""}`}
+                onClick={() => setTheme("light")}
               >
-                {busy === t.to ? "…" : t.label}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                  <circle cx="7" cy="7" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1.1 1.1M10.4 10.4l1.1 1.1M2.5 11.5l1.1-1.1M10.4 3.6l1.1-1.1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
               </button>
-            );
-          })
-        )}
-        {/* When we're in a state where curation matters (Submitted / InReview)
-            and isn't complete, surface the enrich link prominently so the
-            curator can jump straight to the form. */}
-        {(current === "Submitted" || current === "InReview") && missing.length > 0 ? (
-          <a
-            href={`/sections/${section.id}/edit?mode=curate`}
-            className="mr-mk-curator-btn mr-mk-curator-btn--enrich"
-            title={`${missing.length} required field${missing.length === 1 ? "" : "s"} missing`}
-          >
-            Enrich · {missing.length} left
-          </a>
-        ) : null}
-      </div>
-      {error ? (
-        <span className="mr-mk-curator-bar__error" role="alert">{error}</span>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme === "dark"}
+                aria-label="Dark"
+                className={`mr-mk-profile-menu__theme-btn${theme === "dark" ? " mr-mk-profile-menu__theme-btn--active" : ""}`}
+                onClick={() => setTheme("dark")}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                  <path d="M11.5 8.5a4.5 4.5 0 11-6-6 4.5 4.5 0 006 6z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme === "system"}
+                aria-label="System"
+                className={`mr-mk-profile-menu__theme-btn${theme === "system" ? " mr-mk-profile-menu__theme-btn--active" : ""}`}
+                onClick={() => setTheme("system")}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                  <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M7 1.75v10.5a5.25 5.25 0 000-10.5z" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <hr className="mr-mk-profile-menu__divider" />
+
+          <button type="button" className="mr-mk-profile-menu__item">Log out</button>
+        </div>
       ) : null}
     </div>
+  );
+}
+
+/* Tiny column-count glyph for the grid-density toggle. Renders N vertical bars. */
+function DensityIcon({ cols }: { cols: 2 | 3 | 4 }) {
+  // Bar widths + x-offsets are pre-computed so the icon stays optically balanced
+  // across 2/3/4 — equal stroke width, equal gaps, centred in a 16-square viewBox.
+  const layouts: Record<2 | 3 | 4, Array<{ x: number; w: number }>> = {
+    2: [{ x: 3, w: 4 }, { x: 9, w: 4 }],
+    3: [{ x: 2, w: 3 }, { x: 6.5, w: 3 }, { x: 11, w: 3 }],
+    4: [{ x: 1.5, w: 2.5 }, { x: 5, w: 2.5 }, { x: 8.5, w: 2.5 }, { x: 12, w: 2.5 }],
+  };
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+      {layouts[cols].map((bar, i) => (
+        <rect key={i} x={bar.x} y={3} width={bar.w} height={10} rx={1} />
+      ))}
+    </svg>
   );
 }
 

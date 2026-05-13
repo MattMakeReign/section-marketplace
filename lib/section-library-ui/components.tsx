@@ -137,14 +137,6 @@ export function SectionCard({
   const inner = (
     <>
       <div className="mr-sl-card__window">
-        <div className="mr-sl-card__chrome" aria-hidden>
-          <div className="mr-sl-card__dots">
-            <span className="mr-sl-card__dot" />
-            <span className="mr-sl-card__dot" />
-            <span className="mr-sl-card__dot" />
-          </div>
-          <div className="mr-sl-card__urlbar" />
-        </div>
         <div className="mr-sl-card__viewport">
           {previewSrc ? (
             <img src={previewSrc} alt="" loading="lazy" />
@@ -213,4 +205,3 @@ export function Spec({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
-export { capitalize };

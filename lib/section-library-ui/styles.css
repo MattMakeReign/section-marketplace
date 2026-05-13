@@ -99,7 +99,7 @@
   background: var(--chrome-ground);
   border: 1px solid var(--chrome-border);
   border-radius: var(--chrome-radius-card);
-  padding: var(--chrome-space-3);
+  padding: var(--chrome-space-2);
   text-align: left;
   width: 100%;
   font: inherit;
@@ -113,33 +113,12 @@
   outline-offset: 2px;
 }
 
+/* Preview thumbnail — no border (the outer card carries the line).
+ * Inner radius = outer radius − padding so the nested corners stay concentric. */
 .mr-sl-card__window {
   background: var(--chrome-surface-muted);
-  border: 1px solid var(--chrome-border);
-  border-radius: var(--chrome-radius-3);
+  border-radius: calc(var(--chrome-radius-card) - var(--chrome-space-2));
   overflow: hidden;
-}
-.mr-sl-card__chrome {
-  display: flex;
-  align-items: center;
-  gap: var(--chrome-space-2);
-  padding: 9px var(--chrome-space-3);
-  border-bottom: 1px solid var(--chrome-border);
-  background: var(--chrome-ground);
-}
-.mr-sl-card__dots { display: flex; gap: 5px; }
-.mr-sl-card__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--chrome-border);
-}
-.mr-sl-card__urlbar {
-  flex: 1;
-  height: 16px;
-  background: var(--chrome-surface-muted);
-  border: 1px solid var(--chrome-border);
-  border-radius: 4px;
 }
 .mr-sl-card__viewport {
   aspect-ratio: 16 / 9;

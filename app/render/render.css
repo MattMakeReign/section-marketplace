@@ -31,6 +31,18 @@ html, body {
   min-height: 100vh;
   background: var(--surface);
   color: var(--fg);
+  /* Sections render with their canonical 24px grid margin from
+   * design-system/tokens.css. The preview iframe is fully fluid
+   * (width:100% on desktop), so the section's <SectionGrid> reflows
+   * responsively and its content stays nicely inset from the stage
+   * edges — same behaviour designers see in real consuming projects. */
+  /* Center sections that are shorter than the viewport (e.g. a small
+   * banner or FAQ split) so they don't pin to the top of the stage when
+   * the marketplace iframes this route. Tall sections still flow/clip
+   * naturally — min-height anchors the shell. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .mr-render-loading {

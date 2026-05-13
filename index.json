@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-12T08:14:52.112Z",
+  "generated": "2026-05-12T20:41:54.557Z",
   "count": 11,
   "sections": [
     {
@@ -37,42 +37,6 @@
         "submittedAt": "2026-05-12"
       },
       "path": "sections/cta/banner-acme"
-    },
-    {
-      "id": "banner-acme",
-      "name": "Banner — Acme End-to-End Test",
-      "category": "cta",
-      "version": "0.0.1",
-      "track": "experimental",
-      "lifecycle": "Submitted",
-      "description": "A banner section created via the acme-test project to prove the end-to-end remote marketplace loop works. Bold colour band, single CTA.",
-      "dependencies": [
-        "@/components/section",
-        "@/components/section-grid"
-      ],
-      "motionDensity": [
-        "restrained"
-      ],
-      "responsive": {
-        "profile": "desktop / mobile-stacked"
-      },
-      "previews": {
-        "static": "preview.svg"
-      },
-      "tags": [
-        "test",
-        "remote-jump",
-        "acme"
-      ],
-      "created": "2026-05-12",
-      "updated": "2026-05-12",
-      "submittedBy": "mattthompson",
-      "attribution": {
-        "originalCreator": "mattthompson",
-        "originatingProject": "mr-acme-test",
-        "submittedAt": "2026-05-12"
-      },
-      "path": "sections/cta/banner-acme.mr-submit-backup-1778573691798"
     },
     {
       "id": "carousel-quote",
@@ -814,6 +778,42 @@
         "promotedAt": "2026-05-09"
       },
       "path": "sections/testimonials/testimonials-grid"
+    },
+    {
+      "id": "v2-proof",
+      "name": "V2 Proof — API-mode submit",
+      "category": "cta",
+      "version": "0.0.1",
+      "track": "experimental",
+      "lifecycle": "Submitted",
+      "description": "A section authored in mr-atlas and submitted via the V2 API. No local marketplace clone was harmed in the making of this section — the bundle was POSTed straight to the Vercel app which committed it to GitHub via Octokit.",
+      "dependencies": [
+        "@/components/section",
+        "@/components/section-grid"
+      ],
+      "motionDensity": [
+        "restrained"
+      ],
+      "responsive": {
+        "profile": "desktop / mobile-stacked"
+      },
+      "previews": {
+        "static": "preview.svg"
+      },
+      "tags": [
+        "v2",
+        "api-mode",
+        "test"
+      ],
+      "created": "2026-05-12",
+      "updated": "2026-05-12",
+      "submittedBy": "mattthompson",
+      "attribution": {
+        "originalCreator": "mattthompson",
+        "originatingProject": "mr-atlas",
+        "submittedAt": "2026-05-12"
+      },
+      "path": "sections/cta/v2-proof"
     }
   ]
 }
