@@ -1,7 +1,88 @@
 {
-  "generated": "2026-05-12T20:41:54.557Z",
-  "count": 11,
+  "generated": "2026-05-13T21:07:14.228Z",
+  "count": 13,
   "sections": [
+    {
+      "id": "awards-table",
+      "name": "Awards Table",
+      "category": "editorial",
+      "version": "0.0.1",
+      "track": "experimental",
+      "lifecycle": "Submitted",
+      "description": "Centred heading above a three-column table with hairline row dividers and a double-weight header border. Designed for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic treatment.",
+      "dependencies": [
+        "@/components/section",
+        "@/components/section-grid"
+      ],
+      "motionDensity": [
+        "restrained"
+      ],
+      "responsive": {
+        "profile": "desktop / mobile-stacked"
+      },
+      "previews": {
+        "static": "preview.png"
+      },
+      "tags": [
+        "table",
+        "awards",
+        "press",
+        "recognition",
+        "editorial",
+        "list"
+      ],
+      "created": "2026-05-12",
+      "updated": "2026-05-12",
+      "submittedBy": "mattthompson",
+      "attribution": {
+        "originalCreator": "mattthompson",
+        "originatingProject": "mr-atlas",
+        "submittedAt": "2026-05-12"
+      },
+      "curation": {
+        "intent": "Centred-heading + three-column tabular list for structured records such as awards or press features.",
+        "structuralPattern": "single-col heading above full-width 3-column table",
+        "structuralSlots": [
+          "h2",
+          "eyebrow",
+          "table-header",
+          "table-rows"
+        ],
+        "pageTypes": [
+          "about",
+          "case-study",
+          "landing",
+          "services"
+        ],
+        "tonalAffordances": [
+          "editorial",
+          "restrained",
+          "minimal",
+          "premium"
+        ],
+        "visualDensity": "airy",
+        "imageryDependence": "none",
+        "copyDensity": "tight",
+        "composition": {
+          "pairsAbove": [
+            "hero",
+            "intro",
+            "stats"
+          ],
+          "pairsBelow": [
+            "cta",
+            "footer",
+            "testimonials"
+          ],
+          "antiPairs": [
+            "carousel",
+            "gallery",
+            "image-marquee"
+          ]
+        }
+      },
+      "path": "sections/editorial/awards-table"
+    },
     {
       "id": "banner-acme",
       "name": "Banner — Acme End-to-End Test",
@@ -610,6 +691,114 @@
         "submittedAt": "2026-05-11"
       },
       "path": "sections/hero/hero-split-gallery"
+    },
+    {
+      "id": "parallax-image-columns",
+      "name": "Parallax Image Columns",
+      "category": "gallery",
+      "version": "0.0.1",
+      "track": "experimental",
+      "lifecycle": "Submitted",
+      "description": "Full-bleed scroll-driven gallery: four image columns each translating upward at distinct parallax rates, producing a layered depth effect. A centered scroll-cue band sits above the image field.",
+      "props": {
+        "eyebrow": {
+          "type": "string",
+          "default": "Scroll"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "columns": {
+          "type": "array",
+          "description": "Four columns of three images each. Caller-supplied columns replace defaults; missing columns fall back to seeded placeholders.",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "src": {
+                  "type": "string"
+                },
+                "alt": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dependencies": [
+        "@/components/section",
+        "gsap",
+        "gsap/ScrollTrigger",
+        "lenis"
+      ],
+      "motionDensity": [
+        "cinematic"
+      ],
+      "responsive": {
+        "profile": "desktop-rich / tablet-horizontal-scroll / mobile-compressed"
+      },
+      "previews": {
+        "static": "preview.png"
+      },
+      "tags": [
+        "parallax",
+        "scroll-driven",
+        "gallery",
+        "portrait",
+        "editorial",
+        "cinematic"
+      ],
+      "created": "2026-05-13",
+      "updated": "2026-05-13",
+      "submittedBy": "mattthompson",
+      "attribution": {
+        "originalCreator": "mattthompson",
+        "originatingProject": "mr-atlas",
+        "submittedAt": "2026-05-13"
+      },
+      "curation": {
+        "intent": "Scroll-driven parallax gallery with four independently translating image columns and a centered scroll-cue indicator above.",
+        "structuralPattern": "4-column vertical image grid with differential scroll-rate parallax per column",
+        "structuralSlots": [
+          "eyebrow",
+          "image-grid",
+          "caption"
+        ],
+        "pageTypes": [
+          "landing",
+          "about",
+          "team",
+          "case-study"
+        ],
+        "tonalAffordances": [
+          "editorial",
+          "premium",
+          "restrained",
+          "expressive"
+        ],
+        "visualDensity": "dense",
+        "imageryDependence": "required",
+        "copyDensity": "tight",
+        "composition": {
+          "pairsAbove": [
+            "hero",
+            "intro"
+          ],
+          "pairsBelow": [
+            "features",
+            "team",
+            "cta"
+          ],
+          "antiPairs": [
+            "forms",
+            "testimonials",
+            "stats"
+          ]
+        }
+      },
+      "path": "sections/gallery/parallax-image-columns"
     },
     {
       "id": "process-steps",

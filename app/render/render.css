@@ -27,6 +27,29 @@ html, body {
   color: var(--fg);
 }
 
+/* ─────────────────────────────────────────────────────────────
+ * Lenis smooth-scroll (canonical scroll runtime).
+ * The MotionProvider mounted in render/layout.tsx instantiates the
+ * singleton; these styles let it take over scrolling without fighting
+ * native behaviour.
+ * ───────────────────────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 .mr-render-shell {
   min-height: 100vh;
   background: var(--surface);

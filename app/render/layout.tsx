@@ -6,6 +6,11 @@
  * the section against the baseline tokens. The honest "what this layout
  * looks like, brand-stripped."
  *
+ * MotionProvider installs the canonical-stack runtime (GSAP defaults +
+ * Lenis singleton wired to the ScrollTrigger ticker) so sections feel the
+ * same here as they do in any client project (Atlas, demos). Without it,
+ * scroll-driven sections still scrub but lose Lenis's smoothing layer.
+ *
  * Scoped CSS imports here keep the design-system tokens OUT of the rest
  * of the marketplace app — `:root` in `tokens.css` would otherwise collide
  * with chrome variables. Next.js still flattens all imports into the
@@ -13,6 +18,7 @@
  * boundary in practice — only `/render/*` pages mount this layout.
  */
 
+import { MotionProvider } from "@/components/motion-provider";
 import "./render.css";
 
 export const metadata = {
@@ -20,5 +26,5 @@ export const metadata = {
 };
 
 export default function RenderLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <MotionProvider>{children}</MotionProvider>;
 }
