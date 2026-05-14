@@ -1,0 +1,37 @@
+{
+  "id": "cms-grid-section",
+  "name": "Cms Grid Section",
+  "category": "carousel",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Dark editorial property-listings carousel. Centred header with display headline and pill CTA above a landscape-card slider. Active card sits in the centre at full opacity; neighbours drift off the viewport edges at reduced opacity. Smooth translate transitions, infinite rotation through six listings.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "restrained"
+  ],
+  "responsive": {
+    "profile": "desktop / mobile-stacked"
+  },
+  "previews": {
+    "static": "preview.svg"
+  },
+  "tags": [
+    "carousel",
+    "property",
+    "real-estate",
+    "dark",
+    "editorial"
+  ],
+  "created": "2026-05-14",
+  "updated": "2026-05-14",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-monolith",
+    "submittedAt": "2026-05-14"
+  }
+}
