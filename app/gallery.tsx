@@ -28,12 +28,12 @@ import { useRouter } from "next/navigation";
 import type { Manifest } from "./marketplace-data";
 import {
   // Filter row icons
-  IconCategory, IconAnimation, IconTag, IconTrack, IconSort, IconLifecycle,
+  IconCategory, IconCollection, IconAnimation, IconTag, IconTrack, IconSort, IconLifecycle,
   // Shared types / helpers / presentational components
   type ManifestEntry, type Track, type Lifecycle,
   TRACKS, LIFECYCLES, getLifecycle, lifecycleLabel, capitalize,
   FilterPill, SectionCard,
-  ProjectSwitcher, PROJECTS,
+  CLIENTS,
 } from "@mr/section-library-ui";
 import { CANONICAL_CATEGORIES, CANONICAL_IDS } from "@mr/section-library-ui";
 
@@ -61,7 +61,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
   const [sort, setSort] = useState<Sort>("name-asc");
   const [curatorMode, setCuratorMode] = useState(false);
   const [density, setDensity] = useState<2 | 3 | 4>(3);
-  const [project, setProject] = useState<string>(PROJECTS[3]); // MakeReign
+  const [client, setClient] = useState<string>(ALL);
   const router = useRouter();
 
   // Pick up `?lifecycle=<state>` and `?mode=curate` from the URL.
@@ -138,6 +138,13 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
       // Applied to all consumers (visitor + curator) so archive feels like
       // archive, not "still mixed in but with a badge".
       if (lifecycle === ALL && (sLifecycle === "Archived" || sLifecycle === "Deprecated")) return false;
+      // Clients are stored as section tags — section matches a client when
+      // its tags include the client's name (case-insensitive match).
+      if (client !== ALL) {
+        const clientLower = client.toLowerCase();
+        const matched = (s.tags ?? []).some((t) => t.toLowerCase() === clientLower);
+        if (!matched) return false;
+      }
       if (category !== ALL) {
         if (category === "__other") {
           if ((CANONICAL_IDS as string[]).includes(s.category)) return false;
@@ -163,12 +170,23 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
       }
     });
     return list;
-  }, [sections, query, category, track, lifecycle, animation, tag, sort]);
+  }, [sections, query, client, category, track, lifecycle, animation, tag, sort]);
 
-  const filtersDirty = query !== "" || category !== ALL || track !== ALL || lifecycle !== ALL || animation !== ALL || tag !== ALL || sort !== "name-asc";
+  const filtersDirty = query !== "" || client !== ALL || category !== ALL || track !== ALL || lifecycle !== ALL || animation !== ALL || tag !== ALL || sort !== "name-asc";
+
+  /** Client filter options — counts how many sections are tagged with each
+   * canonical client. All four are always shown so the filter taxonomy
+   * stays stable even when no sections are tagged with a particular client. */
+  const clientOptions = useMemo(() => {
+    return CLIENTS.map((c) => {
+      const cLower = c.toLowerCase();
+      const count = sections.filter((s) => (s.tags ?? []).some((t) => t.toLowerCase() === cLower)).length;
+      return { id: c, label: c, count };
+    });
+  }, [sections]);
 
   function clearAll() {
-    setQuery(""); setCategory(ALL); setTrack(ALL); setLifecycle(ALL); setAnimation(ALL); setTag(ALL); setSort("name-asc");
+    setQuery(""); setClient(ALL); setCategory(ALL); setTrack(ALL); setLifecycle(ALL); setAnimation(ALL); setTag(ALL); setSort("name-asc");
   }
 
   // Card click handler — navigates to the full-page section detail route.
@@ -185,7 +203,6 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           <Link href="/" className="mr-mk-topbar__logo" aria-label="MakeReign Section Library">
             <span aria-hidden>M</span>
           </Link>
-          <ProjectSwitcher value={project} onChange={setProject} />
           {curatorMode ? (
             <nav className="mr-mk-topbar__tabs" aria-label="Curator">
               <Link
@@ -295,6 +312,17 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
       </header>
 
       <div className="mr-mk-filters">
+        <FilterPill
+          label="Clients"
+          icon={<IconCollection />}
+          value={client}
+          options={[
+            { id: ALL, label: "All clients", count: sections.length },
+            ...clientOptions,
+          ]}
+          onChange={setClient}
+        />
+
         <FilterPill
           label="Category"
           icon={<IconCategory />}

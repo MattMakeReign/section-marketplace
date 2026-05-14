@@ -203,81 +203,18 @@ export function Spec({ label, value }: { label: string; value: ReactNode }) {
 
 export { capitalize };
 
-/* ─────────────────────────── ProjectSwitcher ──────────────────────────── *
- * Workspace dropdown shown in both the standalone Section Library App and
- * the in-builder Preview Tool. Lets the designer switch which project's
- * library they're browsing.
- *
- * V1 scope: visual only. Selection lives in local state per surface. All
- * projects are seed/empty for now — no per-project data wiring yet.
- *
- * The canonical project list is exported as `PROJECTS` below so both
- * surfaces show the same options without duplication. */
+/* ─────────────────────────── Clients ──────────────────────────────────── *
+ * Canonical client list — sections are tagged with a client name (e.g.
+ * "Priority Pass") and the Clients filter pill in both the standalone App
+ * and the in-builder Preview Tool surfaces only the sections whose
+ * `tags` include the selected client. The list is the same in both
+ * surfaces so the filter behaviour stays in lockstep. */
 
-export const PROJECTS = [
+export const CLIENTS = [
   "Priority Pass",
   "Collinson TCG",
   "Virgin Active",
   "MakeReign",
 ] as const;
 
-export type ProjectName = (typeof PROJECTS)[number];
-
-export function ProjectSwitcher({
-  value,
-  onChange,
-  options = PROJECTS as readonly string[],
-}: {
-  value: string;
-  onChange: (project: string) => void;
-  options?: readonly string[];
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      if (!ref.current) return;
-      if (!ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
-    window.addEventListener("mousedown", onClick);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("mousedown", onClick);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
-
-  return (
-    <div ref={ref} className="mr-sl-projects">
-      <button
-        type="button"
-        className="mr-sl-projects__btn"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <span className="mr-sl-projects__name">{value}</span>
-        <IconChevronDown size={12} />
-      </button>
-      {open ? (
-        <div className="mr-sl-projects__pop" role="listbox">
-          {options.map((p) => (
-            <button
-              key={p}
-              type="button"
-              role="option"
-              aria-selected={value === p}
-              className={`mr-sl-projects__item${value === p ? " mr-sl-projects__item--active" : ""}`}
-              onClick={() => { onChange(p); setOpen(false); }}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-      ) : null}
-    </div>
-  );
-}
+export type ClientName = (typeof CLIENTS)[number];

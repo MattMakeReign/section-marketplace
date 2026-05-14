@@ -308,65 +308,6 @@
   gap: var(--chrome-space-5);
 }
 
-/* ── Projects (workspace switcher) ────────────────────────── */
-/* Pill button shown in the topbar's left cluster — between the logo and
- * the primary tabs. Click → popover with the available projects. */
-.mr-sl-projects {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-.mr-sl-projects__btn {
-  display: inline-flex; align-items: center;
-  gap: var(--chrome-space-2);
-  height: 32px;
-  padding: 0 12px;
-  background: var(--chrome-surface-muted);
-  border: 1px solid transparent;
-  border-radius: var(--chrome-radius-pill);
-  font-family: var(--chrome-font-body);
-  font-size: 13px;
-  color: var(--chrome-fg);
-  cursor: pointer;
-  transition: background 80ms ease, border-color 80ms ease;
-}
-.mr-sl-projects__btn:hover { background: var(--chrome-surface); border-color: var(--chrome-border); }
-.mr-sl-projects__btn[aria-expanded="true"] {
-  background: var(--chrome-surface);
-  border-color: var(--chrome-border-strong);
-}
-.mr-sl-projects__name {
-  font-weight: 500;
-  white-space: nowrap;
-}
-.mr-sl-projects__pop {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 30;
-  min-width: 200px;
-  background: var(--chrome-surface);
-  border: 1px solid var(--chrome-border);
-  border-radius: var(--chrome-radius-2);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  padding: var(--chrome-space-1);
-  display: flex; flex-direction: column; gap: 2px;
-}
-.mr-sl-projects__item {
-  display: flex; align-items: center;
-  padding: var(--chrome-space-2) var(--chrome-space-3);
-  border-radius: var(--chrome-radius-1);
-  font-family: var(--chrome-font-body);
-  font-size: 13px;
-  text-align: left;
-  width: 100%;
-  background: transparent;
-  border: 0;
-  color: inherit;
-  cursor: pointer;
-}
-.mr-sl-projects__item:hover { background: var(--chrome-surface-muted); }
-.mr-sl-projects__item--active { background: var(--chrome-surface-muted); font-weight: 500; }
 .mr-sl-topbar__tab {
   font-family: var(--chrome-font-body);
   font-size: 14px;
