@@ -28,13 +28,13 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 import {
   README_PROSE_SECTIONS,
+  isCanonicalCategory,
   type Curation,
   type ManifestEntry,
   type Manifest,
   type ProseSections,
   type ReadmeProseKey,
 } from "@mr/section-library-ui";
-import { isCanonicalCategory } from "@/lib/canonical-categories";
 
 type IndexJson = Manifest & { sections?: ManifestEntry[] };
 

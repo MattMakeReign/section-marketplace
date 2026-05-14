@@ -210,8 +210,11 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 2px var(--chrome-space-2);
-  border-radius: var(--chrome-radius-1);
+  padding: 3px var(--chrome-space-2);
+  /* Pill shape — "rounded poles". Matches the Section Library App badge
+   * geometry (and reads as the same family across surfaces regardless of
+   * which theme override is active). */
+  border-radius: var(--chrome-radius-pill);
   background: var(--chrome-surface-muted);
   font-family: var(--chrome-font-mono);
   font-size: 10px;
@@ -265,4 +268,279 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--chrome-space-2);
+}
+
+/* ── Top bar (logo · tabs · search · right cluster) ────────── */
+/* The Section Library App's primary chrome surface — and the in-builder
+ * Preview Tool's mirror of it. Mirrors `repos/section-marketplace/app/styles.css`
+ * mr-mk-topbar* rules so both surfaces look identical. */
+
+.mr-sl-topbar {
+  display: grid;
+  grid-template-columns: minmax(200px, auto) minmax(280px, 1fr) minmax(200px, auto);
+  align-items: center;
+  gap: var(--chrome-space-6);
+  padding: var(--chrome-space-3) var(--chrome-space-6);
+  background: var(--chrome-ground);
+  border-bottom: 1px solid var(--chrome-border);
+}
+
+.mr-sl-topbar__left {
+  display: flex; align-items: center;
+  gap: var(--chrome-space-5);
+  min-width: 0;
+}
+
+.mr-sl-topbar__logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--chrome-fg);
+  color: var(--chrome-fg-inverse);
+  border-radius: var(--chrome-radius-2);
+  font-family: var(--chrome-font-display);
+  font-weight: 600; font-size: 18px; line-height: 1;
+  flex-shrink: 0;
+  border: 0;
+}
+
+.mr-sl-topbar__tabs {
+  display: inline-flex; align-items: center;
+  gap: var(--chrome-space-5);
+}
+
+/* ── Projects (workspace switcher) ────────────────────────── */
+/* Pill button shown in the topbar's left cluster — between the logo and
+ * the primary tabs. Click → popover with the available projects. */
+.mr-sl-projects {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.mr-sl-projects__btn {
+  display: inline-flex; align-items: center;
+  gap: var(--chrome-space-2);
+  height: 32px;
+  padding: 0 12px;
+  background: var(--chrome-surface-muted);
+  border: 1px solid transparent;
+  border-radius: var(--chrome-radius-pill);
+  font-family: var(--chrome-font-body);
+  font-size: 13px;
+  color: var(--chrome-fg);
+  cursor: pointer;
+  transition: background 80ms ease, border-color 80ms ease;
+}
+.mr-sl-projects__btn:hover { background: var(--chrome-surface); border-color: var(--chrome-border); }
+.mr-sl-projects__btn[aria-expanded="true"] {
+  background: var(--chrome-surface);
+  border-color: var(--chrome-border-strong);
+}
+.mr-sl-projects__name {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.mr-sl-projects__pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 200px;
+  background: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  padding: var(--chrome-space-1);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.mr-sl-projects__item {
+  display: flex; align-items: center;
+  padding: var(--chrome-space-2) var(--chrome-space-3);
+  border-radius: var(--chrome-radius-1);
+  font-family: var(--chrome-font-body);
+  font-size: 13px;
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+.mr-sl-projects__item:hover { background: var(--chrome-surface-muted); }
+.mr-sl-projects__item--active { background: var(--chrome-surface-muted); font-weight: 500; }
+.mr-sl-topbar__tab {
+  font-family: var(--chrome-font-body);
+  font-size: 14px;
+  color: var(--chrome-fg);
+  white-space: nowrap;
+  padding: 4px 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+.mr-sl-topbar__tab--muted { color: var(--chrome-fg-subtle); cursor: not-allowed; position: relative; }
+.mr-sl-topbar__tab--active { font-weight: 500; }
+/* Coming-soon tooltip on disabled tabs — CSS-only. */
+.mr-sl-topbar__tab[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, -4px);
+  background: var(--chrome-fg);
+  color: var(--chrome-fg-inverse);
+  font-family: var(--chrome-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  border-radius: var(--chrome-radius-1);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 100ms ease, transform 100ms ease;
+  z-index: 30;
+}
+.mr-sl-topbar__tab[data-tooltip]:hover::after { opacity: 1; transform: translate(-50%, 0); }
+
+.mr-sl-topbar__search-wrap {
+  display: flex; justify-content: center;
+  min-width: 0;
+}
+.mr-sl-topbar__search {
+  display: inline-flex; align-items: center;
+  gap: var(--chrome-space-2);
+  width: 100%;
+  max-width: 560px;
+  height: 40px;
+  padding: 0 var(--chrome-space-4);
+  background: var(--chrome-surface-muted);
+  border: 1px solid transparent;
+  border-radius: var(--chrome-radius-pill);
+  color: var(--chrome-fg-muted);
+  transition: border-color 80ms ease, background 80ms ease;
+}
+.mr-sl-topbar__search:focus-within {
+  background: var(--chrome-surface);
+  border-color: var(--chrome-border-strong);
+  color: var(--chrome-fg);
+}
+.mr-sl-topbar__search-icon { display: inline-flex; flex-shrink: 0; }
+.mr-sl-topbar__search input {
+  flex: 1;
+  min-width: 0;
+  border: 0; background: transparent; outline: none;
+  font: inherit;
+  color: var(--chrome-fg);
+}
+.mr-sl-topbar__search input::placeholder { color: var(--chrome-fg-muted); }
+.mr-sl-topbar__search input::-webkit-search-cancel-button,
+.mr-sl-topbar__search input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+
+.mr-sl-topbar__right {
+  display: flex; align-items: center;
+  gap: var(--chrome-space-2);
+  justify-content: flex-end;
+}
+.mr-sl-topbar__icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: var(--chrome-radius-pill);
+  color: var(--chrome-fg-muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background 80ms ease, color 80ms ease;
+}
+.mr-sl-topbar__icon-btn:hover { background: var(--chrome-surface-muted); color: var(--chrome-fg); }
+.mr-sl-topbar__icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.mr-sl-topbar__icon-btn:disabled:hover { background: transparent; color: var(--chrome-fg-muted); }
+.mr-sl-topbar__avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--chrome-fg);
+  color: var(--chrome-fg-inverse);
+  font-family: var(--chrome-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 0;
+  transition: transform 80ms ease;
+}
+.mr-sl-topbar__avatar:hover { transform: scale(1.05); }
+
+/* ── Filter row (FilterPills + density toggle) ─────────────── */
+
+.mr-sl-filters {
+  background: var(--chrome-ground);
+  border-bottom: 1px solid var(--chrome-border);
+  padding: var(--chrome-space-3) var(--chrome-space-6);
+  display: flex; align-items: center; gap: var(--chrome-space-3);
+  flex-wrap: wrap;
+}
+.mr-sl-filters__spacer { flex: 1; }
+
+/* ── Grid + density toggle ─────────────────────────────────── */
+
+.mr-sl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: var(--chrome-space-6);
+  padding: var(--chrome-space-8);
+}
+.mr-sl-grid[data-density="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mr-sl-grid[data-density="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mr-sl-grid[data-density="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1100px) {
+  .mr-sl-grid[data-density="4"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 820px) {
+  .mr-sl-grid[data-density],
+  .mr-sl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 540px) {
+  .mr-sl-grid[data-density],
+  .mr-sl-grid { grid-template-columns: 1fr; }
+}
+
+/* Density-aware card radius — at higher densities the cards are physically
+ * smaller, so the same 16px radius reads as disproportionately rounded.
+ * Re-tune the radius (and the gap) per density. The card window radius is
+ * derived (`calc(var(--chrome-radius-card) - var(--chrome-space-2))`) so it
+ * follows automatically. */
+.mr-sl-grid[data-density="3"] .mr-sl-card { --chrome-radius-card: 12px; }
+.mr-sl-grid[data-density="3"] { gap: var(--chrome-space-5); }
+.mr-sl-grid[data-density="4"] .mr-sl-card { --chrome-radius-card: 10px; }
+.mr-sl-grid[data-density="4"] { gap: var(--chrome-space-4); }
+
+.mr-sl-density {
+  display: inline-flex; align-items: center;
+  background: var(--chrome-surface-muted);
+  border-radius: var(--chrome-radius-pill);
+  padding: 3px;
+  gap: 0;
+}
+.mr-sl-density__btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: var(--chrome-radius-pill);
+  color: var(--chrome-fg-muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background 80ms ease, color 80ms ease;
+}
+.mr-sl-density__btn:hover { color: var(--chrome-fg); }
+.mr-sl-density__btn--active {
+  background: var(--chrome-surface);
+  color: var(--chrome-fg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.mr-sl-empty {
+  padding: var(--chrome-space-20) var(--chrome-space-8);
+  text-align: center;
+  color: var(--chrome-fg-muted);
 }

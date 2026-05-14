@@ -33,8 +33,9 @@ import {
   type ManifestEntry, type Track, type Lifecycle,
   TRACKS, LIFECYCLES, getLifecycle, lifecycleLabel, capitalize,
   FilterPill, SectionCard,
+  ProjectSwitcher, PROJECTS,
 } from "@mr/section-library-ui";
-import { CANONICAL_CATEGORIES, CANONICAL_IDS } from "@/lib/canonical-categories";
+import { CANONICAL_CATEGORIES, CANONICAL_IDS } from "@mr/section-library-ui";
 
 const ALL = "all";
 type Sort = "name-asc" | "category" | "track" | "newest";
@@ -60,6 +61,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
   const [sort, setSort] = useState<Sort>("name-asc");
   const [curatorMode, setCuratorMode] = useState(false);
   const [density, setDensity] = useState<2 | 3 | 4>(3);
+  const [project, setProject] = useState<string>(PROJECTS[3]); // MakeReign
   const router = useRouter();
 
   // Pick up `?lifecycle=<state>` and `?mode=curate` from the URL.
@@ -76,7 +78,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
 
   // Derived filter option lists.
   //
-  // Categories are the **canonical 16** (see `lib/canonical-categories.ts`).
+  // Categories are the **canonical 16** (see `@mr/section-library-ui/canonical-categories`).
   // Order is fixed — page sections first in editorial reading order, then the
   // two persistence sections (Navigation, Footer). Counts include 0-buckets so
   // the taxonomy stays stable as the catalogue fills out.
@@ -183,6 +185,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           <Link href="/" className="mr-mk-topbar__logo" aria-label="MakeReign Section Library">
             <span aria-hidden>M</span>
           </Link>
+          <ProjectSwitcher value={project} onChange={setProject} />
           {curatorMode ? (
             <nav className="mr-mk-topbar__tabs" aria-label="Curator">
               <Link

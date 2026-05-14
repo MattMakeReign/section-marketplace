@@ -30,12 +30,10 @@ import {
   type ManifestEntry,
   type ProseSections,
   type ReadmeProseKey,
-} from "@mr/section-library-ui";
-import {
   CANONICAL_CATEGORIES,
   isCanonicalCategory,
   suggestCanonical,
-} from "@/lib/canonical-categories";
+} from "@mr/section-library-ui";
 
 /* ─────────────────────────── Chip controls ─────────────────────────── */
 

@@ -19,3 +19,4 @@ export * from "./components";
 export * from "./icons";
 export * from "./lifecycle-transitions";
 export * from "./curation-vocab";
+export * from "./canonical-categories";
