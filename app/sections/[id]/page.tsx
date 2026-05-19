@@ -8,22 +8,14 @@
  */
 
 import { notFound } from "next/navigation";
-import { loadManifest } from "../../marketplace-data";
+import { loadManifest, loadBrandContexts } from "../../marketplace-data";
 import { Detail } from "./detail";
 
-type SearchParams = Promise<{ mode?: string }>;
 type RouteParams = Promise<{ id: string }>;
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: RouteParams;
-  searchParams: SearchParams;
-}) {
+export default async function Page({ params }: { params: RouteParams }) {
   const { id } = await params;
-  const { mode } = await searchParams;
-  const manifest = await loadManifest();
+  const [manifest, contexts] = await Promise.all([loadManifest(), loadBrandContexts()]);
   const section = manifest.sections.find((s) => s.id === id);
   if (!section) notFound();
 
@@ -37,7 +29,7 @@ export default async function Page({
     <Detail
       section={section}
       order={order}
-      curatorMode={mode === "curate"}
+      brandContexts={contexts.contexts}
     />
   );
 }

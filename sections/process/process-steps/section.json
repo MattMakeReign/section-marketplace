@@ -34,8 +34,8 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "minimal",
-    "restrained"
+    "static",
+    "low"
   ],
   "responsive": {
     "profile": "desktop-4up row / mobile-stacked"

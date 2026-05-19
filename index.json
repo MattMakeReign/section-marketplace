@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-13T21:07:14.228Z",
+  "generated": "2026-05-19T07:34:20.912Z",
   "count": 13,
   "sections": [
     {
@@ -15,7 +15,7 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained"
+        "low"
       ],
       "responsive": {
         "profile": "desktop / mobile-stacked"
@@ -96,7 +96,7 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained"
+        "low"
       ],
       "responsive": {
         "profile": "desktop / mobile-stacked"
@@ -151,9 +151,9 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "minimal",
-        "restrained",
-        "cinematic"
+        "static",
+        "low",
+        "medium"
       ],
       "responsive": {
         "profile": "horizontal-scroll-snap at all widths",
@@ -197,7 +197,7 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained"
+        "low"
       ],
       "responsive": {
         "profile": "desktop / mobile-stacked"
@@ -207,7 +207,7 @@
       },
       "tags": [],
       "created": "2026-05-11",
-      "updated": "2026-05-11",
+      "updated": "2026-05-19",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
@@ -301,7 +301,7 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained"
+        "low"
       ],
       "responsive": {
         "profile": "desktop-2col split (5/7 grid); mobile single-column stacked, left card above accordion"
@@ -421,8 +421,8 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained",
-        "cinematic"
+        "low",
+        "medium"
       ],
       "responsive": {
         "profile": "horizontal-scroll-snap with breakpoint-aware card widths",
@@ -499,8 +499,8 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained",
-        "energetic"
+        "low",
+        "high"
       ],
       "responsive": {
         "profile": "edge-to-edge marquee / mobile-shrink",
@@ -578,8 +578,8 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "minimal",
-        "restrained"
+        "static",
+        "low"
       ],
       "responsive": {
         "profile": "desktop-cinematic / mobile-stacked",
@@ -602,6 +602,7 @@
       "created": "2026-05-09",
       "updated": "2026-05-11",
       "submittedBy": "techo",
+      "context": null,
       "attribution": {
         "originalCreator": "techo",
         "originatingProject": "starter-pack",
@@ -660,8 +661,8 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained",
-        "cinematic"
+        "low",
+        "medium"
       ],
       "responsive": {
         "profile": "desktop-split / mobile-stacked",
@@ -734,7 +735,7 @@
         "lenis"
       ],
       "motionDensity": [
-        "cinematic"
+        "medium"
       ],
       "responsive": {
         "profile": "desktop-rich / tablet-horizontal-scroll / mobile-compressed"
@@ -836,8 +837,8 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "minimal",
-        "restrained"
+        "static",
+        "low"
       ],
       "responsive": {
         "profile": "desktop-4up row / mobile-stacked"
@@ -937,8 +938,8 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "minimal",
-        "restrained"
+        "static",
+        "low"
       ],
       "responsive": {
         "profile": "1 col mobile / 3 col desktop",
@@ -981,7 +982,7 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "restrained"
+        "low"
       ],
       "responsive": {
         "profile": "desktop / mobile-stacked"

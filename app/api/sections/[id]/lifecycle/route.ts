@@ -2,22 +2,22 @@
  * POST /api/sections/[id]/lifecycle
  *
  * Curator-only endpoint that walks a section through its lifecycle states.
- * Writes the new state to the section's own `section.json` AND patches the
- * marketplace `index.json` in-place so the Library App reflects the move on
- * the next request without needing a full `pnpm build`.
+ * Updates the section's own `section.json` and commits the change via
+ * Octokit. The Vercel rebuild that follows regenerates `index.json` from
+ * every section.json on disk, so the move becomes visible ~30s later.
  *
  * The state machine lives in `@mr/section-library-ui/lifecycle-transitions` —
  * server-side validation rejects transitions the machine doesn't allow, so a
  * hand-rolled request can't write an arbitrary lifecycle value.
  *
- * No auth in v1 — this is local-dev curation only. When the Library App goes
- * remote a real auth gate slots in front of this handler.
+ * No auth in V2 — team-only model. A future task adds GitHub OAuth on the
+ * client side when the marketplace opens up beyond the team.
  *
  * Request body: { to: Lifecycle, note?: string }
- * Response:     { ok: true, section: ManifestEntry } | { ok: false, error, code }
+ * Response:     { ok: true, section, commit } | { ok: false, error, code }
  */
 
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import {
@@ -28,6 +28,9 @@ import {
   type ManifestEntry,
   type Manifest,
 } from "@mr/section-library-ui";
+import { commitFiles, type FileEntry } from "@/lib/github-commit";
+
+export const dynamic = "force-dynamic";
 
 type IndexJson = Manifest & { sections?: ManifestEntry[] };
 
@@ -50,19 +53,23 @@ export async function POST(
   try {
     body = (await req.json()) as { to?: unknown };
   } catch {
-    return NextResponse.json({ ok: false, error: "invalid JSON body", code: "invalid_args" }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, error: "invalid JSON body", code: "invalid_args" },
+      { status: 400 },
+    );
   }
 
   if (!isLifecycle(body.to)) {
     return NextResponse.json(
-      { ok: false, error: `\"to\" must be one of: ${LIFECYCLES.join(", ")}`, code: "invalid_args" },
+      { ok: false, error: `"to" must be one of: ${LIFECYCLES.join(", ")}`, code: "invalid_args" },
       { status: 400 },
     );
   }
   const target: Lifecycle = body.to;
 
-  // Read the marketplace index to find the section's on-disk path. cwd is
-  // the marketplace repo root (the Next app is rooted there).
+  // Read the bundled marketplace index to find the section's on-disk path.
+  // The Vercel deployment ships the whole repo as read-only; cwd is the
+  // marketplace root. Writes happen via Octokit further down.
   const root = process.cwd();
   const indexPath = path.join(root, "index.json");
   let index: IndexJson;
@@ -98,11 +105,15 @@ export async function POST(
     );
   }
 
-  // Update the section's own section.json.
-  const sectionJsonPath = path.join(root, entry.path, "section.json");
+  // Load the current section.json from disk (read-only), apply the update,
+  // and commit the new contents via Octokit. The next Vercel build
+  // regenerates index.json from this section.json — no separate index commit
+  // is necessary.
+  const sectionJsonRepoPath = `${entry.path}/section.json`;
+  const sectionJsonAbsPath = path.join(root, sectionJsonRepoPath);
   let sectionManifest: ManifestEntry & Record<string, unknown>;
   try {
-    sectionManifest = JSON.parse(await readFile(sectionJsonPath, "utf8")) as ManifestEntry &
+    sectionManifest = JSON.parse(await readFile(sectionJsonAbsPath, "utf8")) as ManifestEntry &
       Record<string, unknown>;
   } catch (e) {
     return NextResponse.json(
@@ -128,24 +139,30 @@ export async function POST(
     }
   }
 
+  const file: FileEntry = {
+    path: sectionJsonRepoPath,
+    encoding: "utf8",
+    content: JSON.stringify(sectionManifest, null, 2) + "\n",
+  };
+
   try {
-    await writeFile(sectionJsonPath, JSON.stringify(sectionManifest, null, 2) + "\n", "utf8");
-  } catch (e) {
+    const result = await commitFiles({
+      files: [file],
+      message: `Lifecycle ${id}: ${current} → ${target}`,
+      authorName: "MakeReign Marketplace",
+      authorEmail: "marketplace@makereign.com",
+    });
+    return NextResponse.json({
+      ok: true,
+      section: { ...entry, lifecycle: target, updated: today },
+      commit: { sha: result.commitSha, url: result.commitUrl, branch: result.branch },
+    });
+  } catch (err: unknown) {
+    const msg = (err as Error).message ?? String(err);
+    const status = msg.includes("GITHUB_TOKEN") ? 500 : 502;
     return NextResponse.json(
-      { ok: false, error: `could not write section.json: ${(e as Error).message}`, code: "write_failed" },
-      { status: 500 },
+      { ok: false, code: "commit_failed", error: msg },
+      { status },
     );
   }
-
-  // Patch the index entry in place so the Library App reflects the move on
-  // the next request. Same pattern `updateSectionPreview` uses for previews.
-  entry.lifecycle = target;
-  entry.updated = today;
-  if (target === "Promoted" && sectionManifest.attribution) {
-    entry.attribution = sectionManifest.attribution as ManifestEntry["attribution"];
-  }
-  index.generated = new Date().toISOString();
-  await writeFile(indexPath, JSON.stringify(index, null, 2) + "\n", "utf8");
-
-  return NextResponse.json({ ok: true, section: entry });
 }

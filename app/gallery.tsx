@@ -22,10 +22,10 @@
  *   - Spec strip + install command (bottom)
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Manifest } from "./marketplace-data";
+import { TopBar } from "./topbar";
 import {
   // Filter row icons
   IconCategory, IconCollection, IconAnimation, IconTag, IconTrack, IconSort, IconLifecycle,
@@ -59,21 +59,17 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
   const [animation, setAnimation] = useState<string>(ALL);
   const [tag, setTag] = useState<string>(ALL);
   const [sort, setSort] = useState<Sort>("name-asc");
-  const [curatorMode, setCuratorMode] = useState(false);
   const [density, setDensity] = useState<2 | 3 | 4>(3);
   const [client, setClient] = useState<string>(ALL);
   const router = useRouter();
 
-  // Pick up `?lifecycle=<state>` and `?mode=curate` from the URL.
-  //  - `?lifecycle=…` deep-links from elsewhere (e.g. the Submit-for-curation
-  //    toast in the Browser Workspace) land on the right filtered view.
-  //  - `?mode=curate` unlocks the curator action bar in the detail modal.
+  // `?lifecycle=<state>` deep-links from elsewhere (e.g. the Submit-for-curation
+  // toast in the Browser Workspace) land on the right filtered view.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const l = params.get("lifecycle");
     if (l && LIFECYCLES.includes(l as Lifecycle)) setLifecycle(l);
-    if (params.get("mode") === "curate") setCuratorMode(true);
   }, []);
 
   // Derived filter option lists.
@@ -190,128 +186,18 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
   }
 
   // Card click handler — navigates to the full-page section detail route.
-  // Curator mode is preserved through the query string.
   const openSection = (id: string) => {
-    const qs = curatorMode ? "?mode=curate" : "";
-    router.push(`/sections/${id}${qs}`);
+    router.push(`/sections/${id}`);
   };
 
   return (
     <>
-      <header className="mr-mk-topbar">
-        <div className="mr-mk-topbar__left">
-          <Link href="/" className="mr-mk-topbar__logo" aria-label="MakeReign Section Library">
-            <span aria-hidden>M</span>
-          </Link>
-          {curatorMode ? (
-            <nav className="mr-mk-topbar__tabs" aria-label="Curator">
-              <Link
-                href="/?mode=curate"
-                className="mr-mk-topbar__tab mr-mk-topbar__tab--active"
-              >
-                Catalogue
-              </Link>
-              <Link href="/review?mode=curate" className="mr-mk-topbar__tab">
-                Review queue
-              </Link>
-            </nav>
-          ) : (
-            <nav className="mr-mk-topbar__tabs" aria-label="Primary">
-              <span
-                className="mr-mk-topbar__tab mr-mk-topbar__tab--muted"
-                aria-disabled
-                data-tooltip="Coming soon"
-              >
-                Pages
-              </span>
-              <span className="mr-mk-topbar__tab mr-mk-topbar__tab--active">
-                Sections
-              </span>
-              <span
-                className="mr-mk-topbar__tab mr-mk-topbar__tab--muted"
-                aria-disabled
-                data-tooltip="Coming soon"
-              >
-                Components
-              </span>
-            </nav>
-          )}
-        </div>
+      <TopBar
+        sections={sections}
+        search={{ value: query, onChange: setQuery }}
+      />
 
-        <div className="mr-mk-topbar__search-wrap">
-          <label className="mr-mk-topbar__search">
-            <span className="mr-mk-topbar__search-icon" aria-hidden>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M11 11l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </span>
-            <input
-              type="search"
-              placeholder="Search sections…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search marketplace"
-            />
-          </label>
-        </div>
-
-        <div className="mr-mk-topbar__right">
-          <button
-            type="button"
-            className="mr-mk-topbar__icon-btn"
-            aria-label="Bookmarks"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path
-                d="M4.5 3.5h9v11l-4.5-3-4.5 3v-11z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            type="button"
-            className="mr-mk-topbar__icon-btn"
-            aria-label="Help"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="9" r="6.75" stroke="currentColor" strokeWidth="1.5" />
-              <path
-                d="M7.25 7.25a1.75 1.75 0 113.05 1.17c-.4.42-1.3.86-1.3 1.7"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <circle cx="9" cy="12.75" r="0.6" fill="currentColor" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            className="mr-mk-topbar__icon-btn"
-            aria-label="Notifications"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path
-                d="M4.5 12.5h9l-1-1.5V8a3.5 3.5 0 10-7 0v3l-1 1.5z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M7.5 14a1.5 1.5 0 003 0"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-          <ProfileMenu sections={sections.length} curatorMode={curatorMode} />
-        </div>
-      </header>
-
-      <div className="mr-mk-filters">
+      <div className="mr-sl-filters">
         <FilterPill
           label="Clients"
           icon={<IconCollection />}
@@ -363,10 +249,10 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           onChange={setTag}
         />
 
-        <div className="mr-mk-filters__spacer" />
+        <div className="mr-sl-filters__spacer" />
 
         <div
-          className="mr-mk-density"
+          className="mr-sl-density"
           role="radiogroup"
           aria-label="Grid density"
         >
@@ -377,7 +263,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
               role="radio"
               aria-checked={density === n}
               aria-label={`${n}-column grid`}
-              className={`mr-mk-density__btn${density === n ? " mr-mk-density__btn--active" : ""}`}
+              className={`mr-sl-density__btn${density === n ? " mr-sl-density__btn--active" : ""}`}
               onClick={() => setDensity(n as 2 | 3 | 4)}
             >
               <DensityIcon cols={n as 2 | 3 | 4} />
@@ -388,7 +274,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="mr-mk-empty">
+        <div className="mr-sl-empty">
           {lifecycle !== ALL && category === ALL && track === ALL && animation === ALL && tag === ALL && query === "" ? (
             <p>
               No sections currently in <strong>{lifecycleLabel(lifecycle as Lifecycle)}</strong>.
@@ -401,7 +287,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           )}
         </div>
       ) : (
-        <div className="mr-mk-grid" data-density={density}>
+        <div className="mr-sl-grid" data-density={density}>
           {filtered.map((s) => (
             <SectionCard
               key={s.id}
@@ -414,173 +300,6 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
       )}
 
     </>
-  );
-}
-
-/* ─────────────────────────── ProfileMenu ─────────────────────────── */
-/**
- * Avatar in the top bar + click-to-open dropdown. Functional surface for the
- * theme switcher (light / dark / system). Everything else is a visual stub —
- * View profile / Workspace / Request content / Give feedback / Settings / Log out
- * all render as inert rows so the auth-bound work can land later without
- * reshaping the menu.
- *
- * Avatar renders as an empty dark circle for now. When auth lands it shows a
- * profile photo (or initials as a fallback).
- */
-type ThemeChoice = "light" | "dark" | "system";
-// (The "light" theme IS the Mobbin-derived achromatic look. The token
-// override block in styles.css is keyed to `data-theme="light"` so the
-// iframe at /render/<id> also inherits it — which prevents the design-
-// system's dark @media block from over-specificity-winning when the OS
-// is in dark mode. Documented gotcha in MEMORY.md.)
-
-function useTheme(): [ThemeChoice, (t: ThemeChoice) => void] {
-  const [choice, setChoice] = useState<ThemeChoice>("light");
-
-  // Read persisted choice once, on mount. SSR-safe.
-  useEffect(() => {
-    const stored = (typeof window !== "undefined" ? window.localStorage.getItem("mr-mk-theme") : null) as ThemeChoice | null;
-    if (stored === "light" || stored === "dark" || stored === "system") setChoice(stored);
-  }, []);
-
-  // Apply the effective theme to <html data-theme>. For "system" we follow
-  // prefers-color-scheme and update live when the OS flips.
-  useEffect(() => {
-    const root = document.documentElement;
-    window.localStorage.setItem("mr-mk-theme", choice);
-
-    if (choice !== "system") {
-      root.dataset.theme = choice;
-      return;
-    }
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const apply = () => { root.dataset.theme = mq.matches ? "dark" : "light"; };
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, [choice]);
-
-  return [choice, setChoice];
-}
-
-function ProfileMenu({ sections, curatorMode }: { sections: number; curatorMode: boolean }) {
-  const [open, setOpen] = useState(false);
-  const [theme, setTheme] = useTheme();
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  // Click-outside + Escape close.
-  useEffect(() => {
-    if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      if (!ref.current) return;
-      if (!ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
-    window.addEventListener("mousedown", onClick);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("mousedown", onClick);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
-
-  return (
-    <div className="mr-mk-profile" ref={ref}>
-      <button
-        type="button"
-        className="mr-mk-topbar__avatar"
-        aria-label="Account"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        title={`${sections} sections${curatorMode ? " · Curator mode" : ""}`}
-        onClick={() => setOpen((o) => !o)}
-      />
-
-      {open ? (
-        <div className="mr-mk-profile-menu" role="menu">
-          <div className="mr-mk-profile-menu__header">
-            <span className="mr-mk-profile-menu__badge">ADMIN</span>
-            <div className="mr-mk-profile-menu__name">Matt Thompson</div>
-            <div className="mr-mk-profile-menu__email">matt@makereign.com</div>
-            <button type="button" className="mr-mk-profile-menu__view">View profile</button>
-          </div>
-
-          <hr className="mr-mk-profile-menu__divider" />
-
-          <button type="button" className="mr-mk-profile-menu__item">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M8 5v6M5 8h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            Request content
-          </button>
-          <button type="button" className="mr-mk-profile-menu__item">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-              <path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5H2.5v-7z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-            </svg>
-            Give feedback
-          </button>
-          <button type="button" className="mr-mk-profile-menu__item">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-              <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M8 1.5v2M8 12.5v2M3.5 8h-2M14.5 8h-2M4.5 4.5l-1.5-1.5M13 13l-1.5-1.5M4.5 11.5L3 13M13 3l-1.5 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            Settings
-          </button>
-
-          <hr className="mr-mk-profile-menu__divider" />
-
-          <div className="mr-mk-profile-menu__theme-row">
-            <span className="mr-mk-profile-menu__theme-label">Theme</span>
-            <div className="mr-mk-profile-menu__theme-toggle" role="radiogroup" aria-label="Theme">
-              <button
-                type="button"
-                role="radio"
-                aria-checked={theme === "light"}
-                aria-label="Light"
-                className={`mr-mk-profile-menu__theme-btn${theme === "light" ? " mr-mk-profile-menu__theme-btn--active" : ""}`}
-                onClick={() => setTheme("light")}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                  <circle cx="7" cy="7" r="2.5" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1.1 1.1M10.4 10.4l1.1 1.1M2.5 11.5l1.1-1.1M10.4 3.6l1.1-1.1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={theme === "dark"}
-                aria-label="Dark"
-                className={`mr-mk-profile-menu__theme-btn${theme === "dark" ? " mr-mk-profile-menu__theme-btn--active" : ""}`}
-                onClick={() => setTheme("dark")}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                  <path d="M11.5 8.5a4.5 4.5 0 11-6-6 4.5 4.5 0 006 6z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={theme === "system"}
-                aria-label="System"
-                className={`mr-mk-profile-menu__theme-btn${theme === "system" ? " mr-mk-profile-menu__theme-btn--active" : ""}`}
-                onClick={() => setTheme("system")}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                  <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M7 1.75v10.5a5.25 5.25 0 000-10.5z" fill="currentColor" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <hr className="mr-mk-profile-menu__divider" />
-
-          <button type="button" className="mr-mk-profile-menu__item">Log out</button>
-        </div>
-      ) : null}
-    </div>
   );
 }
 

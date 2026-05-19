@@ -11,7 +11,7 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "restrained"
+    "low"
   ],
   "responsive": {
     "profile": "desktop / mobile-stacked"
@@ -21,7 +21,7 @@
   },
   "tags": [],
   "created": "2026-05-11",
-  "updated": "2026-05-11",
+  "updated": "2026-05-19",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",

@@ -30,6 +30,7 @@ import {
   type Track,
   type Transition,
 } from "@mr/section-library-ui";
+import type { BrandContextEntry } from "../../marketplace-data";
 
 type Viewport = "desktop" | "tablet" | "mobile";
 const DEVICE_WIDTH: Record<Viewport, number> = {
@@ -37,6 +38,24 @@ const DEVICE_WIDTH: Record<Viewport, number> = {
   tablet: 768,
   mobile: 390,
 };
+
+/**
+ * Resolve a `section.json.context` reference (e.g. "acme-2025" or
+ * "acme-2025@1.0.0") into a display label by matching against the
+ * `brand-contexts/index.json` list. Returns null for null/empty/_neutral
+ * (no badge rendered).
+ */
+function resolveSectionContext(
+  ref: string | null,
+  contexts: BrandContextEntry[],
+): { id: string; label: string; pinned: string | null } | null {
+  if (!ref || ref === "_neutral") return null;
+  const at = ref.indexOf("@");
+  const id = at === -1 ? ref : ref.slice(0, at);
+  const pinned = at === -1 ? null : ref.slice(at + 1);
+  const meta = contexts.find((c) => c.id === id);
+  return { id, label: meta?.name ?? id, pinned };
+}
 
 /**
  * useSlide — drives an element's inline styles via Web Animations API
@@ -100,26 +119,26 @@ function useSlide<T extends HTMLElement>(
 export function Detail({
   section,
   order,
-  curatorMode,
+  brandContexts,
 }: {
   section: ManifestEntry;
   order: string[];
-  curatorMode: boolean;
+  brandContexts: BrandContextEntry[];
 }) {
   const router = useRouter();
 
-  // Single-panel state — only one drawer open at a time. Both drawers
-  // slide in from the left; toggling one closes the other.
-  //
-  // State is mirrored in the URL (`?panel=info|install`) so that prev/
-  // next navigation between detail pages preserves the open drawer,
-  // but arriving fresh from the listing page (where the link has no
-  // panel param) defaults to full-screen.
+  // Drawer state — info (left) + install (right) share the same slot,
+  // mutually exclusive. Default open with info so curator info is visible
+  // without a click; toolbar buttons toggle from there.
   type Panel = "info" | "install" | null;
   const searchParams = useSearchParams();
   const urlPanel = searchParams?.get("panel");
   const initialPanel: Panel =
-    urlPanel === "info" || urlPanel === "install" ? urlPanel : null;
+    urlPanel === "info" || urlPanel === "install"
+      ? urlPanel
+      : urlPanel === "closed"
+        ? null
+        : "info";
   const [panel, setPanel] = useState<Panel>(initialPanel);
   const togglePanel = (p: Exclude<Panel, null>) =>
     setPanel((cur) => (cur === p ? null : p));
@@ -138,13 +157,14 @@ export function Detail({
   const prevId = idx > 0 ? order[idx - 1] : null;
   const nextId = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
   const goTo = (id: string) => {
-    // Carry the open drawer across prev/next navigation so the user's
-    // current layout persists. Curator mode also rides along.
+    // Carry the panel state across prev/next navigation so the user's
+    // current layout persists — explicitly including the "closed"
+    // state, otherwise omitting the param falls through to the
+    // default-open behaviour and the drawer pops back open on every
+    // arrow press.
     const params = new URLSearchParams();
-    if (curatorMode) params.set("mode", "curate");
-    if (panel) params.set("panel", panel);
-    const qs = params.toString();
-    router.push(`/sections/${id}${qs ? `?${qs}` : ""}`);
+    params.set("panel", panel ?? "closed");
+    router.push(`/sections/${id}?${params.toString()}`);
   };
 
   // Iframe sizing model.
@@ -180,14 +200,14 @@ export function Detail({
   // Keyboard nav — Escape closes, arrow keys walk between sections.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") router.push(curatorMode ? "/?mode=curate" : "/");
+      if (e.key === "Escape") router.push("/");
       else if (e.key === "ArrowLeft" && prevId) goTo(prevId);
       else if (e.key === "ArrowRight" && nextId) goTo(nextId);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prevId, nextId, curatorMode]);
+  }, [prevId, nextId]);
 
   const isDesktop = viewport === "desktop";
 
@@ -201,7 +221,7 @@ export function Detail({
   );
 
   return (
-    <div className="mr-mk-detail">
+    <div className="mr-mk-detail" data-viewport={viewport}>
       {/* The stage — full bleed inside the inset; iframe lives here.
        * Stage pulls inward whenever ANY panel is open (single offset). */}
       <div ref={stageRef} className="mr-mk-detail__stage" data-panel-open={panelOpen}>
@@ -253,69 +273,80 @@ export function Detail({
         )}
       </div>
 
-      {/* Top-left breadcrumb pill — hidden when ANY drawer is open,
-       * since the drawer takes the top-left chrome slot and the pill
-       * would otherwise overlap its header. */}
-      {!panelOpen && (
-        <div className="mr-mk-detail__breadcrumb">
-          <Link
-            href={curatorMode ? "/?mode=curate" : "/"}
-            className="mr-mk-detail__crumb mr-mk-detail__crumb--link"
-            aria-label="Back to library"
-          >
-            Sections
-          </Link>
-          <span className="mr-mk-detail__crumb-sep">·</span>
-          <span className="mr-mk-detail__crumb">{capitalize(current.category)}</span>
-          <span className="mr-mk-detail__crumb-sep">·</span>
-          <span className="mr-mk-detail__crumb mr-mk-detail__crumb--active">{current.name}</span>
+      {/* Top-left chrome — viewport toggle. Material-blur dark surface
+       * family-matched to the top-right toolbar (same top offset so the
+       * two clusters sit on one horizontal axis). Shifts right when the
+       * drawer opens so it sits clear of the drawer chrome. */}
+      <div className="mr-mk-detail__topchrome" data-shift={panelOpen}>
+        <div
+          className="mr-mk-detail__viewport-toggle mr-mk-detail__viewport-toggle--chrome"
+          role="radiogroup"
+          aria-label="Preview viewport"
+        >
+          {(["desktop", "tablet", "mobile"] as Viewport[]).map((v) => (
+            <button
+              key={v}
+              type="button"
+              role="radio"
+              aria-checked={viewport === v}
+              className={`mr-mk-detail__viewport-btn${viewport === v ? " mr-mk-detail__viewport-btn--active" : ""}`}
+              onClick={() => setViewport(v)}
+            >
+              {capitalize(v)}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
-      {/* Top-right 4-icon floating toolbar */}
-      <div className="mr-mk-detail__toolbar" role="toolbar" aria-label="Section actions">
-        <button
-          type="button"
-          className={`mr-mk-detail__tool${leftOpen ? " mr-mk-detail__tool--active" : ""}`}
-          aria-pressed={leftOpen}
-          aria-label="Info & specs"
-          title="Info & specs"
-          onClick={() => togglePanel("info")}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="6" y1="3" x2="6" y2="13" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-        </button>
-        <button
-          type="button"
-          className={`mr-mk-detail__tool${rightOpen ? " mr-mk-detail__tool--active" : ""}`}
-          aria-pressed={rightOpen}
-          aria-label="Install command"
-          title="Install command"
-          onClick={() => togglePanel("install")}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M6 5L3 8l3 3M10 5l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        <button
-          type="button"
-          className="mr-mk-detail__tool"
-          aria-label="Reload preview"
-          title="Reload preview"
-          onClick={() => setIframeKey((k) => k + 1)}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8a5 5 0 018.5-3.5L13 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M13 3v3h-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M13 8a5 5 0 01-8.5 3.5L3 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M3 13v-3h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+      {/* Top-right chrome — 3-icon action bar (Info / Install / Refresh)
+       * paired with a standalone circular Close pill. Close lives in its
+       * own surface because it's a navigation action (exits the detail
+       * view) whereas the others toggle in-view state. */}
+      <div className="mr-mk-detail__topright">
+        <div className="mr-mk-detail__toolbar" role="toolbar" aria-label="Section actions">
+          <button
+            type="button"
+            className={`mr-mk-detail__tool${leftOpen ? " mr-mk-detail__tool--active" : ""}`}
+            aria-pressed={leftOpen}
+            aria-label="Info & specs"
+            title="Info & specs"
+            onClick={() => togglePanel("info")}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="6" y1="3" x2="6" y2="13" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className={`mr-mk-detail__tool${rightOpen ? " mr-mk-detail__tool--active" : ""}`}
+            aria-pressed={rightOpen}
+            aria-label="Install command"
+            title="Install command"
+            onClick={() => togglePanel("install")}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 5L3 8l3 3M10 5l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="mr-mk-detail__tool"
+            aria-label="Reload preview"
+            title="Reload preview"
+            onClick={() => setIframeKey((k) => k + 1)}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8a5 5 0 018.5-3.5L13 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M13 3v3h-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M13 8a5 5 0 01-8.5 3.5L3 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M3 13v-3h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
         <Link
-          href={curatorMode ? "/?mode=curate" : "/"}
-          className="mr-mk-detail__tool"
+          href="/"
+          className="mr-mk-detail__close"
           aria-label="Close"
           title="Close"
         >
@@ -330,15 +361,77 @@ export function Detail({
        * the slide transition has both endpoints to interpolate. */}
       <LeftDrawer
         section={current}
-        curatorMode={curatorMode}
-        viewport={viewport}
-        onViewport={setViewport}
-        onSectionUpdate={setOverlay}
         onClose={() => setPanel(null)}
         open={leftOpen}
+        brandContexts={brandContexts}
       />
       <RightDrawer section={current} onClose={() => setPanel(null)} open={rightOpen} />
     </div>
+  );
+}
+
+/* ─────────────────────────── RightDrawer ─────────────────────────── */
+
+function RightDrawer({ section, onClose, open }: { section: ManifestEntry; onClose: () => void; open: boolean }) {
+  const [copied, setCopied] = useState(false);
+  const installCmd = `mr add ${section.id}`;
+  const ref = useSlide<HTMLElement>(open, DRAWER_OPEN_STYLES, DRAWER_CLOSED_STYLES);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(installCmd);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard blocked — silent
+    }
+  }
+
+  return (
+    <aside
+      ref={ref}
+      className="mr-mk-detail__drawer mr-mk-detail__drawer--left"
+      data-open={open}
+      aria-hidden={!open}
+      aria-label="Install command"
+    >
+      <header className="mr-mk-detail__drawer-head">
+        <div className="mr-mk-detail__drawer-eyebrow">Install</div>
+        <h2 className="mr-mk-detail__drawer-title">Add to project</h2>
+        <button
+          type="button"
+          className="mr-mk-detail__drawer-close"
+          onClick={onClose}
+          aria-label="Close install"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </button>
+      </header>
+
+      <p className="mr-mk-detail__drawer-desc">
+        Run this from any MakeReign project root. The section&apos;s files stream from the API and land
+        in your local <code>sections/</code> directory.
+      </p>
+
+      <div className="mr-mk-detail__install">
+        <code>{installCmd}</code>
+        <button type="button" className="mr-mk-detail__install-copy" onClick={copy}>
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+
+      <div className="mr-mk-detail__drawer-section">
+        <div className="mr-mk-detail__drawer-section-label">Section ID</div>
+        <code className="mr-mk-detail__codeline">{section.id}</code>
+      </div>
+
+      <div className="mr-mk-detail__drawer-section">
+        <div className="mr-mk-detail__drawer-section-label">Version</div>
+        <code className="mr-mk-detail__codeline">v{section.version}</code>
+      </div>
+    </aside>
   );
 }
 
@@ -346,24 +439,27 @@ export function Detail({
 
 function LeftDrawer({
   section,
-  curatorMode,
-  viewport,
-  onViewport,
-  onSectionUpdate,
   onClose,
   open,
+  brandContexts,
 }: {
   section: ManifestEntry;
-  curatorMode: boolean;
-  viewport: Viewport;
-  onViewport: (v: Viewport) => void;
-  onSectionUpdate: (s: ManifestEntry) => void;
   onClose: () => void;
   open: boolean;
+  brandContexts: BrandContextEntry[];
 }) {
   const sectionTrack = (section.track ?? "stable") as Track;
   const sectionLifecycle = getLifecycle(section);
   const ref = useSlide<HTMLElement>(open, DRAWER_OPEN_STYLES, DRAWER_CLOSED_STYLES);
+
+  // Resolve `section.context` (e.g. "acme-2025" or "acme-2025@1.0.0") into
+  // the human label from the contexts index. Falls back to the raw id if
+  // the contexts index doesn't yet contain a matching entry.
+  const sectionContextRef =
+    typeof (section as { context?: unknown }).context === "string"
+      ? ((section as { context?: string }).context as string)
+      : null;
+  const contextResolved = resolveSectionContext(sectionContextRef, brandContexts);
 
   return (
     <aside
@@ -401,28 +497,30 @@ function LeftDrawer({
       ) : null}
 
       <div className="mr-mk-detail__drawer-section">
-        <div className="mr-mk-detail__drawer-section-label">Viewport</div>
-        <div className="mr-mk-detail__viewport-toggle" role="radiogroup" aria-label="Preview viewport">
-          {(["desktop", "tablet", "mobile"] as Viewport[]).map((v) => (
-            <button
-              key={v}
-              type="button"
-              role="radio"
-              aria-checked={viewport === v}
-              className={`mr-mk-detail__viewport-btn${viewport === v ? " mr-mk-detail__viewport-btn--active" : ""}`}
-              onClick={() => onViewport(v)}
-            >
-              {capitalize(v)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mr-mk-detail__drawer-section">
         <div className="mr-mk-detail__drawer-section-label">Specs</div>
         <dl className="mr-mk-detail__specs">
           <SpecRow label="Category" value={capitalize(section.category)} />
           <SpecRow label="Version" value={`v${section.version}`} />
+          {contextResolved ? (
+            <SpecRow
+              label="Brand context"
+              value={
+                <span
+                  className="mr-sl-badge"
+                  data-context={contextResolved.id}
+                  title={
+                    contextResolved.pinned
+                      ? `Pinned to v${contextResolved.pinned}`
+                      : "Floats to latest"
+                  }
+                >
+                  <span className="mr-sl-badge__dot" />
+                  {contextResolved.label}
+                  {contextResolved.pinned ? ` @ ${contextResolved.pinned}` : null}
+                </span>
+              }
+            />
+          ) : null}
           <SpecRow
             label="Track"
             value={
@@ -459,77 +557,6 @@ function LeftDrawer({
         </dl>
       </div>
 
-      {curatorMode ? (
-        <div className="mr-mk-detail__drawer-section">
-          <div className="mr-mk-detail__drawer-section-label">Curator</div>
-          <CuratorActions section={section} onSectionUpdate={onSectionUpdate} />
-        </div>
-      ) : null}
-    </aside>
-  );
-}
-
-/* ─────────────────────────── RightDrawer ─────────────────────────── */
-
-function RightDrawer({ section, onClose, open }: { section: ManifestEntry; onClose: () => void; open: boolean }) {
-  const [copied, setCopied] = useState(false);
-  const installCmd = `mr add ${section.id}`;
-  const ref = useSlide<HTMLElement>(open, DRAWER_OPEN_STYLES, DRAWER_CLOSED_STYLES);
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(installCmd);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // clipboard blocked — silent
-    }
-  }
-
-  return (
-    <aside
-      ref={ref}
-      className="mr-mk-detail__drawer mr-mk-detail__drawer--right"
-      data-open={open}
-      aria-hidden={!open}
-      aria-label="Install"
-    >
-      <header className="mr-mk-detail__drawer-head">
-        <div className="mr-mk-detail__drawer-eyebrow">Install</div>
-        <h2 className="mr-mk-detail__drawer-title">Add to project</h2>
-        <button
-          type="button"
-          className="mr-mk-detail__drawer-close"
-          onClick={onClose}
-          aria-label="Close install"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-      </header>
-
-      <p className="mr-mk-detail__drawer-desc">
-        Run this from any MakeReign project root. The section's files stream from the API and land
-        in your local `sections/` directory.
-      </p>
-
-      <div className="mr-mk-detail__install">
-        <code>{installCmd}</code>
-        <button type="button" className="mr-mk-detail__install-copy" onClick={copy}>
-          {copied ? "Copied" : "Copy"}
-        </button>
-      </div>
-
-      <div className="mr-mk-detail__drawer-section">
-        <div className="mr-mk-detail__drawer-section-label">Section ID</div>
-        <code className="mr-mk-detail__codeline">{section.id}</code>
-      </div>
-
-      <div className="mr-mk-detail__drawer-section">
-        <div className="mr-mk-detail__drawer-section-label">Version</div>
-        <code className="mr-mk-detail__codeline">v{section.version}</code>
-      </div>
     </aside>
   );
 }
@@ -545,88 +572,3 @@ function SpecRow({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-/* ─────────────────────────── CuratorActions ─────────────────────────── */
-
-/**
- * Lifecycle transition strip. Reads the section's current state, looks up the
- * valid next states from the shared state-machine, and POSTs to the lifecycle
- * API on click. Optimistically writes the response back into the parent's
- * overlay AND fires router.refresh() so the manifest re-flows from the server.
- */
-function CuratorActions({
-  section,
-  onSectionUpdate,
-}: {
-  section: ManifestEntry;
-  onSectionUpdate: (s: ManifestEntry) => void;
-}) {
-  const router = useRouter();
-  const current = getLifecycle(section);
-  const transitions = transitionsFrom(current);
-  const missing = missingForApproval(section.curation);
-  const [busy, setBusy] = useState<Lifecycle | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  async function go(t: Transition) {
-    setBusy(t.to);
-    setError(null);
-    try {
-      const res = await fetch(`/api/sections/${section.id}/lifecycle`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to: t.to }),
-      });
-      const json = (await res.json()) as
-        | { ok: true; section: ManifestEntry }
-        | { ok: false; error: string; code: string };
-      if (!res.ok || !json.ok) {
-        throw new Error("error" in json ? json.error : `HTTP ${res.status}`);
-      }
-      onSectionUpdate(json.section);
-      router.refresh();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  return (
-    <div className="mr-mk-detail__curator">
-      {transitions.length === 0 ? (
-        <span className="mr-mk-detail__curator-empty">Terminal state — no transitions</span>
-      ) : (
-        <div className="mr-mk-detail__curator-actions">
-          {transitions.map((t) => {
-            const gatedByCuration =
-              t.to === "Approved" && t.kind === "forward" && missing.length > 0;
-            return (
-              <button
-                key={t.to}
-                type="button"
-                className={`mr-mk-detail__curator-btn mr-mk-detail__curator-btn--${t.kind}`}
-                onClick={() => go(t)}
-                disabled={busy !== null || gatedByCuration}
-                title={gatedByCuration
-                  ? `Curation incomplete — fill in ${missing.length} required field${missing.length === 1 ? "" : "s"} first`
-                  : t.hint ?? ""}
-              >
-                {busy === t.to ? "…" : t.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
-      {(current === "Submitted" || current === "InReview") && missing.length > 0 ? (
-        <a
-          href={`/sections/${section.id}/edit?mode=curate`}
-          className="mr-mk-detail__curator-enrich"
-          title={`${missing.length} required field${missing.length === 1 ? "" : "s"} missing`}
-        >
-          Enrich · {missing.length} left
-        </a>
-      ) : null}
-      {error ? <span className="mr-mk-detail__curator-error" role="alert">{error}</span> : null}
-    </div>
-  );
-}

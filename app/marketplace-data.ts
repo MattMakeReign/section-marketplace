@@ -31,3 +31,35 @@ export async function loadManifest(): Promise<Manifest> {
   const raw = await readFile(file, "utf8");
   return JSON.parse(raw) as Manifest;
 }
+
+export type BrandContextEntry = {
+  id: string;
+  name: string;
+  version: string;
+  description?: string;
+  author?: string;
+  originatingProject?: string | null;
+  status?: "active" | "deprecated";
+  tokensHash?: string | null;
+  sectionsUsing?: string[];
+};
+
+export type BrandContextsManifest = {
+  generated: string | null;
+  count: number;
+  contexts: BrandContextEntry[];
+};
+
+/**
+ * Read `brand-contexts/index.json`. Returns an empty manifest if the file
+ * isn't built yet — sections still render, the badge just hides.
+ */
+export async function loadBrandContexts(): Promise<BrandContextsManifest> {
+  const file = path.join(process.cwd(), "brand-contexts", "index.json");
+  try {
+    const raw = await readFile(file, "utf8");
+    return JSON.parse(raw) as BrandContextsManifest;
+  } catch {
+    return { generated: null, count: 0, contexts: [] };
+  }
+}

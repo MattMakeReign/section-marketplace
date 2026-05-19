@@ -12,22 +12,44 @@
       "items": {
         "type": "object",
         "properties": {
-          "quote": { "type": "string" },
-          "attribution": { "type": "string" },
-          "role": { "type": "string" }
+          "quote": {
+            "type": "string"
+          },
+          "attribution": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
         }
       }
     }
   },
-  "dependencies": ["@/components/section", "@/components/section-grid"],
-  "motionDensity": ["minimal", "restrained"],
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "static",
+    "low"
+  ],
   "responsive": {
     "profile": "1 col mobile / 3 col desktop",
-    "breakpoints": ["mobile", "tablet", "desktop"],
+    "breakpoints": [
+      "mobile",
+      "tablet",
+      "desktop"
+    ],
     "notes": "Renders 1 column under md, 3 columns at md+. Card heights equalise via grid auto-rows."
   },
-  "previews": { "static": "preview.svg" },
-  "tags": ["editorial", "minimal", "social-proof"],
+  "previews": {
+    "static": "preview.svg"
+  },
+  "tags": [
+    "editorial",
+    "minimal",
+    "social-proof"
+  ],
   "created": "2026-05-09",
   "updated": "2026-05-11",
   "submittedBy": "techo",

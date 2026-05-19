@@ -81,9 +81,9 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "enum": ["minimal", "restrained", "cinematic", "energetic", "motion-heavy"]
+        "enum": ["static", "low", "medium", "high", "experience"]
       },
-      "description": "Motion-density tiers this section supports. Mirrors GLOSSARY.md."
+      "description": "Motion-density tiers this section supports — how much motion shows in the layout (not how fast each tween runs). Five tiers ordered low to high: static (nothing animates) · low · medium · high · experience (showpiece). Mirrors GLOSSARY.md, resolved via q25-motion-density-vocabulary."
     },
     "responsive": {
       "type": "object",
@@ -141,6 +141,11 @@
       "type": "string",
       "minLength": 1,
       "description": "Git handle of the submitter."
+    },
+    "context": {
+      "type": ["string", "null"],
+      "description": "Optional brand-context reference. Sections render against this context in the Library App so brand-authored sections show their original look. Two shapes: 'acme-2025' floats to the latest version of that context; 'acme-2025@1.0.0' pins to a specific version. null/omitted/'_neutral' → renders against the marketplace's neutral default. Context bundles live in brand-contexts/<id>/ at the marketplace root. When a section is installed into a destination client project, the context does NOT travel — the section adapts to the destination's tokens. See decision-section-brand-contexts.md.",
+      "pattern": "^(?:_neutral|[a-z0-9]+(?:-[a-z0-9]+)*(?:@\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?)?)$"
     },
     "curation": {
       "type": "object",

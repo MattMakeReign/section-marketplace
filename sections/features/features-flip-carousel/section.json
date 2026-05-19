@@ -47,8 +47,8 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "restrained",
-    "cinematic"
+    "low",
+    "medium"
   ],
   "responsive": {
     "profile": "horizontal-scroll-snap with breakpoint-aware card widths",

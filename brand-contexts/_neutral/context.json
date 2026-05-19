@@ -1,0 +1,13 @@
+{
+  "id": "_neutral",
+  "name": "Neutral (marketplace baseline)",
+  "version": "1.0.0",
+  "description": "The marketplace's own canonical baseline. Sections with no context, or sections explicitly opting into a generic look, render against this. No tokens.css — defers to the global :root in design-system/tokens.css.",
+  "author": "makereign",
+  "originatingProject": "section-marketplace",
+  "created": "2026-05-13",
+  "updated": "2026-05-13",
+  "status": "active",
+  "tokensHash": null,
+  "sectionsUsing": []
+}

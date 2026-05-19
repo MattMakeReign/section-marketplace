@@ -1,0 +1,32 @@
+{
+  "generated": "2026-05-14T11:49:00.096Z",
+  "count": 2,
+  "contexts": [
+    {
+      "id": "_neutral",
+      "name": "Neutral (marketplace baseline)",
+      "version": "1.0.0",
+      "description": "The marketplace's own canonical baseline. Sections with no context, or sections explicitly opting into a generic look, render against this. No tokens.css — defers to the global :root in design-system/tokens.css.",
+      "author": "makereign",
+      "originatingProject": "section-marketplace",
+      "created": "2026-05-13",
+      "updated": "2026-05-13",
+      "status": "active",
+      "tokensHash": null,
+      "sectionsUsing": []
+    },
+    {
+      "id": "mr-atlas",
+      "name": "MakeReign Atlas",
+      "version": "1.0.0",
+      "description": "Atlas — MakeReign's flagship demo project. Cool monochrome with electric accent. Diverges visibly from the marketplace's warm-editorial baseline so brand-context scoping is easy to see at a glance.",
+      "author": "techo",
+      "originatingProject": "atlas",
+      "created": "2026-05-13",
+      "updated": "2026-05-13",
+      "status": "active",
+      "tokensHash": null,
+      "sectionsUsing": []
+    }
+  ]
+}

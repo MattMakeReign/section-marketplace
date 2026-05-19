@@ -47,7 +47,7 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "restrained"
+    "low"
   ],
   "responsive": {
     "profile": "desktop-2col split (5/7 grid); mobile single-column stacked, left card above accordion"

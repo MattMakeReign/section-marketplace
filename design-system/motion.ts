@@ -40,13 +40,22 @@ export type EaseKey = keyof typeof EASES;
 // Density tiers
 // ─────────────────────────────────────────────────────────────
 
-export type MotionDensity = "low" | "medium" | "high";
+/**
+ * Motion density — categorical descriptor of how much motion shows in
+ * a section's layout. Five tiers, low to high.
+ *
+ * Canonical meaning: amount of motion shown, NOT speed of each tween.
+ * The multiplier (below) is an implementation convenience for the helpers.
+ */
+export type MotionDensity = "static" | "low" | "medium" | "high" | "experience";
 
-/** How aggressively a tier scales reveal distances and durations. */
+/** How a tier scales reveal distances and durations. */
 export const DENSITY_MULTIPLIERS: Record<MotionDensity, number> = {
-  low: 0.6,
+  static: 0,
+  low: 0.4,
   medium: 1,
-  high: 1.4,
+  high: 1.5,
+  experience: 2,
 };
 
 /** Read --motion-density from :root. Falls back to "medium". */
@@ -55,7 +64,7 @@ export function getDensity(): MotionDensity {
   const v = getComputedStyle(document.documentElement)
     .getPropertyValue("--motion-density")
     .trim();
-  if (v === "low" || v === "medium" || v === "high") return v;
+  if (v === "static" || v === "low" || v === "medium" || v === "high" || v === "experience") return v;
   return "medium";
 }
 

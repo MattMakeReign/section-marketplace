@@ -71,6 +71,17 @@ type SubmitBody = {
   files: FileEntry[];
   /** When true, replace an existing section with the same id. */
   force?: boolean;
+  /**
+   * Optional brand-context bundle. Present when the submitter's project has a
+   * design system the marketplace hasn't seen before (or has drifted). The
+   * server commits these files into `brand-contexts/<id>/` alongside the
+   * section files in the same commit. Paths are RELATIVE TO THE CONTEXT FOLDER
+   * (e.g. "context.json", "tokens.css", "fonts.css", "assets/logo.svg").
+   */
+  brandContext?: {
+    id: string;
+    files: FileEntry[];
+  };
 };
 
 export async function POST(req: NextRequest) {
@@ -86,10 +97,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, code: "invalid_payload", error: errors[0], errors }, { status: 400 });
   }
 
-  const { manifest, files, force } = body;
+  const { manifest, files, force, brandContext } = body;
 
   // Resolve target path inside the repo: sections/<category>/<id>/<file>
   const sectionDir = `sections/${manifest.category}/${manifest.id}`;
+  const contextDir = brandContext ? `brand-contexts/${brandContext.id}` : null;
 
   // Pre-flight: existence check against the local index.json (best-effort —
   // the bundled manifest is what Vercel built at last deploy, so a section
@@ -128,10 +140,24 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Append brand-context bundle files if the submission carries one. Same
+  // commit as the section so the section + its context land atomically.
+  if (brandContext && contextDir) {
+    for (const f of brandContext.files) {
+      repoFiles.push({
+        path: `${contextDir}/${stripLeadingSlash(f.path)}`,
+        encoding: f.encoding,
+        content: f.content,
+      });
+    }
+  }
+
   try {
     const result = await commitFiles({
       files: repoFiles,
-      message: `Submit ${manifest.id} (${manifest.category})`,
+      message: brandContext
+        ? `Submit ${manifest.id} (${manifest.category}) + brand-context ${brandContext.id}`
+        : `Submit ${manifest.id} (${manifest.category})`,
       authorName: manifest.submittedBy ?? "MakeReign Marketplace",
       authorEmail: "marketplace@makereign.com",
     });
@@ -179,6 +205,23 @@ function validateSubmitBody(body: unknown): string[] {
       if (f.path.includes("..") || f.path.startsWith("/")) { errors.push(`files[${i}].path is not allowed.`); continue; }
       if (f.encoding !== "utf8" && f.encoding !== "base64") { errors.push(`files[${i}].encoding must be "utf8" or "base64".`); continue; }
       if (typeof f.content !== "string") errors.push(`files[${i}].content must be a string.`);
+    }
+  }
+  if (b.brandContext != null) {
+    const bc = b.brandContext as { id?: unknown; files?: unknown };
+    if (typeof bc.id !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(bc.id as string)) {
+      errors.push("brandContext.id must be lowercase-hyphenated.");
+    }
+    if (!Array.isArray(bc.files) || bc.files.length === 0) {
+      errors.push("brandContext.files must be a non-empty array.");
+    } else {
+      for (let i = 0; i < bc.files.length; i++) {
+        const f = (bc.files as Array<{ path?: unknown; encoding?: unknown; content?: unknown }>)[i];
+        if (!f || typeof f.path !== "string") { errors.push(`brandContext.files[${i}].path is required.`); continue; }
+        if ((f.path as string).includes("..") || (f.path as string).startsWith("/")) { errors.push(`brandContext.files[${i}].path is not allowed.`); continue; }
+        if (f.encoding !== "utf8" && f.encoding !== "base64") { errors.push(`brandContext.files[${i}].encoding must be "utf8" or "base64".`); continue; }
+        if (typeof f.content !== "string") errors.push(`brandContext.files[${i}].content must be a string.`);
+      }
     }
   }
   return errors;

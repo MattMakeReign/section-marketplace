@@ -44,8 +44,8 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "restrained",
-    "energetic"
+    "low",
+    "high"
   ],
   "responsive": {
     "profile": "edge-to-edge marquee / mobile-shrink",

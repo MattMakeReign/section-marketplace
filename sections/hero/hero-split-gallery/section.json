@@ -48,8 +48,8 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "restrained",
-    "cinematic"
+    "low",
+    "medium"
   ],
   "responsive": {
     "profile": "desktop-split / mobile-stacked",
