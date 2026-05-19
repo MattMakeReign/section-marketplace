@@ -459,167 +459,6 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   color: #ffffff;
 }
 
-/* ── Notifications dropdown — curator only ─────────────────
- * Anchored to the bell icon in the topbar. Material-blur dark
- * surface family-matched to the profile menu. Designed to
- * showcase as many preview thumbnails as the queue allows —
- * a tight 4-col grid, scrollable past 12 entries. */
-.mr-mk-notif {
-  position: relative;
-}
-.mr-mk-notif__trigger {
-  position: relative;
-}
-.mr-mk-notif__dot {
-  position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #e02424;
-  box-shadow: 0 0 0 2px var(--chrome-surface, #fdfcfc);
-}
-.mr-mk-notif-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 40;
-  width: 380px;
-  background: rgba(12, 12, 12, 0.86);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  color: #ededed;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  padding: var(--chrome-space-3);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.32),
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
-  font-family: var(--chrome-font-body);
-  font-size: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--chrome-space-3);
-}
-.mr-mk-notif-menu__header {
-  display: flex; align-items: baseline; justify-content: space-between;
-  padding: var(--chrome-space-1) var(--chrome-space-2) 0;
-}
-.mr-mk-notif-menu__title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #ffffff;
-}
-.mr-mk-notif-menu__count {
-  font-family: var(--chrome-font-mono);
-  font-size: 11px;
-  color: #adadad;
-  letter-spacing: 0.4px;
-}
-.mr-mk-notif-menu__empty {
-  padding: var(--chrome-space-4) var(--chrome-space-2);
-  text-align: center;
-  font-size: 13px;
-  color: #adadad;
-}
-.mr-mk-notif-menu__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex; flex-direction: column;
-  gap: 2px;
-  max-height: 420px;
-  overflow-y: auto;
-}
-/* Scrollbar — minimal */
-.mr-mk-notif-menu__list::-webkit-scrollbar { width: 6px; }
-.mr-mk-notif-menu__list::-webkit-scrollbar-track { background: transparent; }
-.mr-mk-notif-menu__list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 3px;
-}
-.mr-mk-notif-menu__list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-.mr-mk-notif-row {
-  display: flex; align-items: center;
-  gap: var(--chrome-space-3);
-  padding: 8px var(--chrome-space-2);
-  border-radius: 8px;
-  text-decoration: none;
-  color: inherit;
-  transition: background 80ms ease;
-}
-.mr-mk-notif-row:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-.mr-mk-notif-row__thumb {
-  flex-shrink: 0;
-  width: 56px; height: 36px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-}
-.mr-mk-notif-row__thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.mr-mk-notif-row__fallback {
-  font-family: var(--chrome-font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  color: #707070;
-  letter-spacing: 0.5px;
-}
-.mr-mk-notif-row__main {
-  display: flex; flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1 1 auto;
-}
-.mr-mk-notif-row__name {
-  font-size: 13px;
-  font-weight: 500;
-  color: #ededed;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.mr-mk-notif-row__meta {
-  display: inline-flex; align-items: center;
-  gap: 6px;
-  font-family: var(--chrome-font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #8a8a8a;
-}
-.mr-mk-notif-row__dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.mr-mk-notif-menu__view-all {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px var(--chrome-space-2);
-  border-radius: var(--chrome-radius-2);
-  background: rgba(255, 255, 255, 0.04);
-  color: #ededed;
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 80ms ease;
-  margin-top: 2px;
-}
-.mr-mk-notif-menu__view-all:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-}
-
 @media (max-width: 900px) {
   .mr-mk-topbar {
     grid-template-columns: 1fr;
@@ -629,20 +468,259 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   .mr-mk-topbar__invite { display: none; }
 }
 
-/* ── Filter pill row · Card grid · Badges ───────────────────
- * Migrated to @mr/section-library-ui (2026-05-14). The classes
- * `mr-sl-filters`, `mr-sl-pill`, `mr-sl-pop`, `mr-sl-grid`,
- * `mr-sl-density`, `mr-sl-empty`, `mr-sl-card*`, `mr-sl-badge*`,
- * `mr-sl-spec*` live in repos/section-library-ui/src/styles.css
- * and are imported in app/layout.tsx. App TSX uses the shared
- * classes directly — no local duplicates.
- *
- * Follow-up: edit/page.tsx's curator-mode topbar still uses the
- * App-local `mr-mk-topbar*` family (with `__brand`, `__sub`,
- * `__wordmark`, `__nav`, `__navlink` modifiers that aren't in
- * the shared package). Renamespace those if a future pass
- * unifies the curator topbar with the gallery's.
- */
+/* ── Filter pill row ───────────────────────────────────────── */
+
+.mr-mk-filters {
+  position: sticky; top: 65px; z-index: 10;
+  background: var(--chrome-ground);
+  border-bottom: 1px solid var(--chrome-border);
+  padding: var(--chrome-space-3) var(--chrome-space-6);
+  display: flex; align-items: center; gap: var(--chrome-space-3);
+  flex-wrap: wrap;
+}
+
+.mr-mk-pill {
+  position: relative;
+  display: inline-flex; align-items: center; gap: var(--chrome-space-2);
+  height: 36px;
+  padding: 0 var(--chrome-space-3);
+  background: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-pill);
+  font-size: 13px;
+  color: var(--chrome-fg);
+  transition: border-color 80ms ease;
+}
+.mr-mk-pill:hover { border-color: var(--chrome-border-strong); }
+.mr-mk-pill[aria-expanded="true"] { border-color: var(--chrome-border-strong); }
+.mr-mk-pill--active {
+  background: var(--chrome-surface-inverse);
+  color: var(--chrome-fg-inverse);
+  border-color: var(--chrome-surface-inverse);
+}
+.mr-mk-pill--active:hover { border-color: var(--chrome-surface-inverse); }
+.mr-mk-pill__icon { color: var(--chrome-fg-muted); display: inline-flex; }
+.mr-mk-pill--active .mr-mk-pill__icon { color: var(--chrome-fg-inverse); opacity: 0.85; }
+.mr-mk-pill__count {
+  font-family: var(--chrome-font-mono);
+  font-size: 10px; letter-spacing: 0.4px;
+  color: var(--chrome-fg-subtle);
+  margin-left: var(--chrome-space-1);
+}
+.mr-mk-pill--active .mr-mk-pill__count { color: var(--chrome-fg-inverse); opacity: 0.7; }
+
+.mr-mk-pop {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 30;
+  min-width: 200px;
+  background: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  padding: var(--chrome-space-1);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.mr-mk-pop__item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--chrome-space-2) var(--chrome-space-3);
+  border-radius: var(--chrome-radius-1);
+  font-size: 13px;
+  text-align: left;
+  width: 100%;
+}
+.mr-mk-pop__item:hover { background: var(--chrome-surface-muted); }
+.mr-mk-pop__item--active { background: var(--chrome-surface-muted); font-weight: 500; }
+.mr-mk-pop__item-meta {
+  font-family: var(--chrome-font-mono);
+  font-size: 10px; letter-spacing: 0.4px;
+  color: var(--chrome-fg-subtle);
+}
+.mr-mk-pop__dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--dot, var(--chrome-fg-subtle));
+  margin-right: var(--chrome-space-2);
+}
+
+.mr-mk-filters__spacer { flex: 1; }
+
+.mr-mk-clear {
+  height: 36px; padding: 0 var(--chrome-space-3);
+  background: transparent; border: 0;
+  font-family: var(--chrome-font-mono);
+  font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase;
+  color: var(--chrome-fg-muted);
+}
+.mr-mk-clear:hover { color: var(--chrome-fg); }
+
+/* ── Card grid ─────────────────────────────────────────────── */
+
+.mr-mk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: var(--chrome-space-6);
+  padding: var(--chrome-space-8);
+}
+/* Density toggle — fixed N-column grid at desktop, collapses fluidly under. */
+.mr-mk-grid[data-density="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mr-mk-grid[data-density="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mr-mk-grid[data-density="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1100px) {
+  .mr-mk-grid[data-density="4"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 820px) {
+  .mr-mk-grid[data-density],
+  .mr-mk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 540px) {
+  .mr-mk-grid[data-density],
+  .mr-mk-grid { grid-template-columns: 1fr; }
+}
+
+/* Grid density toggle — three icon buttons in the filter row's right cluster.
+ * Visually a single segmented pill, but each button is independently clickable. */
+.mr-mk-density {
+  display: inline-flex; align-items: center;
+  background: var(--chrome-surface-muted);
+  border-radius: var(--chrome-radius-pill);
+  padding: 3px;
+  gap: 0;
+}
+.mr-mk-density__btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: var(--chrome-radius-pill);
+  color: var(--chrome-fg-muted);
+  transition: background 80ms ease, color 80ms ease;
+}
+.mr-mk-density__btn:hover { color: var(--chrome-fg); }
+.mr-mk-density__btn--active {
+  background: var(--chrome-surface);
+  color: var(--chrome-fg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.mr-mk-empty {
+  padding: var(--chrome-space-20) var(--chrome-space-8);
+  text-align: center;
+  color: var(--chrome-fg-muted);
+}
+
+.mr-mk-card {
+  display: flex; flex-direction: column;
+  background: var(--chrome-ground);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-card);
+  padding: var(--chrome-space-3);
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  transition: border-color 100ms ease, transform 200ms ease;
+}
+.mr-mk-card:hover {
+  border-color: var(--chrome-border-strong);
+}
+.mr-mk-card:focus-visible {
+  outline: 2px solid var(--chrome-fg);
+  outline-offset: 2px;
+}
+
+/* Faux browser window framing — three dots + faint URL bar above the SVG. */
+.mr-mk-card__window {
+  background: var(--chrome-surface-muted);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-3);
+  overflow: hidden;
+}
+.mr-mk-card__chrome {
+  display: flex; align-items: center; gap: var(--chrome-space-2);
+  padding: 9px var(--chrome-space-3);
+  border-bottom: 1px solid var(--chrome-border);
+  background: var(--chrome-ground);
+}
+.mr-mk-card__dots { display: flex; gap: 5px; }
+.mr-mk-card__dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--chrome-border);
+}
+.mr-mk-card__urlbar {
+  flex: 1;
+  height: 16px;
+  background: var(--chrome-surface-muted);
+  border: 1px solid var(--chrome-border);
+  border-radius: 4px;
+}
+.mr-mk-card__viewport {
+  aspect-ratio: 16 / 9;
+  background: var(--chrome-ground);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.mr-mk-card__viewport img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.mr-mk-card__fallback {
+  font-family: var(--chrome-font-mono); font-size: 10px; letter-spacing: 0.6px;
+  text-transform: uppercase; color: var(--chrome-fg-subtle);
+}
+
+.mr-mk-card__body {
+  padding: var(--chrome-space-4) var(--chrome-space-2) var(--chrome-space-2);
+  display: flex; flex-direction: column; gap: var(--chrome-space-2);
+}
+.mr-mk-card__name {
+  font-family: var(--chrome-font-display);
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+.mr-mk-card__brand {
+  display: inline-flex; align-items: center; gap: var(--chrome-space-2);
+  font-size: 13px;
+  color: var(--chrome-fg-muted);
+}
+.mr-mk-card__brand-mark {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--chrome-fg);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--chrome-fg-inverse);
+  font-family: var(--chrome-font-mono);
+  font-size: 9px; font-weight: 700; letter-spacing: 0;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* Track + category badges */
+.mr-mk-badge-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--chrome-space-1);
+}
+.mr-mk-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px var(--chrome-space-2);
+  border-radius: var(--chrome-radius-1);
+  background: var(--chrome-surface-muted);
+  font-family: var(--chrome-font-mono);
+  font-size: 10px; letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--chrome-fg-muted);
+}
+.mr-mk-badge__dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--chrome-fg-subtle);
+}
+.mr-mk-badge[data-track="stable"] .mr-mk-badge__dot { background: var(--chrome-track-stable); }
+.mr-mk-badge[data-track="experimental"] .mr-mk-badge__dot { background: var(--chrome-track-experimental); }
+.mr-mk-badge[data-track="legacy"] .mr-mk-badge__dot { background: var(--chrome-track-legacy); }
+
+.mr-mk-badge[data-lifecycle="Local"] .mr-mk-badge__dot      { background: var(--chrome-lifecycle-local); }
+.mr-mk-badge[data-lifecycle="Draft"] .mr-mk-badge__dot      { background: var(--chrome-lifecycle-draft); }
+.mr-mk-badge[data-lifecycle="Submitted"] .mr-mk-badge__dot  { background: var(--chrome-lifecycle-submitted); }
+.mr-mk-badge[data-lifecycle="InReview"] .mr-mk-badge__dot   { background: var(--chrome-lifecycle-inreview); }
+.mr-mk-badge[data-lifecycle="Approved"] .mr-mk-badge__dot   { background: var(--chrome-lifecycle-approved); }
+.mr-mk-badge[data-lifecycle="Promoted"] .mr-mk-badge__dot   { background: var(--chrome-lifecycle-promoted); }
+.mr-mk-badge[data-lifecycle="Deprecated"] .mr-mk-badge__dot { background: var(--chrome-lifecycle-deprecated); }
+.mr-mk-badge[data-lifecycle="Archived"] .mr-mk-badge__dot   { background: var(--chrome-lifecycle-archived); }
+.mr-mk-badge[data-lifecycle="Archived"] { opacity: 0.7; }
 
 /* ── Detail modal ──────────────────────────────────────────── */
 
@@ -880,8 +958,26 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   min-height: 0;
   align-content: start;
 }
-/* mr-mk-spec* migrated to @mr/section-library-ui (mr-sl-spec*) 2026-05-14.
- * The bare `__install` variant was App-local but unused in TSX — deleted. */
+.mr-mk-spec {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.mr-mk-spec__label {
+  font-family: var(--chrome-font-mono);
+  font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase;
+  color: var(--chrome-fg-subtle);
+}
+.mr-mk-spec__value {
+  font-size: 13px; color: var(--chrome-fg);
+}
+.mr-mk-spec__install {
+  font-family: var(--chrome-font-mono);
+  font-size: 12px;
+  background: var(--chrome-surface-inverse);
+  color: var(--chrome-fg-inverse);
+  padding: var(--chrome-space-2) var(--chrome-space-3);
+  border-radius: var(--chrome-radius-1);
+  display: inline-block;
+}
 .mr-mk-tag {
   display: inline-block;
   padding: 1px 8px;
@@ -895,15 +991,11 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
 @media (max-width: 720px) {
   .mr-mk-modal__head { flex-direction: column; align-items: flex-start; gap: var(--chrome-space-3); }
   .mr-mk-modal__actions { width: 100%; justify-content: space-between; }
-  .mr-sl-grid { padding: var(--chrome-space-4); }
-  .mr-sl-filters { padding: var(--chrome-space-3) var(--chrome-space-4); }
+  .mr-mk-grid { padding: var(--chrome-space-4); }
+  .mr-mk-filters { padding: var(--chrome-space-3) var(--chrome-space-4); }
 }
 
-/* ── Curator mode (legacy — see note below) ────────────────── */
-/* The `?mode=curate` URL gate was retired 2026-05-18; the marketplace is now
- * an admin tool with curator surfaces always available. The classes below
- * are still used by legacy curator chrome (mr-mk-curator-flag, etc.) until
- * those markup sites are fully retired. */
+/* ── Curator mode (?mode=curate) ───────────────────────────── */
 
 /* Topbar flag — tiny mono pill next to the wordmark signalling the surface
    is in curation mode. Visually adjacent to the brand line so it reads as a
@@ -1058,135 +1150,84 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   border-bottom-color: var(--chrome-fg);
 }
 
-/* ── Review queue ──────────────────────────────────────────
- * Compact, scannable curator list. Designed to feel like a Linear
- * inbox / GitHub PR list — hairline-divided rows, small landscape
- * thumb, single-line meta, inline metadata meter. No card framing.
- * The visual weight should be on the section names + their progress,
- * not on the thumbnails. */
+/* ── Review queue ──────────────────────────────────────────── */
 
-.mr-mk-queue-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--chrome-space-5);
-  max-width: 840px;
-  margin: 0 auto;
-  padding: var(--chrome-space-8) var(--chrome-space-5) var(--chrome-space-4);
+.mr-mk-queue-summary {
+  display: flex; gap: var(--chrome-space-3);
+  padding: 0 var(--chrome-space-8) var(--chrome-space-5);
   background: var(--chrome-ground);
-  border-bottom: 1px solid var(--chrome-border);
 }
-.mr-mk-queue-head__left {
-  display: flex; flex-direction: column; gap: 4px;
-  min-width: 0;
-}
-.mr-mk-queue-head__title {
-  font-family: var(--chrome-font-body);
-  font-weight: 600;
-  font-size: 18px;
-  letter-spacing: -0.2px;
-  color: var(--chrome-fg);
-  margin: 0;
-}
-.mr-mk-queue-head__sub {
-  font-size: 13px;
-  color: var(--chrome-fg-muted);
-  margin: 0;
-}
-.mr-mk-queue-head__right {
-  display: flex; gap: var(--chrome-space-2);
-  flex-shrink: 0;
-}
-
 .mr-mk-queue {
   list-style: none;
-  max-width: 840px;
-  margin: 0 auto;
-  padding: 0 0 var(--chrome-space-16);
-  background: var(--chrome-ground);
+  margin: 0;
+  padding: var(--chrome-space-5) var(--chrome-space-8) var(--chrome-space-16);
+  display: flex; flex-direction: column; gap: var(--chrome-space-3);
 }
 .mr-mk-queue__row {
-  border-bottom: 1px solid var(--chrome-border);
+  background: var(--chrome-ground);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--chrome-radius-3);
+  transition: border-color 100ms ease, transform 200ms ease;
 }
-.mr-mk-queue__row:last-child { border-bottom: 0; }
+.mr-mk-queue__row:hover { border-color: var(--chrome-border-strong); }
 .mr-mk-queue__link {
   display: grid;
-  grid-template-columns: 88px 1fr auto 16px;
-  gap: var(--chrome-space-4);
+  grid-template-columns: 220px 1fr 200px;
+  gap: var(--chrome-space-5);
   align-items: center;
-  padding: var(--chrome-space-3) var(--chrome-space-5);
-  text-decoration: none;
-  color: inherit;
-  transition: background 80ms ease;
-}
-.mr-mk-queue__row:hover .mr-mk-queue__link {
-  background: var(--chrome-surface-muted);
+  padding: var(--chrome-space-3);
 }
 .mr-mk-queue__thumb {
-  width: 88px;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   background: var(--chrome-surface-muted);
   border: 1px solid var(--chrome-border);
-  border-radius: 4px;
+  border-radius: var(--chrome-radius-2);
   overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
 }
-.mr-mk-queue__thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.mr-mk-queue__thumb-fallback {
-  font-family: var(--chrome-font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  color: var(--chrome-fg-subtle);
-  letter-spacing: 0.5px;
-}
+.mr-mk-queue__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .mr-mk-queue__main {
-  display: flex; flex-direction: column; gap: 3px;
+  display: flex; flex-direction: column; gap: 6px;
   min-width: 0;
 }
+.mr-mk-queue__title-row {
+  display: flex; align-items: center; gap: var(--chrome-space-3);
+  flex-wrap: wrap;
+}
 .mr-mk-queue__name {
-  font-size: 14px;
-  font-weight: 500;
+  font-family: var(--chrome-font-display);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: -0.3px;
   color: var(--chrome-fg);
-  white-space: nowrap;
+}
+.mr-mk-queue__desc {
+  font-size: 13px;
+  color: var(--chrome-fg-muted);
+  line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 .mr-mk-queue__meta {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: flex; gap: 6px;
   font-family: var(--chrome-font-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase;
   color: var(--chrome-fg-subtle);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.mr-mk-queue__lifecycle-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.mr-mk-queue__meta-sep { opacity: 0.5; }
-
 .mr-mk-queue__progress {
-  display: inline-flex; align-items: center; gap: var(--chrome-space-2);
-  flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 6px;
 }
-.mr-mk-queue__progress-num {
+.mr-mk-queue__progress-label {
+  display: flex; justify-content: space-between; align-items: baseline;
   font-family: var(--chrome-font-mono);
-  font-size: 11px;
+  font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase;
   color: var(--chrome-fg-muted);
-  font-variant-numeric: tabular-nums;
 }
-.mr-mk-queue__progress--complete .mr-mk-queue__progress-num { color: var(--chrome-fg); }
+.mr-mk-queue__progress-num { color: var(--chrome-fg); }
 .mr-mk-queue__bar {
-  width: 72px;
   height: 3px;
   background: var(--chrome-surface-muted);
   border-radius: 2px;
@@ -1197,31 +1238,17 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   background: var(--chrome-fg);
   transition: width 200ms ease;
 }
-.mr-mk-queue__chevron {
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--chrome-fg-subtle);
-  transition: color 80ms ease, transform 120ms ease;
+.mr-mk-queue__cta {
+  font-family: var(--chrome-font-mono);
+  font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase;
+  color: var(--chrome-fg-muted);
+  margin-top: 4px;
 }
-.mr-mk-queue__row:hover .mr-mk-queue__chevron {
-  color: var(--chrome-fg);
-  transform: translateX(2px);
-}
+.mr-mk-queue__row:hover .mr-mk-queue__cta { color: var(--chrome-fg); }
 
-@media (max-width: 720px) {
-  .mr-mk-queue-head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--chrome-space-3);
-    padding: var(--chrome-space-5) var(--chrome-space-5) var(--chrome-space-3);
-  }
-  .mr-mk-queue__link {
-    grid-template-columns: 64px 1fr auto;
-    padding: var(--chrome-space-3) var(--chrome-space-5);
-    gap: var(--chrome-space-3);
-  }
-  .mr-mk-queue__thumb { width: 64px; }
-  .mr-mk-queue__progress { display: none; }
-  .mr-mk-queue__chevron { display: none; }
+@media (max-width: 900px) {
+  .mr-mk-queue__link { grid-template-columns: 1fr; }
+  .mr-mk-queue__thumb { width: 100%; }
 }
 
 /* ── Enrichment editor ─────────────────────────────────────── */
@@ -1618,15 +1645,6 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   overflow: hidden;
   z-index: 50;
 }
-/* Tablet + Mobile viewports — flip ONLY the stage card (the frame) to
- * a dark surface so the scaled-down device preview reads as a bright
- * rectangle floating against dark ground. Page-ground around the stage
- * stays light. */
-.mr-mk-detail[data-viewport="tablet"] .mr-mk-detail__stage,
-.mr-mk-detail[data-viewport="mobile"] .mr-mk-detail__stage {
-  background: #141414;
-  border-color: rgba(255, 255, 255, 0.06);
-}
 
 /* The stage — white rounded card holding the iframe. Tight 6px inset
  * so the section claims as much page real estate as possible. Drawers
@@ -1644,10 +1662,7 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   border-radius: 14px;
   overflow: hidden;
   /* `left` is animated imperatively by useSlide (WAAPI) — no CSS
-   * transition because React's batched updates skipped the start frame.
-   * Background + border ARE transitioned so the viewport-toggle
-   * desktop ↔ tablet/mobile flip fades the page-ground smoothly. */
-  transition: background 240ms ease, border-color 240ms ease;
+   * transition because React's batched updates skipped the start frame. */
 }
 /* Stage pulls inward when any drawer is open. 6px (drawer offset, same
  * as the page-ground inset) + 332px (drawer width) + 6px (matching
@@ -1719,19 +1734,12 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   color: #ffffff;
 }
 
-/* Floating top-right cluster — 3-button toolbar pill + standalone
- * close pill, separated by a small gap. Close is split out because it
- * exits the view (navigation), while the others toggle in-view state. */
-.mr-mk-detail__topright {
+/* Floating top-right toolbar — 4 icon buttons inside one material-blur pill */
+.mr-mk-detail__toolbar {
   position: absolute;
   top: 36px;
   right: 36px;
   z-index: 10;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.mr-mk-detail__toolbar {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1745,26 +1753,6 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
     0 12px 40px rgba(0, 0, 0, 0.18),
     0 1px 0 rgba(255, 255, 255, 0.06) inset;
 }
-/* Standalone close pill — same material as the toolbar, sized to match
- * the full 42px outer height of the other chrome clusters. */
-.mr-mk-detail__close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  color: #adadad;
-  background: rgba(12, 12, 12, 0.86);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.18),
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
-  transition: color 80ms ease;
-}
-.mr-mk-detail__close:hover { color: #ffffff; }
 .mr-mk-detail__tool {
   display: inline-flex;
   align-items: center;
@@ -1793,8 +1781,8 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   z-index: 10;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 4px;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
   background: rgba(12, 12, 12, 0.86);
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
@@ -1812,8 +1800,8 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   color: #adadad;
   transition: background 80ms ease, color 80ms ease;
@@ -2111,59 +2099,7 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   }
   .mr-mk-detail__drawer { left: 12px; right: 12px; width: auto; }
   .mr-mk-detail__breadcrumb,
-  .mr-mk-detail__topright { top: 24px; }
+  .mr-mk-detail__toolbar { top: 24px; }
   .mr-mk-detail__breadcrumb { left: 24px; }
-  .mr-mk-detail__topright  { right: 24px; }
-}
-
-
-
-/* ── Detail page top-left chrome — viewport toggle. Material-blur
- * dark surface family-matched to the top-right toolbar. Sits at the
- * SAME top offset as the toolbar so both clusters share one horizontal
- * axis. Shifts right when a drawer opens so it sits clear of the
- * drawer chrome. */
-.mr-mk-detail__topchrome {
-  position: absolute;
-  top: 36px;
-  left: 36px;
-  z-index: 30;
-  display: inline-flex; align-items: center;
-  transition: left 240ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-/* When drawer opens, stage left edge moves from 6px → 344px. Keep
- * the topchrome at the same visual gap (30px) from the stage so the
- * inset reads identical whether the drawer is open or closed:
- *   closed: 36 − 6   = 30px from stage
- *   open:   374 − 344 = 30px from stage */
-.mr-mk-detail__topchrome[data-shift="true"] { left: 374px; }
-.mr-mk-detail__viewport-toggle--chrome {
-  display: inline-flex; align-items: center;
-  height: 42px;
-  padding: 4px;
-  background: rgba(12, 12, 12, 0.86);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--chrome-radius-pill);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
-}
-.mr-mk-detail__viewport-toggle--chrome .mr-mk-detail__viewport-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  height: 32px;
-  min-width: 80px;
-  padding: 0 14px;
-  background: transparent;
-  border: 0;
-  border-radius: var(--chrome-radius-pill);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 80ms ease, background 80ms ease;
-}
-.mr-mk-detail__viewport-toggle--chrome .mr-mk-detail__viewport-btn:hover { color: #ffffff; }
-.mr-mk-detail__viewport-toggle--chrome .mr-mk-detail__viewport-btn--active {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
+  .mr-mk-detail__toolbar   { right: 24px; }
 }
