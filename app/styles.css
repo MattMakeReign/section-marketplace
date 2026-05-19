@@ -2167,3 +2167,616 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
 }
+
+/* ─────────────────────────── Review queue ───────────────────────────
+ * /review — curator's pending-work surface.
+ *
+ * Design language: Mobbin specimen board (2026-05-19). Achromatic palette
+ * driven by #141414 ink + #707070 graphite + #adadad ash + #ededed fog +
+ * #f2f2f2 mist. Pill-shaped interactives (9999px radius). Card elevation is
+ * a single 1px #ededed border — never a shadow. Display-scale title sets the
+ * tone; everything else recedes.
+ */
+.mr-mk-review {
+  --mob-ink: #141414;
+  --mob-graphite: #707070;
+  --mob-ash: #adadad;
+  --mob-fog: #ededed;
+  --mob-mist: #f2f2f2;
+  --mob-canvas: #ffffff;
+
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 32px 120px;
+  background: var(--mob-canvas);
+  color: var(--mob-ink);
+}
+.mr-mk-review__head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 64px;
+}
+.mr-mk-review__title {
+  margin: 0;
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -0.39px;
+  font-weight: 600;
+  color: var(--mob-ink);
+}
+.mr-mk-review__subtitle {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: 0.28px;
+  color: var(--mob-graphite);
+  font-weight: 440;
+}
+
+/* Card list — single vertical column. Generous gap between rows. */
+.mr-mk-review__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Card: thumbnail-left, body-right (with the primary action anchored to
+ * its bottom-right edge). 1px border-only elevation (no shadow — Mobbin
+ * spec). 16px radius. */
+.mr-mk-review-card {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  align-items: stretch;
+  padding: 16px;
+  background: var(--mob-canvas);
+  border: 1px solid var(--mob-fog);
+  border-radius: 16px;
+  transition: border-color 160ms ease;
+}
+.mr-mk-review-card:hover {
+  border-color: var(--mob-ash);
+}
+
+.mr-mk-review-card__media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  /* Don't stretch with the card's row height — keep the natural 16:10 ratio.
+   * Without `align-self: start`, `align-items: stretch` on the grid inflates
+   * the thumb's height to match the body, which makes aspect-ratio inflate
+   * the width past its column and overlap adjacent content. */
+  align-self: start;
+  border-radius: 12px;
+  background: var(--mob-mist);
+  overflow: hidden;
+  text-decoration: none;
+}
+.mr-mk-review-card__thumb,
+.mr-mk-review-card__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mr-mk-review-card__video {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.mr-mk-review-card__media:hover .mr-mk-review-card__video[src] {
+  opacity: 1;
+}
+.mr-mk-review-card__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--chrome-font-mono, ui-monospace, "SF Mono", monospace);
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: var(--mob-ash);
+  text-transform: uppercase;
+}
+
+.mr-mk-review-card__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 10px;
+  padding: 4px 0;
+  /* Action pill anchors to the bottom-right of the body column. */
+  position: relative;
+}
+.mr-mk-review-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+/* Lifecycle chip — flat mist pill, no colored dot, no track. */
+.mr-mk-review-card__head .mr-sl-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  background: var(--mob-mist);
+  border: 0;
+  border-radius: 9999px;
+  color: var(--mob-ink);
+  font-size: 12px;
+  font-weight: 440;
+  letter-spacing: 0.2px;
+  text-transform: lowercase;
+  text-transform: none;
+}
+.mr-mk-review-card__head .mr-sl-badge__dot {
+  display: none;
+}
+.mr-mk-review-card__age {
+  font-size: 12px;
+  font-weight: 440;
+  letter-spacing: 0.2px;
+  color: var(--mob-ash);
+}
+.mr-mk-review-card__name {
+  display: block;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--mob-ink);
+  text-decoration: none;
+}
+.mr-mk-review-card__name:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.mr-mk-review-card__desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.13px;
+  color: var(--mob-graphite);
+  font-weight: 400;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mr-mk-review-card__desc--empty {
+  color: var(--mob-ash);
+  font-style: normal;
+  opacity: 1;
+}
+
+.mr-mk-review-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+/* Tags — outlined pills (Mobbin "Muted Pill Button" pattern). */
+.mr-mk-review-card__tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 440;
+  letter-spacing: 0.2px;
+  color: var(--mob-graphite);
+  background: transparent;
+  border: 1px solid var(--mob-fog);
+  border-radius: 9999px;
+}
+
+/* Actions — single primary pill, anchored to the bottom-right of the body. */
+.mr-mk-review-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.mr-mk-review-card__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.21px;
+  border-radius: 9999px;
+  border: 1px solid var(--mob-ink);
+  background: transparent;
+  color: var(--mob-ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+  white-space: nowrap;
+}
+.mr-mk-review-card__btn:hover:not(:disabled) {
+  background: var(--mob-ink);
+  color: var(--mob-canvas);
+}
+.mr-mk-review-card__btn--primary {
+  background: var(--mob-ink);
+  color: var(--mob-canvas);
+  border-color: var(--mob-ink);
+}
+.mr-mk-review-card__btn--primary:hover:not(:disabled) {
+  background: #000;
+  border-color: #000;
+}
+.mr-mk-review-card__btn:disabled {
+  background: transparent;
+  color: var(--mob-ash);
+  border-color: var(--mob-fog);
+  cursor: not-allowed;
+}
+.mr-mk-review-card__error {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 440;
+  letter-spacing: 0.2px;
+  color: var(--mob-ink);
+}
+
+/* Empty state — display title, single outlined pill back to catalogue. */
+.mr-mk-review__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 32px;
+  background: var(--mob-canvas);
+  border: 1px solid var(--mob-fog);
+  border-radius: 24px;
+  color: var(--mob-graphite);
+}
+.mr-mk-review__empty-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 32px;
+  border-radius: 9999px;
+  background: var(--mob-mist);
+  border: 0;
+  font-size: 22px;
+  color: var(--mob-ink);
+}
+.mr-mk-review__empty h2 {
+  margin: 0 0 12px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--mob-ink);
+}
+.mr-mk-review__empty p {
+  margin: 0 0 32px;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.21px;
+  color: var(--mob-graphite);
+  max-width: 480px;
+}
+.mr-mk-review__empty-back {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.21px;
+  color: var(--mob-ink);
+  background: transparent;
+  border: 1px solid var(--mob-ink);
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease;
+}
+.mr-mk-review__empty-back:hover {
+  background: var(--mob-ink);
+  color: var(--mob-canvas);
+}
+
+/* Narrower viewports — stack thumb above body. */
+@media (max-width: 720px) {
+  .mr-mk-review-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .mr-mk-review-card__media {
+    max-width: 360px;
+  }
+}
+
+/* Notification dropdown footer — link to full /review queue.
+ * Matched to .mr-mk-profile-menu__view so floating dropdowns across
+ * the topbar share one button treatment (dark pill, white label). */
+.mr-mk-notif-menu__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 36px;
+  background: #404040;
+  color: #ffffff;
+  border-radius: var(--chrome-radius-pill);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 80ms ease;
+}
+.mr-mk-notif-menu__footer:hover {
+  background: #4a4a4a;
+  color: #ffffff;
+}
+
+/* ─────────────────────────── CuratorPanel ───────────────────────────
+ * Slim curation surface inside the detail page's left drawer. Editable
+ * description / tags / motion / video drop-zone + lifecycle transitions.
+ */
+.mr-mk-curator {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--chrome-border, #e8e6e3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mr-mk-curator__field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mr-mk-curator__label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--chrome-fg-muted, #777169);
+}
+.mr-mk-curator__hint {
+  font-weight: 400;
+  font-size: 10.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--chrome-fg-muted, #a59f97);
+}
+.mr-mk-curator__textarea {
+  width: 100%;
+  min-height: 64px;
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--chrome-fg, #1a1714);
+  background: var(--chrome-surface, #fff);
+  border: 1px solid var(--chrome-border, #e8e6e3);
+  border-radius: 6px;
+  resize: vertical;
+}
+.mr-mk-curator__textarea:focus {
+  outline: none;
+  border-color: var(--chrome-fg, #1a1714);
+}
+.mr-mk-curator__textarea[aria-invalid="true"] {
+  border-color: #c25656;
+}
+.mr-mk-curator__warn {
+  font-size: 11px;
+  color: #b03a3a;
+}
+
+.mr-mk-curator__tagrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+  background: var(--chrome-surface, #fff);
+  border: 1px solid var(--chrome-border, #e8e6e3);
+  border-radius: 6px;
+}
+.mr-mk-curator__tagchip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11.5px;
+  color: var(--chrome-fg, #1a1714);
+  background: var(--chrome-ground, #fdfcfc);
+  border: 1px solid var(--chrome-border, #e8e6e3);
+  border-radius: 11px;
+  cursor: pointer;
+}
+.mr-mk-curator__tagchip:hover { background: #f7f5f3; }
+.mr-mk-curator__taginput {
+  flex: 1;
+  min-width: 80px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--chrome-fg, #1a1714);
+  padding: 2px 4px;
+}
+
+.mr-mk-curator__motion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.mr-mk-curator__motionchip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  font-size: 11.5px;
+  color: var(--chrome-fg, #1a1714);
+  background: var(--chrome-surface, #fff);
+  border: 1px solid var(--chrome-border, #e8e6e3);
+  border-radius: 6px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+.mr-mk-curator__motionchip:hover { background: var(--chrome-ground, #fdfcfc); }
+.mr-mk-curator__motionchip--active {
+  background: var(--chrome-fg, #1a1714);
+  color: var(--chrome-surface, #fff);
+  border-color: var(--chrome-fg, #1a1714);
+}
+
+.mr-mk-curator__dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 90px;
+  padding: 16px;
+  font-size: 12px;
+  color: var(--chrome-fg-muted, #777169);
+  background: var(--chrome-ground, #fdfcfc);
+  border: 1px dashed var(--chrome-border, #e8e6e3);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+  text-align: center;
+}
+.mr-mk-curator__dropzone:hover,
+.mr-mk-curator__dropzone--over {
+  background: #f7f5f3;
+  border-color: var(--chrome-border-strong, #d8d5d1);
+  color: var(--chrome-fg, #1a1714);
+}
+.mr-mk-curator__dropzone-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: inherit;
+}
+.mr-mk-curator__dropzone-hint {
+  font-size: 11px;
+  color: var(--chrome-fg-muted, #a59f97);
+}
+.mr-mk-curator__video-wrap {
+  position: relative;
+}
+.mr-mk-curator__video {
+  width: 100%;
+  max-height: 200px;
+  border-radius: 6px;
+  background: #000;
+  display: block;
+}
+.mr-mk-curator__video-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  height: 22px;
+  padding: 0 8px;
+  font-size: 10.5px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 11px;
+  cursor: pointer;
+}
+.mr-mk-curator__video-remove:hover { background: rgba(0, 0, 0, 0.8); }
+
+.mr-mk-curator__save-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mr-mk-curator__save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--chrome-surface, #fff);
+  background: var(--chrome-fg, #1a1714);
+  border: 1px solid var(--chrome-fg, #1a1714);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.mr-mk-curator__save:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.mr-mk-curator__save:not(:disabled):hover { background: #000; }
+.mr-mk-curator__error {
+  font-size: 11.5px;
+  color: #b03a3a;
+}
+
+.mr-mk-curator__gate {
+  padding: 10px 12px;
+  background: #fdf6e7;
+  border: 1px solid #f0d893;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #6a4d10;
+}
+.mr-mk-curator__gate ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.mr-mk-curator__transitions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mr-mk-curator__txbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 11px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--chrome-fg, #1a1714);
+  background: var(--chrome-surface, #fff);
+  border: 1px solid var(--chrome-border, #e8e6e3);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.mr-mk-curator__txbtn:hover:not(:disabled) {
+  background: var(--chrome-ground, #fdfcfc);
+  border-color: var(--chrome-border-strong, #d8d5d1);
+}
+.mr-mk-curator__txbtn--forward {
+  background: var(--chrome-fg, #1a1714);
+  color: var(--chrome-surface, #fff);
+  border-color: var(--chrome-fg, #1a1714);
+}
+.mr-mk-curator__txbtn--forward:hover:not(:disabled) { background: #000; }
+.mr-mk-curator__txbtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
