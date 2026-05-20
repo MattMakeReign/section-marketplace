@@ -1346,3 +1346,153 @@
   align-items: center;
   gap: var(--mr-space-2);
 }
+
+/* ──────────────────────────────────────────────────────────────
+ * Textarea
+ * ────────────────────────────────────────────────────────────── */
+
+.mr-textarea {
+  display: block;
+  width: 100%;
+  min-height: 96px;
+  padding: var(--mr-space-3);
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-body-md-size);
+  line-height: var(--mr-text-body-md-leading);
+  color: var(--mr-fg);
+  background: var(--mr-surface-elevated);
+  border: 1px solid var(--mr-border);
+  border-radius: var(--mr-radius-1);
+  outline: none;
+  resize: vertical;
+  transition:
+    border-color var(--mr-duration-fast) var(--mr-ease-standard),
+    box-shadow var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-textarea::placeholder { color: var(--mr-fg-subtle); }
+.mr-textarea:hover { border-color: var(--mr-border-strong); }
+.mr-textarea:focus,
+.mr-textarea:focus-visible {
+  border-color: var(--mr-fg);
+  box-shadow: 0 0 0 3px rgb(0 0 0 / 0.06);
+}
+.mr-textarea--error { border-color: var(--mr-danger); }
+.mr-textarea--error:focus,
+.mr-textarea--error:focus-visible {
+  border-color: var(--mr-danger);
+  box-shadow: 0 0 0 3px rgb(193 39 26 / 0.12);
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * Checkbox (Radix Checkbox)
+ * ────────────────────────────────────────────────────────────── */
+
+.mr-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--mr-surface-elevated);
+  border: 1px solid var(--mr-border-strong);
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color var(--mr-duration-fast) var(--mr-ease-standard),
+    border-color var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-checkbox:hover { border-color: var(--mr-fg); }
+.mr-checkbox[data-state="checked"] {
+  background: var(--mr-fg);
+  border-color: var(--mr-fg);
+}
+.mr-checkbox__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mr-fg-inverse);
+}
+.mr-checkbox:focus-visible {
+  outline: 2px solid var(--mr-fg);
+  outline-offset: 2px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * Progress (Radix Progress)
+ * ────────────────────────────────────────────────────────────── */
+
+.mr-progress {
+  position: relative;
+  overflow: hidden;
+  background: var(--mr-surface-muted);
+  border-radius: var(--mr-radius-pill);
+  width: 100%;
+  height: 6px;
+}
+.mr-progress__indicator {
+  background: var(--mr-fg);
+  height: 100%;
+  width: 100%;
+  transition: transform var(--mr-duration-base) var(--mr-ease-standard);
+}
+.mr-progress--accent .mr-progress__indicator { background: var(--mr-accent); }
+.mr-progress--success .mr-progress__indicator { background: var(--mr-success); }
+
+/* ──────────────────────────────────────────────────────────────
+ * Select (Radix Select)
+ * ────────────────────────────────────────────────────────────── */
+
+.mr-select__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mr-space-2);
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--mr-space-3);
+  background: var(--mr-surface-elevated);
+  color: var(--mr-fg);
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-body-md-size);
+  border: 1px solid var(--mr-border);
+  border-radius: var(--mr-radius-1);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-select__trigger:hover { border-color: var(--mr-border-strong); }
+.mr-select__trigger[data-state="open"],
+.mr-select__trigger:focus-visible {
+  border-color: var(--mr-fg);
+  box-shadow: 0 0 0 3px rgb(0 0 0 / 0.06);
+}
+.mr-select__content {
+  background: var(--mr-surface);
+  color: var(--mr-fg);
+  border: 1px solid var(--mr-border);
+  border-radius: var(--mr-radius-2);
+  box-shadow: var(--mr-shadow-overlay);
+  padding: var(--mr-space-1);
+  z-index: 60;
+  min-width: var(--radix-select-trigger-width);
+}
+.mr-select__viewport {
+  padding: 0;
+}
+.mr-select__item {
+  display: flex;
+  align-items: center;
+  padding: var(--mr-space-2) var(--mr-space-3);
+  border-radius: var(--mr-radius-1);
+  font-size: var(--mr-text-body-md-size);
+  color: var(--mr-fg);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.mr-select__item[data-highlighted] {
+  background: var(--mr-surface-muted);
+}
+.mr-select__item[data-state="checked"] {
+  font-weight: 500;
+}

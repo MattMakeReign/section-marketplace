@@ -8,6 +8,17 @@
 // Primitives
 export { Button, buttonVariants, type ButtonProps } from "./primitives/button";
 export { Input, inputVariants, type InputProps } from "./primitives/input";
+export { Textarea, type TextareaProps } from "./primitives/textarea";
+export { Checkbox } from "./primitives/checkbox";
+export { Progress, type ProgressProps } from "./primitives/progress";
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "./primitives/select";
 export { Label, type LabelProps } from "./primitives/label";
 export {
   Field,
