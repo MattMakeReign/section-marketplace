@@ -6,6 +6,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Exclude the webpack build cache from serverless function bundles.
+  // Without this, `.next/cache/webpack` (~243 MB) gets traced into every
+  // function and pushes the bundle over Vercel's 250 MB limit. The cache
+  // is a build-time artefact — runtime functions don't need it.
+  outputFileTracingExcludes: {
+    "*": [".next/cache/**/*"],
+  },
   // Suppress the floating Next.js dev-mode badge so it doesn't appear
   // twice on the section detail page (once for the marketplace shell,
   // once inside the same-origin `/render/<id>` iframe).
