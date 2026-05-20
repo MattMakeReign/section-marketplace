@@ -64,6 +64,7 @@ export {
 } from "./primitives/avatar";
 export { Separator } from "./primitives/separator";
 export { Skeleton } from "./primitives/skeleton";
+export { Slider } from "./primitives/slider";
 export { ToggleGroup, ToggleGroupItem } from "./primitives/toggle-group";
 export { Card, cardVariants, type CardProps } from "./primitives/card";
 export { Badge, badgeVariants, type BadgeProps } from "./primitives/badge";

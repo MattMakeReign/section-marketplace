@@ -1766,8 +1766,27 @@
   gap: var(--mr-space-6);
 }
 
+/* Field rhythm: tight label→description (2px), generous description→control (12px),
+ * tight control→caption/error (4px). Eleven Labs language. */
 .mr-curator__field {
-  gap: var(--mr-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.mr-curator__field > .mr-field__description {
+  margin-top: 2px;
+}
+.mr-curator__field > .mr-textarea,
+.mr-curator__field > .mr-input,
+.mr-curator__field > .mr-toggle-group,
+.mr-curator__field > .mr-curator__tagrow,
+.mr-curator__field > .mr-curator__dropzone,
+.mr-curator__field > .mr-curator__video-wrap {
+  margin-top: var(--mr-space-3);
+}
+.mr-curator__field > .mr-curator__char-count,
+.mr-curator__field > .mr-field__error {
+  margin-top: var(--mr-space-1);
 }
 
 .mr-curator__label {
@@ -1935,4 +1954,80 @@
   gap: var(--mr-space-2);
   padding-top: var(--mr-space-2);
   border-top: 1px solid var(--mr-border);
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * Slider (Radix Slider)
+ * Soft grey track + dark fg range fill + circular thumb with hairline
+ * border + subtle elevation. Pairs with discrete tick labels below.
+ * ────────────────────────────────────────────────────────────── */
+
+.mr-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 20px;
+  touch-action: none;
+  user-select: none;
+}
+.mr-slider__track {
+  position: relative;
+  flex-grow: 1;
+  height: 4px;
+  background: var(--mr-surface-muted);
+  border-radius: var(--mr-radius-pill);
+  overflow: hidden;
+}
+.mr-slider__range {
+  position: absolute;
+  height: 100%;
+  background: var(--mr-fg);
+  border-radius: var(--mr-radius-pill);
+}
+.mr-slider__thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background: var(--mr-surface);
+  border: 1px solid var(--mr-border-strong);
+  border-radius: var(--mr-radius-pill);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  cursor: grab;
+  transition: box-shadow var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-slider__thumb:hover {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+}
+.mr-slider__thumb:focus-visible {
+  outline: 2px solid var(--mr-fg);
+  outline-offset: 2px;
+}
+.mr-slider__thumb[data-state="active"] {
+  cursor: grabbing;
+}
+
+/* Discrete tick scale — used by curator's motion density picker.
+ * Labels under the slider, with the active tick darkened. */
+.mr-slider-scale {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  margin-top: var(--mr-space-2);
+}
+.mr-slider-scale__tick {
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-body-sm-size);
+  color: var(--mr-fg-subtle);
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-slider-scale__tick:first-child { text-align: left; }
+.mr-slider-scale__tick:last-child { text-align: right; }
+.mr-slider-scale__tick:hover { color: var(--mr-fg-muted); }
+.mr-slider-scale__tick[data-active="true"] {
+  color: var(--mr-fg);
+  font-weight: 500;
 }

@@ -41,8 +41,7 @@ import {
   FieldLabel,
   FieldDescription,
   FieldError,
-  ToggleGroup,
-  ToggleGroupItem,
+  Slider,
   type LifecycleName,
   type TrackName,
 } from "@mr/tools-ui";
@@ -885,20 +884,9 @@ function CuratorPanel({
       <Field className="mr-curator__field">
         <FieldLabel className="mr-curator__label">Motion density</FieldLabel>
         <FieldDescription>
-          Tendencies the layout supports. Multi-select.
+          How much movement the section carries. Slide to pick the closest tendency.
         </FieldDescription>
-        <ToggleGroup
-          type="multiple"
-          value={motionDensity}
-          onValueChange={(v) => setMotionDensity(v)}
-          aria-label="Motion density"
-        >
-          {MOTION_OPTIONS.map((m) => (
-            <ToggleGroupItem key={m} value={m} aria-label={m}>
-              {m}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
+        <MotionDensitySlider value={motionDensity} onChange={setMotionDensity} />
       </Field>
 
       <Field className="mr-curator__field">
@@ -1011,6 +999,56 @@ function CuratorPanel({
         </div>
       ) : null}
       {transitionError ? <FieldError>{transitionError}</FieldError> : null}
+    </div>
+  );
+}
+
+/* ─────────────────────────── MotionDensitySlider ─────────────────────────── */
+
+/**
+ * Discrete 5-step slider for motion density. Maps the underlying
+ * `motionDensity: string[]` data model to a single ordinal value
+ * (saved as a 1-element array) — motion density is naturally a scale,
+ * not a multi-select. Tick labels under the slider double as click
+ * targets for precise picking.
+ */
+function MotionDensitySlider({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (next: string[]) => void;
+}) {
+  // Resolve the current ordinal from the array. Default to medium (index 2)
+  // when nothing's saved, so the slider thumb has a home position.
+  const current = value[0] && MOTION_OPTIONS.includes(value[0] as (typeof MOTION_OPTIONS)[number])
+    ? MOTION_OPTIONS.indexOf(value[0] as (typeof MOTION_OPTIONS)[number])
+    : 2;
+
+  return (
+    <div>
+      <Slider
+        value={[current]}
+        onValueChange={(v) => onChange([MOTION_OPTIONS[v[0]]])}
+        min={0}
+        max={MOTION_OPTIONS.length - 1}
+        step={1}
+        aria-label="Motion density"
+      />
+      <div className="mr-slider-scale">
+        {MOTION_OPTIONS.map((m, i) => (
+          <button
+            key={m}
+            type="button"
+            className="mr-slider-scale__tick"
+            data-active={i === current}
+            onClick={() => onChange([m])}
+            aria-label={`Set motion density to ${m}`}
+          >
+            {m}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
