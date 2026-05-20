@@ -19,6 +19,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import "./record-cta.css";
 import {
   APPROVAL_FIELD_LABELS,
   capitalize,
@@ -835,6 +836,86 @@ function CuratorPanel({
   return (
     <div className="mr-curator">
       <Accordion type="single" collapsible defaultValue="description" className="mr-curator__accordion">
+        <AccordionItem value="video">
+          <AccordionTrigger>Video clip</AccordionTrigger>
+          <AccordionContent>
+            <Field className="mr-curator__field">
+              <FieldDescription>
+                A short .webm or .mp4 that autoplays on card hover. Max 15 MB. Optional.
+              </FieldDescription>
+              {videoUrl ? (
+                <div className="mr-curator__video-wrap">
+                  <video
+                    className="mr-curator__video"
+                    src={videoUrl}
+                    controls
+                    muted
+                    loop
+                    playsInline
+                  />
+                  <Button
+                    type="button"
+                    variant="tertiary"
+                    size="sm"
+                    onClick={removeVideo}
+                    disabled={uploading}
+                  >
+                    Remove video
+                  </Button>
+                </div>
+              ) : (
+                <div className="mr-curator__video-options">
+                  <Link href={`/sections/${section.id}/capture`} className="mr-curator__record-cta">
+                    <span className="mr-curator__record-dot" aria-hidden />
+                    <span className="mr-curator__record-cta-body">
+                      <strong className="mr-curator__record-cta-title">Record in browser</strong>
+                      <span className="mr-curator__record-cta-hint">
+                        Capture, trim &amp; thumbnail in one flow
+                      </span>
+                    </span>
+                    <svg
+                      className="mr-curator__record-cta-arrow"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      aria-hidden
+                    >
+                      <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                  <label
+                    className={`mr-curator__dropzone${dragOver ? " mr-curator__dropzone--over" : ""}`}
+                    onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
+                    onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={onDrop}
+                  >
+                    <input
+                      type="file"
+                      accept="video/mp4,video/webm"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) uploadVideo(file);
+                      }}
+                    />
+                    {uploading ? (
+                      <span className="mr-curator__dropzone-title">Uploading…</span>
+                    ) : (
+                      <>
+                        <span className="mr-curator__dropzone-title">Or drop a .webm / .mp4</span>
+                        <span className="mr-curator__dropzone-hint">click to browse files</span>
+                      </>
+                    )}
+                  </label>
+                </div>
+              )}
+              {uploadError ? <FieldError>{uploadError}</FieldError> : null}
+            </Field>
+          </AccordionContent>
+        </AccordionItem>
+
         <AccordionItem value="description">
           <AccordionTrigger>Description</AccordionTrigger>
           <AccordionContent>
@@ -906,76 +987,6 @@ function CuratorPanel({
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="video">
-          <AccordionTrigger>Video clip</AccordionTrigger>
-          <AccordionContent>
-            <Field className="mr-curator__field">
-              <FieldDescription>
-                A short .webm or .mp4 that autoplays on card hover. Max 15 MB. Optional.
-              </FieldDescription>
-              <div className="mr-curator__record-row">
-                <Link href={`/sections/${section.id}/capture`} className="mr-curator__record-cta">
-                  <span className="mr-curator__record-dot" aria-hidden />
-                  <span>
-                    <strong>Record in browser</strong>
-                    <span className="mr-curator__record-hint">
-                      capture, trim &amp; thumbnail in one flow
-                    </span>
-                  </span>
-                </Link>
-                <span className="mr-curator__record-or">or upload below</span>
-              </div>
-              {videoUrl ? (
-                <div className="mr-curator__video-wrap">
-                  <video
-                    className="mr-curator__video"
-                    src={videoUrl}
-                    controls
-                    muted
-                    loop
-                    playsInline
-                  />
-                  <Button
-                    type="button"
-                    variant="tertiary"
-                    size="sm"
-                    onClick={removeVideo}
-                    disabled={uploading}
-                  >
-                    Remove video
-                  </Button>
-                </div>
-              ) : (
-                <label
-                  className={`mr-curator__dropzone${dragOver ? " mr-curator__dropzone--over" : ""}`}
-                  onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
-                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={onDrop}
-                >
-                  <input
-                    type="file"
-                    accept="video/mp4,video/webm"
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) uploadVideo(file);
-                    }}
-                  />
-                  {uploading ? (
-                    <span className="mr-curator__dropzone-title">Uploading…</span>
-                  ) : (
-                    <>
-                      <span className="mr-curator__dropzone-title">Drop a .webm or .mp4</span>
-                      <span className="mr-curator__dropzone-hint">or click to browse</span>
-                    </>
-                  )}
-                </label>
-              )}
-              {uploadError ? <FieldError>{uploadError}</FieldError> : null}
-            </Field>
-          </AccordionContent>
-        </AccordionItem>
       </Accordion>
 
       <div className="mr-curator__actions">

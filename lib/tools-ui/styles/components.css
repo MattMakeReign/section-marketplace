@@ -1918,6 +1918,73 @@
   max-height: 240px;
 }
 
+/* ── Video options — Record CTA + dropzone stacked vertically ─── */
+
+.mr-curator__video-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mr-space-2);
+}
+
+.mr-curator__record-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--mr-space-3);
+  padding: var(--mr-space-3) var(--mr-space-4);
+  background: var(--mr-surface-elevated);
+  border: 1px solid var(--mr-border);
+  border-radius: var(--mr-radius-2);
+  color: var(--mr-fg);
+  text-decoration: none;
+  transition:
+    border-color var(--mr-duration-fast) var(--mr-ease-standard),
+    background-color var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-curator__record-cta:hover {
+  border-color: var(--mr-border-strong);
+  background: var(--mr-surface-muted);
+}
+.mr-curator__record-cta:focus-visible {
+  outline: 2px solid var(--mr-fg);
+  outline-offset: 2px;
+}
+
+.mr-curator__record-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--mr-danger);
+  border-radius: var(--mr-radius-pill);
+  flex-shrink: 0;
+}
+
+.mr-curator__record-cta-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+.mr-curator__record-cta-title {
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-body-md-size);
+  font-weight: 600;
+  color: var(--mr-fg);
+}
+.mr-curator__record-cta-hint {
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-body-sm-size);
+  color: var(--mr-fg-muted);
+}
+.mr-curator__record-cta-arrow {
+  color: var(--mr-fg-subtle);
+  flex-shrink: 0;
+  transition: transform var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-curator__record-cta:hover .mr-curator__record-cta-arrow {
+  transform: translateX(2px);
+  color: var(--mr-fg);
+}
+
 /* ── Actions + lifecycle transitions ─────────────────────── */
 
 .mr-curator__actions {
