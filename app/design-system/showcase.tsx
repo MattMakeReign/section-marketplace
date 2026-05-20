@@ -68,8 +68,26 @@ export function Showcase() {
   const [progress, setProgress] = useState(45);
 
   useEffect(() => {
+    // Dual-write both attributes — legacy mr-mk-* CSS reads data-theme, new
+    // tools-ui reads data-mr-theme. Keeps mode coherent across the
+    // marketplace through chunks 2–7 of the migration; chunk-9 cleanup will
+    // drop data-theme once the legacy CSS retires.
+    document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.mrTheme = theme;
+    // Persist to localStorage so the choice survives navigation, matching
+    // the profile menu's useTheme behaviour.
+    try {
+      window.localStorage.setItem("mr-mk-theme", theme);
+    } catch {
+      // localStorage blocked — silent
+    }
   }, [theme]);
+
+  // Pick up the user's prior choice if any.
+  useEffect(() => {
+    const stored = window.localStorage.getItem("mr-mk-theme");
+    if (stored === "light" || stored === "dark") setTheme(stored);
+  }, []);
 
   return (
     <div className="dsx-shell">

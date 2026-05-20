@@ -20,6 +20,9 @@ export function ViewportToggle({
   ariaLabel?: string;
   className?: string;
 }) {
+  // mr-viewport-toggle is a dedicated class so the pill chrome (dark
+  // material container + white pill-shaped active item) can be styled
+  // without leaking into the plain <ToggleGroup> primitive's defaults.
   return (
     <ToggleGroup
       type="single"
@@ -28,7 +31,7 @@ export function ViewportToggle({
         if (v === "desktop" || v === "tablet" || v === "mobile") onChange(v);
       }}
       aria-label={ariaLabel}
-      className={className}
+      className={["mr-viewport-toggle", className].filter(Boolean).join(" ")}
     >
       <ToggleGroupItem value="desktop" aria-label="Desktop viewport">
         Desktop

@@ -929,6 +929,45 @@
 }
 
 /* ──────────────────────────────────────────────────────────────
+ * ViewportToggle — pill-shaped wrapper (Desktop / Tablet / Mobile).
+ * Uses a dark material container with a white pill-shaped active item.
+ * Both container and item radii are pill so the active state nests
+ * cleanly inside the container.
+ * ────────────────────────────────────────────────────────────── */
+
+.mr-viewport-toggle {
+  background: rgba(20, 20, 20, 0.86);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: var(--mr-radius-pill);
+  padding: 4px;
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mr-viewport-toggle .mr-toggle-group__item {
+  height: 30px;
+  padding: 0 var(--mr-space-3);
+  border-radius: var(--mr-radius-pill);
+  color: var(--mr-neutral-400);
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-button-md-size);
+  font-weight: var(--mr-text-button-md-weight);
+}
+.mr-viewport-toggle .mr-toggle-group__item:hover {
+  color: var(--mr-neutral-50);
+  background: transparent;
+}
+.mr-viewport-toggle .mr-toggle-group__item[data-state="on"] {
+  background: var(--mr-neutral-50);
+  color: var(--mr-neutral-950);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.mr-viewport-toggle .mr-toggle-group__item:focus-visible {
+  outline: 2px solid var(--mr-neutral-50);
+  outline-offset: 2px;
+}
+
+/* ──────────────────────────────────────────────────────────────
  * FilterPill + popover
  * ────────────────────────────────────────────────────────────── */
 
