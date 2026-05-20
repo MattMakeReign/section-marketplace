@@ -4,7 +4,7 @@
   "category": "testimonials",
   "version": "1.0.0",
   "track": "stable",
-  "lifecycle": "Approved",
+  "lifecycle": "Archived",
   "description": "Three-up testimonial grid. Stacks single-column on mobile, three columns at md+. Each card carries quote, attribution, and role. Use when you want all testimonials visible at once rather than browsable.",
   "props": {
     "items": {
@@ -51,7 +51,7 @@
     "social-proof"
   ],
   "created": "2026-05-09",
-  "updated": "2026-05-11",
+  "updated": "2026-05-20",
   "submittedBy": "techo",
   "attribution": {
     "originalCreator": "techo",

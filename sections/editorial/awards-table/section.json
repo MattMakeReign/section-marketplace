@@ -4,7 +4,7 @@
   "category": "editorial",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Centred heading above a three-column table with hairline row dividers and a double-weight header border. Designed for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic treatment.",
   "dependencies": [
     "@/components/section",
@@ -28,12 +28,13 @@
     "list"
   ],
   "created": "2026-05-12",
-  "updated": "2026-05-12",
+  "updated": "2026-05-20",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-atlas",
-    "submittedAt": "2026-05-12"
+    "submittedAt": "2026-05-12",
+    "approvedAt": "2026-05-20"
   },
   "curation": {
     "intent": "Centred-heading + three-column tabular list for structured records such as awards or press features.",

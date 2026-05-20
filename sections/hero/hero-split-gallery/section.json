@@ -2,9 +2,9 @@
   "id": "hero-split-gallery",
   "name": "Hero — Split Gallery",
   "category": "hero",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Two-column hero. Left: eyebrow, display headline, supporting copy, single CTA. Right: a dual-column vertical-marquee gallery of images that scroll in opposite directions inside a faded frame.",
   "props": {
     "eyebrow": {
@@ -48,7 +48,6 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "low",
     "medium"
   ],
   "responsive": {
@@ -58,7 +57,7 @@
       "tablet",
       "desktop"
     ],
-    "notes": "At md+ the gallery sits to the right of the text. Below md the layout stacks and the secondary image column hides on the smallest viewport."
+    "notes": "At 48rem+ the gallery sits to the right of the text as a dual-column vertical marquee. Below 48rem the layout stacks: copy on top, a single full-width horizontal marquee underneath. Marquee wrap distance is pixel-measured per breakpoint so the loop is seamless across any gap or aspect ratio."
   },
   "previews": {
     "static": "preview.svg"
@@ -71,11 +70,19 @@
     "imagery"
   ],
   "created": "2026-05-11",
-  "updated": "2026-05-11",
+  "updated": "2026-05-20",
+  "changelog": [
+    {
+      "version": "0.0.2",
+      "date": "2026-05-20",
+      "summary": "Mobile / tablet now render a single horizontal marquee under the copy instead of a cramped half-width vertical strip. Marquee loop converted to pixel-measured wrap (seamless at any gap / aspect ratio)."
+    }
+  ],
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "demo-warm-editorial",
-    "submittedAt": "2026-05-11"
+    "submittedAt": "2026-05-11",
+    "approvedAt": "2026-05-20"
   }
 }

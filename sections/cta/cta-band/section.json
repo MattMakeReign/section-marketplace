@@ -4,7 +4,7 @@
   "category": "cta",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Inverted full-width band with a single primary CTA. Closes a page.",
   "dependencies": [
     "@/components/section",
@@ -21,7 +21,7 @@
   },
   "tags": [],
   "created": "2026-05-11",
-  "updated": "2026-05-19",
+  "updated": "2026-05-20",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",

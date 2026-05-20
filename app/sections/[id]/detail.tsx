@@ -9,11 +9,11 @@
  *     preview at `/render/<id>` as the page's centrepiece
  *   - Floating top-left breadcrumb pill
  *   - Floating top-right 4-icon toolbar (info · refresh · code · close)
- *   - Left drawer (hidden by default) — section info, specs, curator actions
- *   - Right drawer (hidden by default) — install command
+ *   - Left drawer (hidden by default) — section info + specs + install command,
+ *     or curator actions (mutually exclusive in the same slot)
  *
- * Drawer state persists in localStorage so the user's chosen layout sticks
- * across navigation. Both drawers can be open simultaneously.
+ * Drawer state persists in the URL so the user's chosen layout sticks
+ * across navigation.
  */
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
@@ -149,14 +149,14 @@ export function Detail({
 }) {
   const router = useRouter();
 
-  // Drawer state — info / install / curation share the same left-side slot,
+  // Drawer state — info / curation share the same left-side slot,
   // mutually exclusive. Default opens info so section context is visible
   // without a click; toolbar buttons toggle from there.
-  type Panel = "info" | "install" | "curation" | null;
+  type Panel = "info" | "curation" | null;
   const searchParams = useSearchParams();
   const urlPanel = searchParams?.get("panel");
   const initialPanel: Panel =
-    urlPanel === "info" || urlPanel === "install" || urlPanel === "curation"
+    urlPanel === "info" || urlPanel === "curation"
       ? urlPanel
       : urlPanel === "closed"
         ? null
@@ -165,7 +165,6 @@ export function Detail({
   const togglePanel = (p: Exclude<Panel, null>) =>
     setPanel((cur) => (cur === p ? null : p));
   const leftOpen = panel === "info";
-  const rightOpen = panel === "install";
   const curationOpen = panel === "curation";
   const panelOpen = panel !== null;
 
@@ -308,7 +307,7 @@ export function Detail({
         />
       </div>
 
-      {/* Top-right chrome — 3-icon action bar (Info / Install / Refresh)
+      {/* Top-right chrome — 3-icon action bar (Info / Curation / Refresh)
        * paired with a standalone circular Close pill. Close lives in its
        * own surface because it's a navigation action (exits the detail
        * view) whereas the others toggle in-view state. */}
@@ -325,18 +324,6 @@ export function Detail({
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
               <line x1="6" y1="3" x2="6" y2="13" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            className={`mr-mk-detail__tool${rightOpen ? " mr-mk-detail__tool--active" : ""}`}
-            aria-pressed={rightOpen}
-            aria-label="Install command"
-            title="Install command"
-            onClick={() => togglePanel("install")}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 5L3 8l3 3M10 5l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
           <button
@@ -379,16 +366,16 @@ export function Detail({
         </Link>
       </div>
 
-      {/* Both drawers share the left-side slot — only one open at a
-       * time (mutually exclusive via panel state). Always mounted so
-       * the slide transition has both endpoints to interpolate. */}
+      {/* Info and curation drawers share the left-side slot — only one
+       * open at a time (mutually exclusive via panel state). Always
+       * mounted so the slide transition has both endpoints to
+       * interpolate. */}
       <LeftDrawer
         section={current}
         onClose={() => setPanel(null)}
         open={leftOpen}
         brandContexts={brandContexts}
       />
-      <RightDrawer section={current} onClose={() => setPanel(null)} open={rightOpen} />
       <CurationDrawer
         section={current}
         onClose={() => setPanel(null)}
@@ -396,71 +383,6 @@ export function Detail({
         onSectionUpdate={(updated) => setOverlay(updated)}
       />
     </div>
-  );
-}
-
-/* ─────────────────────────── RightDrawer ─────────────────────────── */
-
-function RightDrawer({ section, onClose, open }: { section: ManifestEntry; onClose: () => void; open: boolean }) {
-  const [copied, setCopied] = useState(false);
-  const installCmd = `mr add ${section.id}`;
-  const ref = useSlide<HTMLElement>(open, DRAWER_OPEN_STYLES, DRAWER_CLOSED_STYLES);
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(installCmd);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // clipboard blocked — silent
-    }
-  }
-
-  return (
-    <aside
-      ref={ref}
-      className="mr-mk-detail__drawer mr-mk-detail__drawer--left"
-      data-open={open}
-      aria-hidden={!open}
-      aria-label="Install command"
-    >
-      <header className="mr-mk-detail__drawer-head">
-        <div className="mr-mk-detail__drawer-eyebrow">Install</div>
-        <h2 className="mr-mk-detail__drawer-title">Add to project</h2>
-        <button
-          type="button"
-          className="mr-mk-detail__drawer-close"
-          onClick={onClose}
-          aria-label="Close install"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-      </header>
-
-      <p className="mr-mk-detail__drawer-desc">
-        Run this from any MakeReign project root. The section&apos;s files stream from the API and land
-        in your local <code>sections/</code> directory.
-      </p>
-
-      <div className="mr-mk-detail__install">
-        <code>{installCmd}</code>
-        <button type="button" className="mr-mk-detail__install-copy" onClick={copy}>
-          {copied ? "Copied" : "Copy"}
-        </button>
-      </div>
-
-      <div className="mr-mk-detail__drawer-section">
-        <div className="mr-mk-detail__drawer-section-label">Section ID</div>
-        <code className="mr-mk-detail__codeline">{section.id}</code>
-      </div>
-
-      <div className="mr-mk-detail__drawer-section">
-        <div className="mr-mk-detail__drawer-section-label">Version</div>
-        <code className="mr-mk-detail__codeline">v{section.version}</code>
-      </div>
-    </aside>
   );
 }
 
@@ -480,6 +402,21 @@ function LeftDrawer({
   const sectionTrack = (section.track ?? "stable") as Track;
   const sectionLifecycle = getLifecycle(section);
   const ref = useSlide<HTMLElement>(open, DRAWER_OPEN_STYLES, DRAWER_CLOSED_STYLES);
+
+  // Install command — single-action copy for adding this section to a
+  // local MakeReign project. Lives at the bottom of the info drawer so
+  // designers don't have to open a separate panel for it.
+  const installCmd = `mr add ${section.id}`;
+  const [copied, setCopied] = useState(false);
+  async function copyInstall() {
+    try {
+      await navigator.clipboard.writeText(installCmd);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard blocked — silent
+    }
+  }
 
   // Resolve `section.context` (e.g. "acme-2025" or "acme-2025@1.0.0") into
   // the human label from the contexts index. Falls back to the raw id if
@@ -581,6 +518,16 @@ function LeftDrawer({
         </dl>
       </div>
 
+      <div className="mr-mk-detail__drawer-section">
+        <div className="mr-mk-detail__drawer-section-label">Install</div>
+        <div className="mr-mk-detail__install">
+          <code>{installCmd}</code>
+          <button type="button" className="mr-mk-detail__install-copy" onClick={copyInstall}>
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+      </div>
+
     </aside>
   );
 }
@@ -660,6 +607,58 @@ function CuratorPanel({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+
+  // Inferred specs for the saved video — populated by probing the URL
+  // for size (HEAD request) + metadata (<video> probe). Both run only
+  // when a videoUrl is present; both are best-effort and silent on
+  // failure (specs just hide).
+  const [videoSpecs, setVideoSpecs] = useState<{
+    width?: number;
+    height?: number;
+    duration?: number;
+    bytes?: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!videoUrl) {
+      setVideoSpecs(null);
+      return;
+    }
+    let cancelled = false;
+    const next: { width?: number; height?: number; duration?: number; bytes?: number } = {};
+
+    // HEAD probe for byte size.
+    fetch(videoUrl, { method: "HEAD" })
+      .then((r) => {
+        const len = r.headers.get("content-length");
+        if (len && !cancelled) {
+          next.bytes = Number(len);
+          setVideoSpecs((prev) => ({ ...(prev ?? {}), ...next }));
+        }
+      })
+      .catch(() => {
+        /* silent */
+      });
+
+    // Metadata probe via a hidden video element.
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.muted = true;
+    v.src = videoUrl;
+    v.onloadedmetadata = () => {
+      if (cancelled) return;
+      next.width = v.videoWidth || undefined;
+      next.height = v.videoHeight || undefined;
+      next.duration = Number.isFinite(v.duration) ? v.duration : undefined;
+      setVideoSpecs((prev) => ({ ...(prev ?? {}), ...next }));
+    };
+
+    return () => {
+      cancelled = true;
+      v.removeAttribute("src");
+      v.load();
+    };
+  }, [videoUrl]);
 
   const [transitionPending, setTransitionPending] = useState<Lifecycle | null>(null);
   const [transitionError, setTransitionError] = useState<string | null>(null);
@@ -835,7 +834,7 @@ function CuratorPanel({
 
   return (
     <div className="mr-curator">
-      <Accordion type="single" collapsible defaultValue="description" className="mr-curator__accordion">
+      <Accordion type="single" collapsible defaultValue="video" className="mr-curator__accordion">
         <AccordionItem value="video">
           <AccordionTrigger>Video clip</AccordionTrigger>
           <AccordionContent>
@@ -845,71 +844,96 @@ function CuratorPanel({
               </FieldDescription>
               {videoUrl ? (
                 <div className="mr-curator__video-wrap">
-                  <video
-                    className="mr-curator__video"
-                    src={videoUrl}
-                    controls
-                    muted
-                    loop
-                    playsInline
-                  />
-                  <Button
-                    type="button"
-                    variant="tertiary"
-                    size="sm"
-                    onClick={removeVideo}
-                    disabled={uploading}
+                  <div
+                    className="mr-curator__video-thumb"
+                    onMouseEnter={(e) => {
+                      const v = e.currentTarget.querySelector("video");
+                      if (v) {
+                        v.currentTime = 0;
+                        v.play().catch(() => {});
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const v = e.currentTarget.querySelector("video");
+                      if (v) {
+                        v.pause();
+                        v.currentTime = 0;
+                      }
+                    }}
                   >
-                    Remove video
-                  </Button>
+                    {section.previews?.static && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={section.previews.static}
+                        alt={`${section.name} thumbnail`}
+                        className="mr-curator__video-thumb-img"
+                      />
+                    )}
+                    <video
+                      src={videoUrl}
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      className="mr-curator__video-thumb-video"
+                    />
+                  </div>
+                  <div className="mr-curator__video-meta">
+                    <span className="mr-curator__video-meta-label">
+                      {(() => {
+                        const parts: string[] = [];
+                        if (videoSpecs?.width && videoSpecs?.height) {
+                          parts.push(`${videoSpecs.width}×${videoSpecs.height}`);
+                        }
+                        if (typeof videoSpecs?.duration === "number") {
+                          const d = videoSpecs.duration;
+                          const m = Math.floor(d / 60);
+                          const s = Math.floor(d % 60);
+                          parts.push(`${m}:${s.toString().padStart(2, "0")}`);
+                        }
+                        if (typeof videoSpecs?.bytes === "number") {
+                          const mb = videoSpecs.bytes / 1024 / 1024;
+                          parts.push(
+                            mb >= 1
+                              ? `${mb.toFixed(1)} MB`
+                              : `${(videoSpecs.bytes / 1024).toFixed(0)} KB`,
+                          );
+                        }
+                        return parts.length > 0 ? parts.join(" · ") : "Saved";
+                      })()}
+                    </span>
+                    <Link
+                      href={`/sections/${section.id}/capture`}
+                      className="mr-curator__video-edit"
+                    >
+                      Edit
+                    </Link>
+                  </div>
                 </div>
               ) : (
-                <div className="mr-curator__video-options">
-                  <Link href={`/sections/${section.id}/capture`} className="mr-curator__record-cta">
-                    <span className="mr-curator__record-dot" aria-hidden />
-                    <span className="mr-curator__record-cta-body">
-                      <strong className="mr-curator__record-cta-title">Record in browser</strong>
-                      <span className="mr-curator__record-cta-hint">
-                        Capture, trim &amp; thumbnail in one flow
-                      </span>
-                    </span>
-                    <svg
-                      className="mr-curator__record-cta-arrow"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      aria-hidden
-                    >
-                      <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </Link>
-                  <label
-                    className={`mr-curator__dropzone${dragOver ? " mr-curator__dropzone--over" : ""}`}
-                    onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
-                    onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                    onDragLeave={() => setDragOver(false)}
-                    onDrop={onDrop}
+                <Link
+                  href={`/sections/${section.id}/capture`}
+                  className="mr-curator__record-btn"
+                >
+                  <span className="mr-curator__record-btn-dot" aria-hidden />
+                  Record in browser
+                  <svg
+                    className="mr-curator__record-btn-arrow"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    aria-hidden
                   >
-                    <input
-                      type="file"
-                      accept="video/mp4,video/webm"
-                      hidden
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) uploadVideo(file);
-                      }}
+                    <path
+                      d="M5 3l4 4-4 4"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
-                    {uploading ? (
-                      <span className="mr-curator__dropzone-title">Uploading…</span>
-                    ) : (
-                      <>
-                        <span className="mr-curator__dropzone-title">Or drop a .webm / .mp4</span>
-                        <span className="mr-curator__dropzone-hint">click to browse files</span>
-                      </>
-                    )}
-                  </label>
-                </div>
+                  </svg>
+                </Link>
               )}
               {uploadError ? <FieldError>{uploadError}</FieldError> : null}
             </Field>

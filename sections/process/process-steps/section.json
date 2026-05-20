@@ -4,7 +4,7 @@
   "category": "process",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Numbered process explainer with eyebrow, optional heading, and a 4-up ordered list of steps. Each step exposes a zero-padded index, a short label, and a body paragraph. Desktop: horizontal 4-column row. Mobile: single-column stack.",
   "props": {
     "eyebrow": {
@@ -51,7 +51,7 @@
     "editorial"
   ],
   "created": "2026-05-12",
-  "updated": "2026-05-12",
+  "updated": "2026-05-20",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",

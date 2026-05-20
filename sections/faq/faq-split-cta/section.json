@@ -4,7 +4,7 @@
   "category": "faq",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Two-column split: left column anchors eyebrow, heading, lede copy, and a single CTA button; right column stacks an accordion list of FAQ items, one panel open at a time, with a +/× toggle icon per row.",
   "props": {
     "eyebrow": {
@@ -64,12 +64,13 @@
     "two-column"
   ],
   "created": "2026-05-12",
-  "updated": "2026-05-12",
+  "updated": "2026-05-20",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "demo-warm-editorial",
-    "submittedAt": "2026-05-12"
+    "submittedAt": "2026-05-12",
+    "approvedAt": "2026-05-20"
   },
   "curation": {
     "intent": "Split two-column FAQ section — fixed editorial anchor left, expandable accordion list right, with inline CTA.",

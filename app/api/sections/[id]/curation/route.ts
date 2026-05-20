@@ -15,7 +15,8 @@
  *     tags?: string[],                // 0–6 short kebab-case keywords
  *     motionDensity?: string[],       // subset of [static, low, medium, high, experience]
  *     category?: string,              // canonical category
- *     previewVideoUrl?: string | null // Supabase Storage URL; null to remove
+ *     previewVideoUrl?: string | null,// Supabase Storage URL; null to remove
+ *     previewStaticUrl?: string | null// Supabase Storage URL; null to remove
  *   }
  *
  * Response: { ok: true, section: ManifestEntry } | { ok: false, error, code }
@@ -48,6 +49,7 @@ type Body = {
   motionDensity?: string[];
   category?: string;
   previewVideoUrl?: string | null;
+  previewStaticUrl?: string | null;
 };
 
 export async function PUT(
@@ -124,6 +126,16 @@ export async function PUT(
       { status: 400 },
     );
   }
+  if (
+    body.previewStaticUrl !== undefined &&
+    body.previewStaticUrl !== null &&
+    (typeof body.previewStaticUrl !== "string" || body.previewStaticUrl.length === 0)
+  ) {
+    return NextResponse.json(
+      { ok: false, error: "previewStaticUrl must be a URL or null", code: "invalid_args" },
+      { status: 400 },
+    );
+  }
 
   // Locate the section's path via index.json.
   const root = process.cwd();
@@ -169,12 +181,21 @@ export async function PUT(
   if (Array.isArray(body.tags)) sectionManifest.tags = body.tags;
   if (Array.isArray(body.motionDensity)) sectionManifest.motionDensity = body.motionDensity;
   if (typeof body.category === "string") sectionManifest.category = body.category;
-  if (body.previewVideoUrl !== undefined) {
+  if (body.previewVideoUrl !== undefined || body.previewStaticUrl !== undefined) {
     const previews = (sectionManifest.previews ?? {}) as Record<string, unknown>;
-    if (body.previewVideoUrl === null) {
-      delete previews.video;
-    } else {
-      previews.video = body.previewVideoUrl;
+    if (body.previewVideoUrl !== undefined) {
+      if (body.previewVideoUrl === null) {
+        delete previews.video;
+      } else {
+        previews.video = body.previewVideoUrl;
+      }
+    }
+    if (body.previewStaticUrl !== undefined) {
+      if (body.previewStaticUrl === null) {
+        delete previews.static;
+      } else {
+        previews.static = body.previewStaticUrl;
+      }
     }
     sectionManifest.previews = previews;
   }

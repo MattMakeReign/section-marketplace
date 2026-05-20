@@ -1,0 +1,776 @@
+/*
+ * Section video recorder — scoped chrome.
+ *
+ * Namespace: mr-cap-*  (matches mr-mk-* / mr-sl-* convention).
+ * Tokens: reads --mr-* (chrome tokens) — NOT --surface/--fg (those belong
+ * to rendered section content, kept firewalled per the 2026-05-20 tools-ui
+ * decision).
+ */
+
+.mr-cap-root {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--mr-bg);
+  color: var(--mr-fg);
+  z-index: 1;
+}
+
+/* ── Topbar ─────────────────────────────────────────────────── */
+
+.mr-cap-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--mr-border);
+  background: var(--mr-surface);
+  min-height: 56px;
+}
+
+.mr-cap-topbar__left,
+.mr-cap-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mr-cap-back {
+  font-size: 13px;
+  color: var(--mr-fg-muted);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mr-cap-back:hover {
+  background: var(--mr-surface-2, rgba(0, 0, 0, 0.04));
+  color: var(--mr-fg);
+}
+
+.mr-cap-title {
+  font-size: 13px;
+  color: var(--mr-fg-muted);
+  letter-spacing: -0.01em;
+}
+
+.mr-cap-title strong {
+  color: var(--mr-fg);
+  font-weight: 500;
+}
+
+.mr-cap-link-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--mr-fg);
+  color: var(--mr-bg);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.mr-cap-link-btn:hover {
+  opacity: 0.88;
+}
+
+/* ── Main / stage ─────────────────────────────────────────────── */
+
+.mr-cap-main {
+  position: relative;
+  overflow: hidden;
+}
+
+.mr-cap-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #0a0a0a;
+  /* Centre the fixed-size iframe. If the viewport is smaller than the
+     iframe, allow scroll so the iframe NEVER reflows down — that would
+     change CropTarget mid-recording. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* The iframe lives in two visual states:
+   - IDLE / REVIEW: a defined "record area" — fixed 1280×720 (16:9)
+     centred in the stage with a soft frame so the designer sees
+     exactly what will be captured.
+   - COUNTDOWN / RECORDING: the iframe goes FULL VIEWPORT via
+     position:fixed inset:0. Tab capture grabs the entire tab, and
+     because the iframe IS the entire tab, the saved file contains
+     ONLY the section — no chrome, no backdrop, no HUD ever lands in
+     the file regardless of whether CropTarget worked.
+
+   This is more reliable than CropTarget which silently no-ops in
+   some Chrome versions, leaving every chrome element in the file. */
+.mr-cap-iframe {
+  width: 1280px;
+  height: 720px;
+  border: 0;
+  display: block;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: border-radius 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* When recording, the iframe takes the whole viewport — tab capture
+   then grabs ONLY the section content, no chrome bleed. */
+.mr-cap-root[data-phase="countdown"] .mr-cap-iframe,
+.mr-cap-root[data-phase="recording"] .mr-cap-iframe {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 50;
+}
+
+/* All chrome (topbar / helptext / HUDs) hidden so nothing bleeds in. */
+.mr-cap-root[data-phase="countdown"] .mr-cap-topbar,
+.mr-cap-root[data-phase="recording"] .mr-cap-topbar,
+.mr-cap-root[data-phase="countdown"] .mr-cap-helptext,
+.mr-cap-root[data-phase="recording"] .mr-cap-helptext,
+.mr-cap-root[data-phase="recording"] .mr-cap-recbar,
+.mr-cap-root[data-phase="recording"] .mr-cap-esc-hint {
+  visibility: hidden;
+}
+
+.mr-cap-helptext {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 540px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: rgba(20, 20, 20, 0.85);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.mr-cap-helptext strong {
+  color: #fff;
+}
+
+/* ── Countdown overlay (fixed full-viewport) ─────────────────── */
+
+.mr-cap-countdown-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 24px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.mr-cap-countdown-label {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.mr-cap-countdown-num {
+  font-size: clamp(96px, 14vw, 160px);
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  animation: mr-cap-countdown-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes mr-cap-countdown-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  40% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Esc-to-stop hint (when HUD is hidden) ───────────────────── */
+
+.mr-cap-esc-hint {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.mr-cap-esc-hint kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  margin: 0 2px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ── Recording HUD ───────────────────────────────────────────── */
+
+.mr-cap-recbar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 13px;
+  z-index: 2;
+}
+
+.mr-cap-recdot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e0282b;
+  animation: mr-cap-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes mr-cap-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.mr-cap-rectime {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: 0.02em;
+}
+
+.mr-cap-stopbtn {
+  margin-left: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  border: 0;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.mr-cap-stopbtn:hover {
+  opacity: 0.88;
+}
+
+/* ── Review (custom player + inline timeline) ────────────────── */
+
+.mr-cap-review {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 16px;
+  padding: 24px 24px 24px;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Big player — black box, 16:9, video centered. */
+.mr-cap-player {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 0;
+  cursor: pointer;
+}
+
+.mr-cap-player video {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: #000;
+  display: block;
+}
+
+.mr-cap-bigplay {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #000;
+  border: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.mr-cap-bigplay:hover {
+  transform: scale(1.06);
+  background: #fff;
+}
+
+.mr-cap-bigplay svg {
+  margin-left: 4px; /* optical centre — play triangle skews right */
+}
+
+/* Timeline strip. */
+.mr-cap-tlrow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 0 4px;
+}
+
+.mr-cap-tlplay {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--mr-fg);
+  color: var(--mr-bg);
+  border: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.mr-cap-tlplay:hover {
+  opacity: 0.88;
+}
+
+.mr-cap-tl {
+  position: relative;
+  height: 44px;
+  background: var(--mr-surface-2, rgba(0, 0, 0, 0.06));
+  border-radius: 8px;
+  touch-action: none;
+  user-select: none;
+}
+
+/* The kept (between-handles) range, lit up. */
+.mr-cap-tl__range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--mr-fg);
+  opacity: 0.18;
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* The trimmed (discarded) regions — dimmed overlay. */
+.mr-cap-tl__trimmed {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.04),
+    rgba(0, 0, 0, 0.04) 4px,
+    rgba(0, 0, 0, 0.1) 4px,
+    rgba(0, 0, 0, 0.1) 8px
+  );
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* The playhead. */
+.mr-cap-tl__playhead {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--mr-fg);
+  margin-left: -1px;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--mr-surface);
+}
+
+.mr-cap-tl__playhead::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mr-fg);
+  transform: translateX(-50%);
+}
+
+/* In / out drag handles. */
+.mr-cap-tl__handle {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 14px;
+  margin-left: -7px;
+  background: var(--mr-fg);
+  border: 2px solid var(--mr-surface);
+  border-radius: 4px;
+  cursor: ew-resize;
+  z-index: 3;
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.mr-cap-tl__handle:hover,
+.mr-cap-tl__handle:active {
+  transform: scaleX(1.2) scaleY(1.05);
+}
+
+.mr-cap-tl__handle::after {
+  content: "";
+  position: absolute;
+  inset: 30% 35%;
+  background: var(--mr-surface);
+  border-radius: 1px;
+}
+
+.mr-cap-tltime {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  color: var(--mr-fg-muted);
+  flex-shrink: 0;
+  min-width: 90px;
+  text-align: right;
+}
+
+.mr-cap-tltime__cur {
+  color: var(--mr-fg);
+  font-weight: 500;
+}
+
+.mr-cap-tltime__sep {
+  margin: 0 4px;
+}
+
+/* Below-timeline footer: trim summary + thumbnail picker. */
+.mr-cap-tlfoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  background: var(--mr-surface);
+  border: 1px solid var(--mr-border);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.mr-cap-tlfoot__summary {
+  font-size: 13px;
+  color: var(--mr-fg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.mr-cap-tlfoot__summary strong {
+  font-weight: 500;
+  color: var(--mr-fg);
+}
+
+.mr-cap-tlfoot__dur {
+  color: var(--mr-fg-muted);
+}
+
+.mr-cap-tlfoot__warn {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.1);
+  color: #b45309;
+  font-size: 11px;
+}
+
+.mr-cap-tlfoot__thumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mr-cap-thumbprev {
+  width: 56px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--mr-border);
+  background: #000;
+}
+
+/* ── Permission / saving / done ──────────────────────────────── */
+
+.mr-cap-permission,
+.mr-cap-saving {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  height: 100%;
+  text-align: center;
+  padding: 40px;
+}
+
+.mr-cap-permission h2,
+.mr-cap-saving h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.mr-cap-permission p,
+.mr-cap-saving p {
+  font-size: 13px;
+  color: var(--mr-fg-muted);
+  margin: 0;
+  max-width: 420px;
+}
+
+.mr-cap-spinner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--mr-border);
+  border-top-color: var(--mr-fg);
+  animation: mr-cap-spin 0.8s linear infinite;
+}
+
+@keyframes mr-cap-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Done — tight, centred summary of what shipped ────────── */
+
+.mr-cap-done {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  height: 100%;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.mr-cap-done__previews {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.mr-cap-done__preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mr-cap-done__label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mr-fg);
+  font-weight: 500;
+}
+
+.mr-cap-done__label span {
+  color: var(--mr-fg-muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 11px;
+}
+
+/* Both tiles are exact 16:9 boxes — no flex stretching. Video and
+   image match pixel-for-pixel so they read as a matched pair. */
+.mr-cap-done__frame {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  background: var(--mr-surface-2, rgba(0, 0, 0, 0.04));
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--mr-border);
+}
+
+.mr-cap-done__frame img,
+.mr-cap-done__frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Single tight row holding status + actions instead of two stacked
+   rows with lots of whitespace. */
+.mr-cap-done__actionsbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: 1100px;
+  padding: 10px 14px;
+  background: rgba(10, 143, 90, 0.06);
+  border: 1px solid rgba(10, 143, 90, 0.2);
+  border-radius: 10px;
+}
+
+.mr-cap-done__statusrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mr-cap-done__check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #0a8f5a;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.mr-cap-done__statustext {
+  font-size: 13px;
+  color: var(--mr-fg);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mr-cap-done__statustext code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11.5px;
+  background: var(--mr-surface);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--mr-border);
+}
+
+.mr-cap-done__links {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 920px) {
+  .mr-cap-done__previews {
+    grid-template-columns: 1fr;
+  }
+  .mr-cap-done__actionsbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ── Error ───────────────────────────────────────────────────── */
+
+.mr-cap-error {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #c83232;
+  color: #fff;
+  font-size: 13px;
+  max-width: 560px;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.mr-cap-error button {
+  background: rgba(255, 255, 255, 0.15);
+  border: 0;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mr-cap-error button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* The topbar STAYS VISIBLE through every phase so the page layout
+   doesn't shape-shift. The previous behaviour (hide on countdown +
+   recording) collapsed the grid row, shifting the iframe vertically,
+   and CropTarget followed — the user experienced a layout jump. Now
+   the iframe stays at one position from idle through to review. The
+   recording HUD floats over the stage; it's cropped out by CropTarget
+   so it doesn't end up in the saved file. */
+
+/* Narrow viewport — stack the review panel under the video. */
+@media (max-width: 920px) {
+  .mr-cap-review {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .mr-cap-review__controls {
+    max-height: 50vh;
+  }
+}

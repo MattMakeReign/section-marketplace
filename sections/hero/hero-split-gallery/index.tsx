@@ -1,12 +1,20 @@
 "use client";
 
 /**
- * HeroSplitGallery — split hero with a dual-column vertical-marquee gallery.
+ * HeroSplitGallery — split hero with a marquee gallery.
  *
- * Left column: eyebrow, display headline, supporting copy, single CTA.
- * Right column: two side-by-side image strips that scroll in opposite
- * directions inside a faded frame. Layout / structure / animation adapted
- * from a public reference; all styles translated to the project's tokens.
+ * Layout:
+ *   • ≥48rem (md+): two-column. Left = eyebrow, headline, supporting, CTA.
+ *     Right = dual-column vertical marquee (strips scroll in opposite
+ *     directions inside a top/bottom faded frame).
+ *   • <48rem: stacked. Copy on top, then a single full-width horizontal
+ *     marquee underneath with left/right faded frame.
+ *
+ * The marquee wrap distance is pixel-measured from the offset of the first
+ * duplicated item in each strip, so it's seamless regardless of gap or
+ * image aspect ratio. Re-measures on resize, breakpoint change, and a
+ * short post-mount delay (to cover picsum load shifts). Respects
+ * `prefers-reduced-motion` by holding a static frame.
  */
 
 import * as React from "react";
@@ -59,6 +67,8 @@ const DEFAULT_RIGHT: GalleryImage[] = [
   },
 ];
 
+const SPEED_PX_PER_FRAME = 0.4; // ~24px/s at 60fps — calm editorial drift
+
 export function HeroSplitGallery({
   position,
   eyebrow = "About us",
@@ -68,43 +78,107 @@ export function HeroSplitGallery({
   leftImages = DEFAULT_LEFT,
   rightImages = DEFAULT_RIGHT,
 }: HeroSplitGalleryProps) {
-  const leftStripRef = React.useRef<HTMLDivElement>(null);
-  const rightStripRef = React.useRef<HTMLDivElement>(null);
+  const desktopLeftRef = React.useRef<HTMLDivElement>(null);
+  const desktopRightRef = React.useRef<HTMLDivElement>(null);
+  const mobileRowRef = React.useRef<HTMLDivElement>(null);
+
+  // Mobile gallery interleaves both columns so the horizontal marquee
+  // surfaces the full set of imagery rather than just one strip.
+  const mobileImages = React.useMemo(() => {
+    const out: GalleryImage[] = [];
+    const max = Math.max(leftImages.length, rightImages.length);
+    for (let i = 0; i < max; i++) {
+      if (leftImages[i]) out.push(leftImages[i]);
+      if (rightImages[i]) out.push(rightImages[i]);
+    }
+    return out;
+  }, [leftImages, rightImages]);
 
   React.useEffect(() => {
-    const left = leftStripRef.current;
-    const right = rightStripRef.current;
-    if (!left || !right) return;
-
-    // Respect reduced motion — hold a static frame, no animation loop.
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) {
-      left.style.transform = "translateY(-25%)";
-      right.style.transform = "translateY(-25%)";
-      return;
-    }
-
+    const mqlDesktop = window.matchMedia("(min-width: 48rem)");
+    const mqlReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let raf = 0;
-    let leftPos = 0;
-    let rightPos = -50;
-    const speed = 0.09;
 
-    const tick = () => {
-      leftPos += speed;
-      if (leftPos >= 0) leftPos = -50;
-      rightPos -= speed;
-      if (rightPos <= -100) rightPos = -50;
-
-      left.style.transform = `translateY(${leftPos}%)`;
-      right.style.transform = `translateY(${rightPos}%)`;
-      raf = requestAnimationFrame(tick);
+    const measureOffset = (
+      el: HTMLElement,
+      index: number,
+      axis: "y" | "x",
+    ): number => {
+      const child = el.children[index] as HTMLElement | undefined;
+      if (!child) return 0;
+      return axis === "y" ? child.offsetTop : child.offsetLeft;
     };
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+    const setup = () => {
+      cancelAnimationFrame(raf);
+
+      if (mqlDesktop.matches) {
+        const left = desktopLeftRef.current;
+        const right = desktopRightRef.current;
+        if (!left || !right) return;
+
+        const leftWrap = measureOffset(left, leftImages.length, "y");
+        const rightWrap = measureOffset(right, rightImages.length, "y");
+
+        if (mqlReduced.matches || leftWrap === 0 || rightWrap === 0) {
+          left.style.transform = `translate3d(0, ${-leftWrap / 2}px, 0)`;
+          right.style.transform = `translate3d(0, ${-rightWrap / 2}px, 0)`;
+          return;
+        }
+
+        let leftY = 0;
+        let rightY = -rightWrap;
+
+        const tick = () => {
+          leftY -= SPEED_PX_PER_FRAME;
+          if (leftY <= -leftWrap) leftY += leftWrap;
+          rightY += SPEED_PX_PER_FRAME;
+          if (rightY >= 0) rightY -= rightWrap;
+          left.style.transform = `translate3d(0, ${leftY}px, 0)`;
+          right.style.transform = `translate3d(0, ${rightY}px, 0)`;
+          raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      } else {
+        const row = mobileRowRef.current;
+        if (!row) return;
+
+        const wrap = measureOffset(row, mobileImages.length, "x");
+
+        if (mqlReduced.matches || wrap === 0) {
+          row.style.transform = `translate3d(${-wrap / 2}px, 0, 0)`;
+          return;
+        }
+
+        let x = 0;
+        const tick = () => {
+          x -= SPEED_PX_PER_FRAME;
+          if (x <= -wrap) x += wrap;
+          row.style.transform = `translate3d(${x}px, 0, 0)`;
+          raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      }
+    };
+
+    setup();
+
+    // Re-measure once images settle — picsum loads can shift layout slightly
+    // even with aspect-ratio in play (e.g. if a parent reflows).
+    const settleTimer = window.setTimeout(setup, 400);
+
+    mqlDesktop.addEventListener("change", setup);
+    mqlReduced.addEventListener("change", setup);
+    window.addEventListener("resize", setup);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(settleTimer);
+      mqlDesktop.removeEventListener("change", setup);
+      mqlReduced.removeEventListener("change", setup);
+      window.removeEventListener("resize", setup);
+    };
+  }, [leftImages.length, rightImages.length, mobileImages.length]);
 
   return (
     <Section
@@ -132,12 +206,54 @@ export function HeroSplitGallery({
           </div>
         </div>
 
-        {/* Right — dual-column marquee gallery */}
-        <div className="col-span-12 min-[48rem]:col-span-6 relative h-[600px] min-[48rem]:h-[820px] overflow-hidden">
+        {/* Mobile / Tablet — single horizontal marquee under the copy */}
+        <div className="col-span-12 min-[48rem]:hidden relative h-[360px] overflow-hidden">
+          {/* Left fade */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[96px]"
+            style={{
+              background:
+                "linear-gradient(to right, var(--surface), color-mix(in srgb, var(--surface) 50%, transparent) 45%, transparent)",
+            }}
+          />
+          {/* Right fade */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[96px]"
+            style={{
+              background:
+                "linear-gradient(to left, var(--surface), color-mix(in srgb, var(--surface) 50%, transparent) 45%, transparent)",
+            }}
+          />
+
+          <div
+            ref={mobileRowRef}
+            className="flex h-full gap-5"
+            style={{ willChange: "transform" }}
+          >
+            {[...mobileImages, ...mobileImages].map((img, i) => (
+              <div
+                key={`m-${i}`}
+                className="h-full shrink-0 aspect-[3/4] rounded-md overflow-hidden bg-surface-muted"
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop — dual-column vertical marquee */}
+        <div className="hidden min-[48rem]:block col-span-6 relative h-[820px] overflow-hidden">
           {/* Top fade */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[140px] min-[48rem]:h-[220px]"
+            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[220px]"
             style={{
               background:
                 "linear-gradient(to bottom, var(--surface), color-mix(in srgb, var(--surface) 50%, transparent) 45%, transparent)",
@@ -146,7 +262,7 @@ export function HeroSplitGallery({
           {/* Bottom fade */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[140px] min-[48rem]:h-[220px]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[220px]"
             style={{
               background:
                 "linear-gradient(to top, var(--surface), color-mix(in srgb, var(--surface) 50%, transparent) 45%, transparent)",
@@ -154,16 +270,16 @@ export function HeroSplitGallery({
           />
 
           <div className="flex h-full justify-between gap-5">
-            {/* Strip A — scrolls down */}
+            {/* Strip A — scrolls up */}
             <div
-              ref={leftStripRef}
+              ref={desktopLeftRef}
               className="flex w-1/2 flex-col gap-5"
               style={{ willChange: "transform" }}
             >
               {[...leftImages, ...leftImages].map((img, i) => (
                 <div
                   key={`a-${i}`}
-                  className="w-full shrink-0 aspect-[4/5] min-[48rem]:aspect-[3/4] rounded-md overflow-hidden bg-surface-muted"
+                  className="w-full shrink-0 aspect-[3/4] rounded-md overflow-hidden bg-surface-muted"
                 >
                   <img
                     src={img.src}
@@ -175,16 +291,16 @@ export function HeroSplitGallery({
               ))}
             </div>
 
-            {/* Strip B — scrolls up, hidden at smallest viewport */}
+            {/* Strip B — scrolls down */}
             <div
-              ref={rightStripRef}
-              className="hidden min-[40rem]:flex w-1/2 flex-col gap-5"
+              ref={desktopRightRef}
+              className="flex w-1/2 flex-col gap-5"
               style={{ willChange: "transform" }}
             >
               {[...rightImages, ...rightImages].map((img, i) => (
                 <div
                   key={`b-${i}`}
-                  className="w-full shrink-0 aspect-[4/5] min-[48rem]:aspect-[3/4] rounded-md overflow-hidden bg-surface-muted"
+                  className="w-full shrink-0 aspect-[3/4] rounded-md overflow-hidden bg-surface-muted"
                 >
                   <img
                     src={img.src}

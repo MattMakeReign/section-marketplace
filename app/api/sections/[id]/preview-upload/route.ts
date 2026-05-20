@@ -13,8 +13,11 @@
  *
  * Constraints:
  *   - Max 15 MB (matches the bucket's file_size_limit)
- *   - Allowed mime: video/mp4, video/webm
+ *   - Allowed mime: video/mp4, video/webm, image/png, image/jpeg, image/webp
  *   - Object path: <sectionId>/preview.<ext>
+ *
+ * The same endpoint handles both the rollover video and the pre-rollover
+ * static thumbnail (the capture tool at /sections/[id]/capture POSTs both).
  */
 
 import { NextResponse } from "next/server";
@@ -33,6 +36,9 @@ const MAX_BYTES = 15 * 1024 * 1024;
 const ALLOWED_MIME: Record<string, string> = {
   "video/webm": "webm",
   "video/mp4": "mp4",
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/webp": "webp",
 };
 
 type IndexJson = Manifest & { sections?: ManifestEntry[] };

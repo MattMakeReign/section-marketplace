@@ -4,7 +4,7 @@
   "category": "cta",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "A section authored in mr-atlas and submitted via the V2 API. No local marketplace clone was harmed in the making of this section — the bundle was POSTed straight to the Vercel app which committed it to GitHub via Octokit.",
   "dependencies": [
     "@/components/section",
@@ -25,7 +25,7 @@
     "test"
   ],
   "created": "2026-05-12",
-  "updated": "2026-05-12",
+  "updated": "2026-05-20",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",

@@ -4,7 +4,7 @@
   "category": "cta",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "A banner section created via the acme-test project to prove the end-to-end remote marketplace loop works. Bold colour band, single CTA.",
   "dependencies": [
     "@/components/section",
@@ -25,7 +25,7 @@
     "acme"
   ],
   "created": "2026-05-12",
-  "updated": "2026-05-12",
+  "updated": "2026-05-20",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",

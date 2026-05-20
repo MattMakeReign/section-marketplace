@@ -4,7 +4,7 @@
   "category": "features",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Centered editorial header (label pill + display heading) over a full-width horizontal infinite-scroll marquee of large portrait image cards. Each card has a darkening gradient at the bottom with bullet-pointed labels. Heading fades in on scroll entrance; images parallax-shift while in viewport.",
   "props": {
     "eyebrow": {
@@ -69,11 +69,12 @@
     "parallax"
   ],
   "created": "2026-05-11",
-  "updated": "2026-05-11",
+  "updated": "2026-05-20",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "demo-warm-editorial",
-    "submittedAt": "2026-05-11"
+    "submittedAt": "2026-05-11",
+    "approvedAt": "2026-05-20"
   }
 }

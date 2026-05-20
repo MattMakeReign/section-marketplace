@@ -4,7 +4,7 @@
   "category": "hero",
   "version": "1.0.0",
   "track": "stable",
-  "lifecycle": "Approved",
+  "lifecycle": "Archived",
   "description": "Two-column hero. Bold display headline left, supporting copy and a CTA pair right. The default opening section for editorial / agency / portfolio work.",
   "props": {
     "headline": {
@@ -65,7 +65,7 @@
     "minimal"
   ],
   "created": "2026-05-09",
-  "updated": "2026-05-11",
+  "updated": "2026-05-20",
   "submittedBy": "techo",
   "context": null,
   "attribution": {

@@ -8,7 +8,7 @@
       "category": "editorial",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Approved",
       "description": "Centred heading above a three-column table with hairline row dividers and a double-weight header border. Designed for awards, press features, recognitions, or any structured record where uniform rows need deliberate typographic treatment.",
       "dependencies": [
         "@/components/section",
@@ -32,12 +32,13 @@
         "list"
       ],
       "created": "2026-05-12",
-      "updated": "2026-05-12",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
         "originatingProject": "mr-atlas",
-        "submittedAt": "2026-05-12"
+        "submittedAt": "2026-05-12",
+        "approvedAt": "2026-05-20"
       },
       "curation": {
         "intent": "Centred-heading + three-column tabular list for structured records such as awards or press features.",
@@ -89,7 +90,7 @@
       "category": "cta",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Archived",
       "description": "A banner section created via the acme-test project to prove the end-to-end remote marketplace loop works. Bold colour band, single CTA.",
       "dependencies": [
         "@/components/section",
@@ -110,7 +111,7 @@
         "acme"
       ],
       "created": "2026-05-12",
-      "updated": "2026-05-12",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
@@ -125,7 +126,7 @@
       "category": "carousel",
       "version": "1.0.0",
       "track": "stable",
-      "lifecycle": "Approved",
+      "lifecycle": "Archived",
       "description": "Horizontal scroll-snap carousel of quote cards. Pure CSS, no client JS. Each card snap-aligns center; users swipe / scroll horizontally. Works as a testimonial slider, a press-quote band, or a project highlights reel.",
       "props": {
         "items": {
@@ -174,7 +175,7 @@
         "client-free"
       ],
       "created": "2026-05-09",
-      "updated": "2026-05-11",
+      "updated": "2026-05-20",
       "submittedBy": "techo",
       "attribution": {
         "originalCreator": "techo",
@@ -190,7 +191,7 @@
       "category": "carousel",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Approved",
       "description": "Dark editorial property-listings carousel. Centred header with display headline and pill CTA above a landscape-card slider. Active card sits in the centre at full opacity; neighbours drift off the viewport edges at reduced opacity. Smooth translate transitions, infinite rotation through six listings.",
       "dependencies": [
         "@/components/section",
@@ -213,7 +214,7 @@
         "editorial"
       ],
       "created": "2026-05-14",
-      "updated": "2026-05-19",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
@@ -229,7 +230,7 @@
       "category": "cta",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Archived",
       "description": "Inverted full-width band with a single primary CTA. Closes a page.",
       "dependencies": [
         "@/components/section",
@@ -246,7 +247,7 @@
       },
       "tags": [],
       "created": "2026-05-11",
-      "updated": "2026-05-19",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
@@ -297,7 +298,7 @@
       "category": "faq",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Approved",
       "description": "Two-column split: left column anchors eyebrow, heading, lede copy, and a single CTA button; right column stacks an accordion list of FAQ items, one panel open at a time, with a +/× toggle icon per row.",
       "props": {
         "eyebrow": {
@@ -357,12 +358,13 @@
         "two-column"
       ],
       "created": "2026-05-12",
-      "updated": "2026-05-12",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
         "originatingProject": "demo-warm-editorial",
-        "submittedAt": "2026-05-12"
+        "submittedAt": "2026-05-12",
+        "approvedAt": "2026-05-20"
       },
       "curation": {
         "intent": "Split two-column FAQ section — fixed editorial anchor left, expandable accordion list right, with inline CTA.",
@@ -417,7 +419,7 @@
       "category": "features",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Approved",
       "description": "Horizontal scroll-snap carousel of feature cards that flip on hover. Front face shows an icon + short title; back face reveals body copy + a learn-more link. Arrow controls scroll one card at a time. Cards are responsive — one card with peek on mobile, ~1.5 on tablet, three across on desktop.",
       "props": {
         "eyebrow": {
@@ -473,7 +475,8 @@
         "notes": "Card widths step from 85vw (clamped at 22rem) on mobile, to ~56vw (clamped at 24rem) on tablet, to ~30vw (clamped at 22rem) on desktop. Scroll-snap is `mandatory` on mobile for confident swipes, `proximity` on tablet+ for a looser feel."
       },
       "previews": {
-        "static": "preview.png"
+        "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/features-flip-carousel/preview.png?v=1779284277116",
+        "video": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/features-flip-carousel/preview.webm?v=1779284277116"
       },
       "tags": [
         "editorial",
@@ -483,12 +486,13 @@
         "scroll-snap"
       ],
       "created": "2026-05-11",
-      "updated": "2026-05-11",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
         "originatingProject": "demo-warm-editorial",
-        "submittedAt": "2026-05-11"
+        "submittedAt": "2026-05-11",
+        "approvedAt": "2026-05-20"
       },
       "path": "sections/features/features-flip-carousel"
     },
@@ -498,7 +502,7 @@
       "category": "features",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Approved",
       "description": "Centered editorial header (label pill + display heading) over a full-width horizontal infinite-scroll marquee of large portrait image cards. Each card has a darkening gradient at the bottom with bullet-pointed labels. Heading fades in on scroll entrance; images parallax-shift while in viewport.",
       "props": {
         "eyebrow": {
@@ -563,12 +567,13 @@
         "parallax"
       ],
       "created": "2026-05-11",
-      "updated": "2026-05-11",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
         "originatingProject": "demo-warm-editorial",
-        "submittedAt": "2026-05-11"
+        "submittedAt": "2026-05-11",
+        "approvedAt": "2026-05-20"
       },
       "path": "sections/features/features-marquee"
     },
@@ -578,7 +583,7 @@
       "category": "hero",
       "version": "1.0.0",
       "track": "stable",
-      "lifecycle": "Approved",
+      "lifecycle": "Archived",
       "description": "Two-column hero. Bold display headline left, supporting copy and a CTA pair right. The default opening section for editorial / agency / portfolio work.",
       "props": {
         "headline": {
@@ -639,7 +644,7 @@
         "minimal"
       ],
       "created": "2026-05-09",
-      "updated": "2026-05-11",
+      "updated": "2026-05-20",
       "submittedBy": "techo",
       "context": null,
       "attribution": {
@@ -654,9 +659,9 @@
       "id": "hero-split-gallery",
       "name": "Hero — Split Gallery",
       "category": "hero",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Approved",
       "description": "Two-column hero. Left: eyebrow, display headline, supporting copy, single CTA. Right: a dual-column vertical-marquee gallery of images that scroll in opposite directions inside a faded frame.",
       "props": {
         "eyebrow": {
@@ -700,7 +705,6 @@
         "@/components/section-grid"
       ],
       "motionDensity": [
-        "low",
         "medium"
       ],
       "responsive": {
@@ -710,7 +714,7 @@
           "tablet",
           "desktop"
         ],
-        "notes": "At md+ the gallery sits to the right of the text. Below md the layout stacks and the secondary image column hides on the smallest viewport."
+        "notes": "At 48rem+ the gallery sits to the right of the text as a dual-column vertical marquee. Below 48rem the layout stacks: copy on top, a single full-width horizontal marquee underneath. Marquee wrap distance is pixel-measured per breakpoint so the loop is seamless across any gap or aspect ratio."
       },
       "previews": {
         "static": "preview.svg"
@@ -723,22 +727,30 @@
         "imagery"
       ],
       "created": "2026-05-11",
-      "updated": "2026-05-11",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
         "originatingProject": "demo-warm-editorial",
-        "submittedAt": "2026-05-11"
+        "submittedAt": "2026-05-11",
+        "approvedAt": "2026-05-20"
       },
-      "path": "sections/hero/hero-split-gallery"
+      "path": "sections/hero/hero-split-gallery",
+      "changelog": [
+        {
+          "version": "0.0.2",
+          "date": "2026-05-20",
+          "summary": "Mobile / tablet now render a single horizontal marquee under the copy instead of a cramped half-width vertical strip. Marquee loop converted to pixel-measured wrap (seamless at any gap / aspect ratio)."
+        }
+      ]
     },
     {
       "id": "parallax-image-columns",
       "name": "Parallax Image Columns",
       "category": "gallery",
-      "version": "0.0.1",
+      "version": "0.0.3",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Approved",
       "description": "Full-bleed scroll-driven gallery: four image columns each translating upward at distinct parallax rates, producing a layered depth effect. A centered scroll-cue band sits above the image field.",
       "props": {
         "eyebrow": {
@@ -750,7 +762,7 @@
         },
         "columns": {
           "type": "array",
-          "description": "Four columns of three images each. Caller-supplied columns replace defaults; missing columns fall back to seeded placeholders.",
+          "description": "Image columns. At ≥48rem the section renders 4 columns of 8 images; below 48rem it renders 2 columns of 7. Caller-supplied entries replace defaults at that index; missing columns fall back to seeded picsum placeholders.",
           "items": {
             "type": "array",
             "items": {
@@ -777,10 +789,17 @@
         "medium"
       ],
       "responsive": {
-        "profile": "desktop-rich / tablet-horizontal-scroll / mobile-compressed"
+        "profile": "desktop-4col / mobile-2col",
+        "breakpoints": [
+          "mobile",
+          "tablet",
+          "desktop"
+        ],
+        "notes": "At 48rem+ renders 4 columns × 8 images with parallax factors [1.0, 1.6, 0.6, 1.3]. Below 48rem switches to 2 columns × 7 images with factors [0.7, 1.2]. All factors held below the gallery height factor (1.75 = h-[175vh]) so columns are guaranteed to remain in view across the full scroll range — no end-of-content gaps at any viewport."
       },
       "previews": {
-        "static": "preview.png"
+        "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/parallax-image-columns/preview.png?v=1779283973718",
+        "video": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/parallax-image-columns/preview.webm?v=1779283973718"
       },
       "tags": [
         "parallax",
@@ -791,7 +810,7 @@
         "cinematic"
       ],
       "created": "2026-05-13",
-      "updated": "2026-05-19",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
@@ -839,7 +858,19 @@
           ]
         }
       },
-      "path": "sections/gallery/parallax-image-columns"
+      "path": "sections/gallery/parallax-image-columns",
+      "changelog": [
+        {
+          "version": "0.0.3",
+          "date": "2026-05-20",
+          "summary": "Definitive no-gap fix. Image cells use aspect-[8/11] (matches picsum 800/1100 source — no crop) with shrink-0 so the flex column can no longer compress portraits into squashed landscape boxes. Offsets re-derived from the correct constraint (|X| ≥ factor / 1.75 — CSS top-percentage uses containing block height, not own height). Slot count is dynamic — computed on mount + resize from viewport so cells_natural_h ≥ gallery_h × (1 + |X|) at any size."
+        },
+        {
+          "version": "0.0.2",
+          "date": "2026-05-20",
+          "summary": "Responsive layout: 4 columns at ≥48rem / 2 columns at <48rem (was 4 always). Removed min-w-[200px] that overflowed mobile. Parallax factors retuned below the gallery height factor so the columns never run out of content during the scroll-scrub — gap-free at any viewport. Image count per column raised from 3 to 8 desktop / 7 mobile."
+        }
+      ]
     },
     {
       "id": "process-steps",
@@ -847,7 +878,7 @@
       "category": "process",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Archived",
       "description": "Numbered process explainer with eyebrow, optional heading, and a 4-up ordered list of steps. Each step exposes a zero-padded index, a short label, and a body paragraph. Desktop: horizontal 4-column row. Mobile: single-column stack.",
       "props": {
         "eyebrow": {
@@ -894,7 +925,7 @@
         "editorial"
       ],
       "created": "2026-05-12",
-      "updated": "2026-05-12",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
@@ -952,7 +983,7 @@
       "category": "testimonials",
       "version": "1.0.0",
       "track": "stable",
-      "lifecycle": "Approved",
+      "lifecycle": "Archived",
       "description": "Three-up testimonial grid. Stacks single-column on mobile, three columns at md+. Each card carries quote, attribution, and role. Use when you want all testimonials visible at once rather than browsable.",
       "props": {
         "items": {
@@ -999,7 +1030,7 @@
         "social-proof"
       ],
       "created": "2026-05-09",
-      "updated": "2026-05-11",
+      "updated": "2026-05-20",
       "submittedBy": "techo",
       "attribution": {
         "originalCreator": "techo",
@@ -1015,7 +1046,7 @@
       "category": "cta",
       "version": "0.0.1",
       "track": "experimental",
-      "lifecycle": "Submitted",
+      "lifecycle": "Archived",
       "description": "A section authored in mr-atlas and submitted via the V2 API. No local marketplace clone was harmed in the making of this section — the bundle was POSTed straight to the Vercel app which committed it to GitHub via Octokit.",
       "dependencies": [
         "@/components/section",
@@ -1036,7 +1067,7 @@
         "test"
       ],
       "created": "2026-05-12",
-      "updated": "2026-05-12",
+      "updated": "2026-05-20",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
