@@ -8,6 +8,7 @@
  */
 
 import { notFound } from "next/navigation";
+import { getLifecycle } from "@mr/section-library-ui";
 import { loadManifest, loadBrandContexts } from "../../marketplace-data";
 import { Detail } from "./detail";
 
@@ -19,11 +20,20 @@ export default async function Page({ params }: { params: RouteParams }) {
   const section = manifest.sections.find((s) => s.id === id);
   if (!section) notFound();
 
-  // The full filtered list — so the detail page can offer prev/next nav
-  // through whatever the gallery was showing. We don't have access to the
-  // active filters from the URL yet (gallery state is client-only), so the
-  // initial implementation just walks the full manifest in manifest order.
-  const order = manifest.sections.map((s) => s.id);
+  // Prev/next nav order is lifecycle-scoped so the user never jumps out of
+  // the context they came from. The default gallery hides Archived +
+  // Deprecated, so live-section nav skips them too. The archive list is
+  // its own pool — viewing an archived section only navigates between
+  // other archived sections.
+  const currentLifecycle = getLifecycle(section);
+  const order = manifest.sections
+    .filter((s) => {
+      const lc = getLifecycle(s);
+      if (currentLifecycle === "Archived") return lc === "Archived";
+      if (currentLifecycle === "Deprecated") return lc === "Deprecated";
+      return lc !== "Archived" && lc !== "Deprecated";
+    })
+    .map((s) => s.id);
 
   return (
     <Detail

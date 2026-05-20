@@ -44,8 +44,7 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "low",
-    "high"
+    "medium"
   ],
   "responsive": {
     "profile": "edge-to-edge marquee / mobile-shrink",
@@ -57,7 +56,8 @@
     "notes": "Cards 573x680 desktop. Scale to 380x480 at <992px, 320x400 at <768px, 280x320 at <480px. Marquee speed unchanged across breakpoints."
   },
   "previews": {
-    "static": "preview.png"
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/features-marquee/preview.png?v=1779292712280",
+    "video": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/features-marquee/preview.webm?v=1779292712280"
   },
   "tags": [
     "features",
