@@ -890,16 +890,20 @@
 }
 
 /* ──────────────────────────────────────────────────────────────
- * ToggleGroup
+ * ToggleGroup — iOS-style segmented control.
+ *
+ * Soft grey pill container, white pill active item with subtle elevation,
+ * muted text for inactive items. Pill-in-pill nesting (3px padding + pill
+ * radii on both container and item) gives the active state breathing room.
  * ────────────────────────────────────────────────────────────── */
 
 .mr-toggle-group {
   display: inline-flex;
   align-items: center;
   background: var(--mr-surface-muted);
-  border-radius: var(--mr-radius-1);
-  padding: 2px;
-  gap: 2px;
+  border-radius: var(--mr-radius-pill);
+  padding: 3px;
+  gap: 0;
 }
 .mr-toggle-group__item {
   display: inline-flex;
@@ -909,19 +913,24 @@
   border: 0;
   color: var(--mr-fg-muted);
   height: 28px;
-  min-width: 32px;
-  padding: 0 var(--mr-space-2);
-  border-radius: var(--mr-radius-1);
+  min-width: 40px;
+  padding: 0 var(--mr-space-3);
+  border-radius: var(--mr-radius-pill);
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-button-md-size);
+  font-weight: var(--mr-text-button-md-weight);
+  line-height: 1;
   cursor: pointer;
   transition:
     background-color var(--mr-duration-fast) var(--mr-ease-standard),
-    color var(--mr-duration-fast) var(--mr-ease-standard);
+    color var(--mr-duration-fast) var(--mr-ease-standard),
+    box-shadow var(--mr-duration-fast) var(--mr-ease-standard);
 }
 .mr-toggle-group__item:hover { color: var(--mr-fg); }
 .mr-toggle-group__item[data-state="on"] {
   background: var(--mr-surface);
   color: var(--mr-fg);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
 }
 .mr-toggle-group__item:focus-visible {
   outline: 2px solid var(--mr-fg);
@@ -1045,51 +1054,12 @@
 }
 
 /* ──────────────────────────────────────────────────────────────
- * Density toggle (filter-row variant of ToggleGroup)
+ * Density toggle — inherits .mr-toggle-group iOS-segmented base.
+ * The .mr-density / .mr-density__item modifier classes are kept on the
+ * DensityToggle composite for marketplace-domain hooks (e.g. responsive
+ * width adjustments) but no overrides ship by default — the base
+ * styling IS the design.
  * ────────────────────────────────────────────────────────────── */
-
-.mr-density {
-  display: inline-flex;
-  align-items: center;
-  background: transparent;
-  padding: 0;
-  gap: 0;
-}
-.mr-density__item {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: var(--mr-surface);
-  border: 1px solid var(--mr-border);
-  border-right: 0;
-  color: var(--mr-fg-muted);
-  cursor: pointer;
-  transition:
-    background-color var(--mr-duration-fast) var(--mr-ease-standard),
-    color var(--mr-duration-fast) var(--mr-ease-standard);
-}
-.mr-density__item:hover { color: var(--mr-fg); }
-.mr-density__item[data-state="on"] {
-  background: var(--mr-surface-inverse);
-  color: var(--mr-fg-inverse);
-}
-.mr-density__item:first-child {
-  border-top-left-radius: var(--mr-radius-pill);
-  border-bottom-left-radius: var(--mr-radius-pill);
-}
-.mr-density__item:last-child {
-  border-top-right-radius: var(--mr-radius-pill);
-  border-bottom-right-radius: var(--mr-radius-pill);
-  border-right: 1px solid var(--mr-border);
-}
-.mr-density__item:focus-visible {
-  outline: 2px solid var(--mr-fg);
-  outline-offset: 2px;
-  position: relative;
-  z-index: 1;
-}
 
 /* ──────────────────────────────────────────────────────────────
  * SectionCard
