@@ -3,17 +3,9 @@
 /**
  * <ReviewQueue /> — curator's pending-work surface.
  *
- * Three lifecycle states make up the queue:
- *   - Submitted: just arrived, awaiting first look
- *   - InReview: someone has touched it, work in progress
- *   - Approved: metadata ready, awaiting Promote click
- *
- * Each card shows the preview (PNG, video on hover if present), name, slim
- * metadata + an inline primary action — the next forward transition. Click
- * the card body to jump into the full detail page for deeper editing.
- *
- * Empty state when no sections are pending. Filter pills let the curator
- * narrow by lifecycle.
+ * Rebuilt on @mr/tools-ui primitives (Card / Badge / Button / LifecycleBadge)
+ * so the surface respects dark mode via --mr-* tokens directly. No
+ * --chrome-* token consumption, no legacy mr-mk-* classes.
  */
 
 import { useMemo, useState } from "react";
@@ -29,16 +21,16 @@ import {
   type ManifestEntry,
   type Transition,
 } from "@mr/section-library-ui";
+import {
+  Button,
+  Card,
+  LifecycleBadge,
+  type LifecycleName,
+} from "@mr/tools-ui";
 import { TopBar } from "../topbar";
 
-/**
- * The single queue state. After the 2026-05-19 lifecycle collapse, sections
- * are either Submitted (waiting on a curator), Approved (live), or Archived.
- * Only Submitted needs a queue — Approved and Archived are terminal-ish.
- */
 const QUEUE_STATES: Lifecycle[] = ["Submitted"];
 
-/** Heuristic for the "primary" action on each card — the next forward step. */
 function primaryTransition(state: Lifecycle): Transition | null {
   const ts = transitionsFrom(state);
   return ts.find((t) => t.kind === "forward") ?? null;
@@ -76,7 +68,6 @@ export function ReviewQueue({ sections }: { sections: ManifestEntry[] }) {
         return hay.includes(q);
       })
       .sort((a, b) => {
-        // Newer at the top — submittedAt as the primary key, updated as fallback.
         const aT = a.attribution?.submittedAt ?? a.updated ?? "";
         const bT = b.attribution?.submittedAt ?? b.updated ?? "";
         return bT.localeCompare(aT);
@@ -87,31 +78,29 @@ export function ReviewQueue({ sections }: { sections: ManifestEntry[] }) {
     <>
       <TopBar sections={sections} search={{ value: search, onChange: setSearch }} />
 
-      <main className="mr-mk-review">
-        <header className="mr-mk-review__head">
-          <div>
-            <h1 className="mr-mk-review__title">Review queue</h1>
-            <p className="mr-mk-review__subtitle">
-              {queue.length === 0
-                ? "Nothing waiting. Every submitted section has been approved or archived."
-                : `${queue.length} section${queue.length === 1 ? "" : "s"} awaiting approval.`}
-            </p>
-          </div>
+      <main className="mr-review">
+        <header className="mr-review__head">
+          <h1 className="mr-review__title">Review queue</h1>
+          <p className="mr-review__subtitle">
+            {queue.length === 0
+              ? "Nothing waiting. Every submitted section has been approved or archived."
+              : `${queue.length} section${queue.length === 1 ? "" : "s"} awaiting approval.`}
+          </p>
         </header>
 
         {filtered.length === 0 ? (
-          <div className="mr-mk-review__empty">
-            <div className="mr-mk-review__empty-mark" aria-hidden>✓</div>
-            <h2>Queue is clear</h2>
-            <p>
+          <Card className="mr-review__empty">
+            <div className="mr-review__empty-mark" aria-hidden>✓</div>
+            <h2 className="mr-review__empty-title">Queue is clear</h2>
+            <p className="mr-review__empty-text">
               {queue.length === 0
                 ? "When designers submit sections from their projects, they land here for curation."
                 : "No sections match the current filter."}
             </p>
-            <Link href="/" className="mr-mk-review__empty-back">View catalogue →</Link>
-          </div>
+            <Link href="/" className="mr-review__empty-link">View catalogue →</Link>
+          </Card>
         ) : (
-          <ul className="mr-mk-review__list">
+          <ul className="mr-review__list">
             {filtered.map((s) => <ReviewCard key={s.id} section={s} />)}
           </ul>
         )}
@@ -130,8 +119,6 @@ function ReviewCard({ section }: { section: ManifestEntry }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Server-side approve gate predicate. Surfaces as tooltip text on the
-  // disabled button so the curator knows exactly what's missing.
   const missing = lifecycle === "InReview" ? missingForApproval(section) : [];
   const approveBlocked = lifecycle === "InReview" && missing.length > 0;
 
@@ -150,8 +137,6 @@ function ReviewCard({ section }: { section: ManifestEntry }) {
         setPending(false);
         return;
       }
-      // Refresh the server-rendered queue so the moved card disappears or
-      // its lifecycle pill updates.
       router.refresh();
     } catch (e) {
       setError((e as Error).message ?? "Network error");
@@ -166,87 +151,89 @@ function ReviewCard({ section }: { section: ManifestEntry }) {
     : primary?.hint;
 
   return (
-    <li className="mr-mk-review-card" data-lifecycle={lifecycle}>
-      <Link
-        href={`/sections/${section.id}?panel=info`}
-        className="mr-mk-review-card__media"
-        aria-label={`Open ${section.name} for review`}
-      >
-        {section.previews?.static ? (
-          <img
-            className="mr-mk-review-card__thumb"
-            src={`/preview/${section.id}`}
-            alt=""
-            loading="lazy"
-          />
-        ) : (
-          <span className="mr-mk-review-card__fallback">{section.id.slice(0, 2)}</span>
-        )}
-        {videoUrl ? (
-          <video
-            className="mr-mk-review-card__video"
-            src={videoUrl}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
-            onMouseLeave={(e) => {
-              e.currentTarget.pause();
-              e.currentTarget.currentTime = 0;
-            }}
-            aria-hidden
-          />
-        ) : null}
-      </Link>
-
-      <div className="mr-mk-review-card__body">
-        <header className="mr-mk-review-card__head">
-          <span className="mr-sl-badge" data-lifecycle={lifecycle}>
-            <span className="mr-sl-badge__dot" />
-            {lifecycleLabel(lifecycle)}
-          </span>
-          <span className="mr-mk-review-card__age">
-            {daysSince(section.attribution?.submittedAt ?? section.created)}
-          </span>
-        </header>
-
-        <Link href={`/sections/${section.id}?panel=info`} className="mr-mk-review-card__name">
-          {section.name}
+    <li>
+      <Card className="mr-review-card">
+        <Link
+          href={`/sections/${section.id}?panel=info`}
+          className="mr-review-card__media"
+          aria-label={`Open ${section.name} for review`}
+        >
+          {section.previews?.static ? (
+            <img
+              className="mr-review-card__thumb"
+              src={`/preview/${section.id}`}
+              alt=""
+              loading="lazy"
+            />
+          ) : (
+            <span className="mr-review-card__fallback">{section.id.slice(0, 2)}</span>
+          )}
+          {videoUrl ? (
+            <video
+              className="mr-review-card__video"
+              src={videoUrl}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0;
+              }}
+              aria-hidden
+            />
+          ) : null}
         </Link>
 
-        {section.description ? (
-          <p className="mr-mk-review-card__desc">{section.description}</p>
-        ) : (
-          <p className="mr-mk-review-card__desc mr-mk-review-card__desc--empty">
-            No description yet
-          </p>
-        )}
+        <div className="mr-review-card__body">
+          <header className="mr-review-card__head">
+            <LifecycleBadge
+              lifecycle={lifecycle as LifecycleName}
+              label={lifecycleLabel(lifecycle)}
+            />
+            <span className="mr-review-card__age">
+              {daysSince(section.attribution?.submittedAt ?? section.created)}
+            </span>
+          </header>
 
-        {section.tags?.length ? (
-          <div className="mr-mk-review-card__tags">
-            {section.tags.slice(0, 6).map((t) => (
-              <span key={t} className="mr-mk-review-card__tag">{t}</span>
-            ))}
-          </div>
-        ) : null}
+          <Link href={`/sections/${section.id}?panel=info`} className="mr-review-card__name">
+            {section.name}
+          </Link>
 
-        {primary ? (
-          <footer className="mr-mk-review-card__actions">
-            <button
-              type="button"
-              className="mr-mk-review-card__btn mr-mk-review-card__btn--primary"
-              onClick={() => runTransition(primary)}
-              disabled={primaryDisabled}
-              title={primaryTitle}
-            >
-              {pending ? "Working…" : primary.label}
-            </button>
-          </footer>
-        ) : null}
+          {section.description ? (
+            <p className="mr-review-card__desc">{section.description}</p>
+          ) : (
+            <p className="mr-review-card__desc mr-review-card__desc--empty">
+              No description yet
+            </p>
+          )}
 
-        {error ? <div className="mr-mk-review-card__error">{error}</div> : null}
-      </div>
+          {section.tags?.length ? (
+            <div className="mr-review-card__tags">
+              {section.tags.slice(0, 6).map((t) => (
+                <span key={t} className="mr-review-card__tag">{t}</span>
+              ))}
+            </div>
+          ) : null}
+
+          {primary ? (
+            <footer className="mr-review-card__actions">
+              <Button
+                variant="primary"
+                shape="pill"
+                onClick={() => runTransition(primary)}
+                disabled={primaryDisabled}
+                title={primaryTitle}
+              >
+                {pending ? "Working…" : primary.label}
+              </Button>
+            </footer>
+          ) : null}
+
+          {error ? <div className="mr-review-card__error">{error}</div> : null}
+        </div>
+      </Card>
     </li>
   );
 }
