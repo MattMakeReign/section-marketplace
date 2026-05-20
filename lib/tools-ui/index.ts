@@ -65,6 +65,12 @@ export {
 export { Separator } from "./primitives/separator";
 export { Skeleton } from "./primitives/skeleton";
 export { Slider } from "./primitives/slider";
+export {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "./primitives/accordion";
 export { ToggleGroup, ToggleGroupItem } from "./primitives/toggle-group";
 export { Card, cardVariants, type CardProps } from "./primitives/card";
 export { Badge, badgeVariants, type BadgeProps } from "./primitives/badge";

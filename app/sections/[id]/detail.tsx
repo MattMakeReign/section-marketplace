@@ -42,6 +42,10 @@ import {
   FieldDescription,
   FieldError,
   Slider,
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
   type LifecycleName,
   type TrackName,
 } from "@mr/tools-ui";
@@ -830,121 +834,149 @@ function CuratorPanel({
 
   return (
     <div className="mr-curator">
-      <Field className="mr-curator__field">
-        <FieldLabel className="mr-curator__label">Description</FieldLabel>
-        <FieldDescription>
-          1–2 sentences. What the section IS, structurally.
-        </FieldDescription>
-        <Textarea
-          rows={4}
-          placeholder="e.g. Two-column hero with eyebrow + display headline + supporting copy + CTA on the left, dual-column vertical-marquee gallery on the right…"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          state={descTooShort ? "error" : "default"}
-        />
-        {descTooShort ? (
-          <FieldError>Minimum 20 characters.</FieldError>
-        ) : (
-          <div className="mr-curator__char-count">
-            {description.trim().length} characters
-          </div>
-        )}
-      </Field>
+      <Accordion type="single" collapsible defaultValue="description" className="mr-curator__accordion">
+        <AccordionItem value="description">
+          <AccordionTrigger>Description</AccordionTrigger>
+          <AccordionContent>
+            <Field className="mr-curator__field">
+              <FieldDescription>
+                1–2 sentences. What the section IS, structurally.
+              </FieldDescription>
+              <Textarea
+                rows={4}
+                placeholder="e.g. Two-column hero with eyebrow + display headline + supporting copy + CTA on the left, dual-column vertical-marquee gallery on the right…"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                state={descTooShort ? "error" : "default"}
+              />
+              {descTooShort ? (
+                <FieldError>Minimum 20 characters.</FieldError>
+              ) : (
+                <div className="mr-curator__char-count">
+                  {description.trim().length} characters
+                </div>
+              )}
+            </Field>
+          </AccordionContent>
+        </AccordionItem>
 
-      <Field className="mr-curator__field">
-        <FieldLabel className="mr-curator__label">Tags</FieldLabel>
-        <FieldDescription>
-          Short, kebab-case keywords curators and the AI use to find this section.
-        </FieldDescription>
-        <div className="mr-curator__tagrow">
-          {tags.map((t) => (
-            <button
-              key={t}
-              type="button"
-              className="mr-curator__tagchip"
-              onClick={() => removeTag(t)}
-              aria-label={`Remove tag ${t}`}
-            >
-              {t}
-              <span className="mr-curator__tagchip-x" aria-hidden>×</span>
-            </button>
-          ))}
-          <input
-            type="text"
-            className="mr-curator__taginput"
-            placeholder={tags.length === 0 ? "split-2col, hero, minimal…" : "Add tag"}
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={onTagKey}
-            onBlur={commitTag}
-          />
-        </div>
-      </Field>
+        <AccordionItem value="tags">
+          <AccordionTrigger>Tags</AccordionTrigger>
+          <AccordionContent>
+            <Field className="mr-curator__field">
+              <FieldDescription>
+                Short, kebab-case keywords curators and the AI use to find this section.
+              </FieldDescription>
+              <div className="mr-curator__tagrow">
+                {tags.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className="mr-curator__tagchip"
+                    onClick={() => removeTag(t)}
+                    aria-label={`Remove tag ${t}`}
+                  >
+                    {t}
+                    <span className="mr-curator__tagchip-x" aria-hidden>×</span>
+                  </button>
+                ))}
+                <input
+                  type="text"
+                  className="mr-curator__taginput"
+                  placeholder={tags.length === 0 ? "split-2col, hero, minimal…" : "Add tag"}
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={onTagKey}
+                  onBlur={commitTag}
+                />
+              </div>
+            </Field>
+          </AccordionContent>
+        </AccordionItem>
 
-      <Field className="mr-curator__field">
-        <FieldLabel className="mr-curator__label">Motion density</FieldLabel>
-        <FieldDescription>
-          How much movement the section carries. Slide to pick the closest tendency.
-        </FieldDescription>
-        <MotionDensitySlider value={motionDensity} onChange={setMotionDensity} />
-      </Field>
+        <AccordionItem value="motion">
+          <AccordionTrigger>Motion density</AccordionTrigger>
+          <AccordionContent>
+            <Field className="mr-curator__field">
+              <FieldDescription>
+                How much movement the section carries. Slide to pick the closest tendency.
+              </FieldDescription>
+              <MotionDensitySlider value={motionDensity} onChange={setMotionDensity} />
+            </Field>
+          </AccordionContent>
+        </AccordionItem>
 
-      <Field className="mr-curator__field">
-        <FieldLabel className="mr-curator__label">
-          Video clip <span className="mr-curator__optional">optional</span>
-        </FieldLabel>
-        <FieldDescription>
-          A short .webm or .mp4 that autoplays on card hover. Max 15 MB.
-        </FieldDescription>
-        {videoUrl ? (
-          <div className="mr-curator__video-wrap">
-            <video
-              className="mr-curator__video"
-              src={videoUrl}
-              controls
-              muted
-              loop
-              playsInline
-            />
-            <Button
-              type="button"
-              variant="tertiary"
-              size="sm"
-              onClick={removeVideo}
-              disabled={uploading}
-            >
-              Remove video
-            </Button>
-          </div>
-        ) : (
-          <label
-            className={`mr-curator__dropzone${dragOver ? " mr-curator__dropzone--over" : ""}`}
-            onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
-            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={onDrop}
-          >
-            <input
-              type="file"
-              accept="video/mp4,video/webm"
-              hidden
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) uploadVideo(file);
-              }}
-            />
-            {uploading ? (
-              <span className="mr-curator__dropzone-title">Uploading…</span>
-            ) : (
-              <>
-                <span className="mr-curator__dropzone-title">Drop a .webm or .mp4</span>
-                <span className="mr-curator__dropzone-hint">or click to browse</span>
-              </>
-            )}
-          </label>
-        )}
-        {uploadError ? <FieldError>{uploadError}</FieldError> : null}
-      </Field>
+        <AccordionItem value="video">
+          <AccordionTrigger>Video clip</AccordionTrigger>
+          <AccordionContent>
+            <Field className="mr-curator__field">
+              <FieldDescription>
+                A short .webm or .mp4 that autoplays on card hover. Max 15 MB. Optional.
+              </FieldDescription>
+              <div className="mr-curator__record-row">
+                <Link href={`/sections/${section.id}/capture`} className="mr-curator__record-cta">
+                  <span className="mr-curator__record-dot" aria-hidden />
+                  <span>
+                    <strong>Record in browser</strong>
+                    <span className="mr-curator__record-hint">
+                      capture, trim &amp; thumbnail in one flow
+                    </span>
+                  </span>
+                </Link>
+                <span className="mr-curator__record-or">or upload below</span>
+              </div>
+              {videoUrl ? (
+                <div className="mr-curator__video-wrap">
+                  <video
+                    className="mr-curator__video"
+                    src={videoUrl}
+                    controls
+                    muted
+                    loop
+                    playsInline
+                  />
+                  <Button
+                    type="button"
+                    variant="tertiary"
+                    size="sm"
+                    onClick={removeVideo}
+                    disabled={uploading}
+                  >
+                    Remove video
+                  </Button>
+                </div>
+              ) : (
+                <label
+                  className={`mr-curator__dropzone${dragOver ? " mr-curator__dropzone--over" : ""}`}
+                  onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={onDrop}
+                >
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) uploadVideo(file);
+                    }}
+                  />
+                  {uploading ? (
+                    <span className="mr-curator__dropzone-title">Uploading…</span>
+                  ) : (
+                    <>
+                      <span className="mr-curator__dropzone-title">Drop a .webm or .mp4</span>
+                      <span className="mr-curator__dropzone-hint">or click to browse</span>
+                    </>
+                  )}
+                </label>
+              )}
+              {uploadError ? <FieldError>{uploadError}</FieldError> : null}
+            </Field>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       <div className="mr-curator__actions">
         <Button

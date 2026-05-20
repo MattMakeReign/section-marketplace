@@ -2031,3 +2031,80 @@
   color: var(--mr-fg);
   font-weight: 500;
 }
+
+/* ──────────────────────────────────────────────────────────────
+ * Accordion (Radix Accordion) — Figma-style collapsible sections.
+ * Section header bar with title + chevron; click toggles open/closed
+ * with a smooth height transition.
+ * ────────────────────────────────────────────────────────────── */
+
+.mr-accordion__item {
+  border-bottom: 1px solid var(--mr-border);
+}
+.mr-accordion__item:last-child {
+  border-bottom: 0;
+}
+
+.mr-accordion__header {
+  display: flex;
+  margin: 0;
+}
+
+.mr-accordion__trigger {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mr-space-3);
+  padding: var(--mr-space-3) 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--mr-fg);
+  font: inherit;
+  text-align: left;
+  transition: color var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-accordion__trigger:hover { color: var(--mr-fg-muted); }
+.mr-accordion__trigger:focus-visible {
+  outline: 2px solid var(--mr-fg);
+  outline-offset: 2px;
+  border-radius: var(--mr-radius-1);
+}
+.mr-accordion__title {
+  font-family: var(--mr-font-body);
+  font-size: var(--mr-text-body-md-size);
+  font-weight: 600;
+  color: inherit;
+}
+.mr-accordion__chevron {
+  color: var(--mr-fg-subtle);
+  flex-shrink: 0;
+  transition: transform var(--mr-duration-fast) var(--mr-ease-standard);
+}
+.mr-accordion__trigger[data-state="open"] .mr-accordion__chevron {
+  transform: rotate(180deg);
+}
+
+.mr-accordion__content {
+  overflow: hidden;
+  font-family: var(--mr-font-body);
+}
+.mr-accordion__content[data-state="open"] {
+  animation: mr-accordion-down var(--mr-duration-base) var(--mr-ease-out);
+}
+.mr-accordion__content[data-state="closed"] {
+  animation: mr-accordion-up var(--mr-duration-base) var(--mr-ease-out);
+}
+.mr-accordion__content-inner {
+  padding-bottom: var(--mr-space-4);
+}
+
+@keyframes mr-accordion-down {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes mr-accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
