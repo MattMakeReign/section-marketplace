@@ -67,27 +67,30 @@ export function Showcase() {
   const [viewport, setViewport] = useState<ViewportName>("desktop");
   const [progress, setProgress] = useState(45);
 
+  // `loaded` gates the apply-effect so the placeholder initial "light"
+  // state doesn't overwrite the user's stored choice on mount.
+  const [loaded, setLoaded] = useState(false);
+
+  // Pick up the user's prior choice first.
   useEffect(() => {
+    const stored = window.localStorage.getItem("mr-mk-theme");
+    if (stored === "light" || stored === "dark") setTheme(stored);
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
     // Dual-write both attributes — legacy mr-mk-* CSS reads data-theme, new
-    // tools-ui reads data-mr-theme. Keeps mode coherent across the
-    // marketplace through chunks 2–7 of the migration; chunk-9 cleanup will
-    // drop data-theme once the legacy CSS retires.
+    // tools-ui reads data-mr-theme. Chunk-9 cleanup drops data-theme once
+    // the legacy CSS retires.
     document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.mrTheme = theme;
-    // Persist to localStorage so the choice survives navigation, matching
-    // the profile menu's useTheme behaviour.
     try {
       window.localStorage.setItem("mr-mk-theme", theme);
     } catch {
       // localStorage blocked — silent
     }
-  }, [theme]);
-
-  // Pick up the user's prior choice if any.
-  useEffect(() => {
-    const stored = window.localStorage.getItem("mr-mk-theme");
-    if (stored === "light" || stored === "dark") setTheme(stored);
-  }, []);
+  }, [theme, loaded]);
 
   return (
     <div className="dsx-shell">

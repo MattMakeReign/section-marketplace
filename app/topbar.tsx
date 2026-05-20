@@ -167,15 +167,23 @@ function NotificationsBell({ sections }: { sections: ManifestEntry[] }) {
 
 function useTheme(): [ProfileMenuTheme, (t: ProfileMenuTheme) => void] {
   const [choice, setChoice] = useState<ProfileMenuTheme>("light");
+  // `loaded` gates the apply-effect so it doesn't fire on initial mount
+  // with the placeholder "light" state — that race was overwriting the
+  // user's stored choice with "light" on every navigation.
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const stored = (typeof window !== "undefined"
       ? window.localStorage.getItem("mr-mk-theme")
       : null) as ProfileMenuTheme | null;
-    if (stored === "light" || stored === "dark" || stored === "system") setChoice(stored);
+    if (stored === "light" || stored === "dark" || stored === "system") {
+      setChoice(stored);
+    }
+    setLoaded(true);
   }, []);
 
   useEffect(() => {
+    if (!loaded) return;
     const root = document.documentElement;
     window.localStorage.setItem("mr-mk-theme", choice);
     // Dual-write through chunks 2–7 of the tools-ui migration:
@@ -196,7 +204,7 @@ function useTheme(): [ProfileMenuTheme, (t: ProfileMenuTheme) => void] {
     apply();
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
-  }, [choice]);
+  }, [choice, loaded]);
 
   return [choice, setChoice];
 }
