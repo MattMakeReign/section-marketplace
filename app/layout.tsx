@@ -36,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       data-mr-chrome="marketplace-app"
       data-theme="light"
       data-mr-theme="light"
+      suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
