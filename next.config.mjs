@@ -20,19 +20,32 @@ const nextConfig = {
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
   // Resolve `@mr/section-library-ui` and `@mr/tools-ui` to their vendored
-  // copies under `lib/`. This lets the marketplace build standalone on
-  // Vercel without the pnpm workspace context. Source-of-truth for each
+  // copies under `lib/tools-ui/`. This lets the marketplace build standalone
+  // on Vercel without the pnpm workspace context. Source-of-truth for each
   // package is the vendored copy (no separate workspace package).
+  //
+  // section-library was absorbed into tools-ui in chunk 3. The
+  // `@mr/section-library-ui` alias kept as a back-compat redirect so existing
+  // imports keep working; the canonical path forward is
+  // `@mr/tools-ui/section-library`.
   webpack: (config) => {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       "@mr/section-library-ui/styles.css": path.resolve(
         __dirname,
-        "lib/section-library-ui/styles.css"
+        "lib/tools-ui/section-library/styles.css"
       ),
       "@mr/section-library-ui": path.resolve(
         __dirname,
-        "lib/section-library-ui"
+        "lib/tools-ui/section-library"
+      ),
+      "@mr/tools-ui/section-library/styles.css": path.resolve(
+        __dirname,
+        "lib/tools-ui/section-library/styles.css"
+      ),
+      "@mr/tools-ui/section-library": path.resolve(
+        __dirname,
+        "lib/tools-ui/section-library"
       ),
       "@mr/tools-ui/styles.css": path.resolve(
         __dirname,
