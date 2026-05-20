@@ -4,7 +4,7 @@
   "category": "testimonials",
   "version": "1.0.0",
   "track": "stable",
-  "lifecycle": "Promoted",
+  "lifecycle": "Approved",
   "description": "Three-up testimonial grid. Stacks single-column on mobile, three columns at md+. Each card carries quote, attribution, and role. Use when you want all testimonials visible at once rather than browsable.",
   "props": {
     "items": {

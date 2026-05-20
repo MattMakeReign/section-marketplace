@@ -293,6 +293,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
               key={s.id}
               section={s}
               previewSrc={s.previews?.static ? `/preview/${s.id}` : undefined}
+              videoSrc={s.previews?.video}
               onOpen={() => openSection(s.id)}
             />
           ))}

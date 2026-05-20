@@ -1,6 +1,6 @@
 {
-  "generated": "2026-05-19T07:34:20.912Z",
-  "count": 13,
+  "generated": "2026-05-19T13:03:31.782Z",
+  "count": 14,
   "sections": [
     {
       "id": "awards-table",
@@ -125,7 +125,7 @@
       "category": "carousel",
       "version": "1.0.0",
       "track": "stable",
-      "lifecycle": "Promoted",
+      "lifecycle": "Approved",
       "description": "Horizontal scroll-snap carousel of quote cards. Pure CSS, no client JS. Each card snap-aligns center; users swipe / scroll horizontally. Works as a testimonial slider, a press-quote band, or a project highlights reel.",
       "props": {
         "items": {
@@ -183,6 +183,45 @@
         "promotedAt": "2026-05-09"
       },
       "path": "sections/carousel/carousel-quote"
+    },
+    {
+      "id": "cms-grid-section",
+      "name": "Cms Grid Section",
+      "category": "carousel",
+      "version": "0.0.1",
+      "track": "experimental",
+      "lifecycle": "Submitted",
+      "description": "Dark editorial property-listings carousel. Centred header with display headline and pill CTA above a landscape-card slider. Active card sits in the centre at full opacity; neighbours drift off the viewport edges at reduced opacity. Smooth translate transitions, infinite rotation through six listings.",
+      "dependencies": [
+        "@/components/section",
+        "@/components/section-grid"
+      ],
+      "motionDensity": [
+        "low"
+      ],
+      "responsive": {
+        "profile": "desktop / mobile-stacked"
+      },
+      "previews": {
+        "static": "preview.svg"
+      },
+      "tags": [
+        "carousel",
+        "property",
+        "real-estate",
+        "dark",
+        "editorial"
+      ],
+      "created": "2026-05-14",
+      "updated": "2026-05-19",
+      "submittedBy": "mattthompson",
+      "attribution": {
+        "originalCreator": "mattthompson",
+        "originatingProject": "mr-monolith",
+        "submittedAt": "2026-05-14",
+        "approvedAt": "2026-05-19"
+      },
+      "path": "sections/carousel/cms-grid-section"
     },
     {
       "id": "cta-band",
@@ -539,7 +578,7 @@
       "category": "hero",
       "version": "1.0.0",
       "track": "stable",
-      "lifecycle": "Promoted",
+      "lifecycle": "Approved",
       "description": "Two-column hero. Bold display headline left, supporting copy and a CTA pair right. The default opening section for editorial / agency / portfolio work.",
       "props": {
         "headline": {
@@ -752,12 +791,13 @@
         "cinematic"
       ],
       "created": "2026-05-13",
-      "updated": "2026-05-13",
+      "updated": "2026-05-19",
       "submittedBy": "mattthompson",
       "attribution": {
         "originalCreator": "mattthompson",
         "originatingProject": "mr-atlas",
-        "submittedAt": "2026-05-13"
+        "submittedAt": "2026-05-13",
+        "approvedAt": "2026-05-19"
       },
       "curation": {
         "intent": "Scroll-driven parallax gallery with four independently translating image columns and a centered scroll-cue indicator above.",
@@ -912,7 +952,7 @@
       "category": "testimonials",
       "version": "1.0.0",
       "track": "stable",
-      "lifecycle": "Promoted",
+      "lifecycle": "Approved",
       "description": "Three-up testimonial grid. Stacks single-column on mobile, three columns at md+. Each card carries quote, attribution, and role. Use when you want all testimonials visible at once rather than browsable.",
       "props": {
         "items": {

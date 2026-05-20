@@ -5,47 +5,31 @@
 
 export type Track = "stable" | "experimental" | "legacy";
 
+/**
+ * Section lifecycle states. Collapsed to 3 in promotion-system-v2 (2026-05-19):
+ * Submitted (waiting), Approved (live in catalogue), Archived (removed).
+ * Legacy values stay in the union so old section.json files validate;
+ * `getLifecycle()` folds them to the 3 real states.
+ */
 export type Lifecycle =
+  | "Submitted"
+  | "Approved"
+  | "Archived"
+  // Legacy values — `getLifecycle()` folds these into the three real states.
   | "Local"
   | "Draft"
-  | "Submitted"
   | "InReview"
-  | "Approved"
   | "Promoted"
-  | "Deprecated"
-  | "Archived";
+  | "Deprecated";
 
 export type Attribution = {
   originalCreator?: string;
   originatingProject?: string;
   submittedAt?: string;
+  /** When the section first reached `Approved`. Replaces `promotedAt`. */
+  approvedAt?: string;
+  /** Legacy field name (pre-promotion-v2). Same semantic as `approvedAt`. */
   promotedAt?: string;
-};
-
-/**
- * Curator-authored AI-legibility metadata. Populated during the review pass.
- * Describes the layout, not the brand. An AI given a project brief uses these
- * signals to pick or reject a section, then adapts it to the project's tokens.
- */
-export type Curation = {
-  /** Single-line structural intent — what the section IS, beyond `category`. */
-  intent?: string;
-  /** Short layout shape descriptor (e.g. "split-2col: text-left, image-right"). */
-  structuralPattern?: string;
-  /** Named content slots the layout exposes. */
-  structuralSlots?: string[];
-  /** Page types where the layout fits naturally. */
-  pageTypes?: string[];
-  /** Tones the layout CAN credibly carry (plural by definition). */
-  tonalAffordances?: string[];
-  visualDensity?: "airy" | "balanced" | "dense";
-  imageryDependence?: "required" | "optional" | "none";
-  copyDensity?: "tight" | "balanced" | "verbose";
-  composition?: {
-    pairsAbove?: string[];
-    pairsBelow?: string[];
-    antiPairs?: string[];
-  };
 };
 
 export type ManifestEntry = {
@@ -58,15 +42,18 @@ export type ManifestEntry = {
   description?: string;
   tags?: string[];
   motionDensity?: string[];
-  responsive?: { profile?: string; breakpoints?: string[]; notes?: string };
   dependencies?: string[];
-  previews?: { static?: string; live?: boolean };
+  /**
+   * Preview media. `static` is the still image (URL or legacy relative path).
+   * `video` is an optional short clip (URL only) showcasing motion — uploaded
+   * via the curator drop-zone in the marketplace detail page.
+   */
+  previews?: { static?: string; video?: string; live?: boolean };
   path?: string;
   created?: string;
   updated?: string;
   submittedBy?: string;
   attribution?: Attribution;
-  curation?: Curation;
 };
 
 export type Manifest = {
@@ -76,28 +63,30 @@ export type Manifest = {
 };
 
 /**
- * Lifecycle states that surface as filter pill options.
- * `Local` + `Draft` are pre-submission states excluded by design.
+ * The three real lifecycle states. Filter pills, queue groupings, and badge
+ * colors iterate over this constant.
  */
-export const LIFECYCLES: Lifecycle[] = [
-  "Submitted",
-  "InReview",
-  "Approved",
-  "Promoted",
-  "Deprecated",
-  "Archived",
-];
+export const LIFECYCLES: Lifecycle[] = ["Submitted", "Approved", "Archived"];
 
 export const TRACKS: Track[] = ["stable", "experimental", "legacy"];
 
-/** Sections without an explicit lifecycle are treated as `Promoted` — legacy default. */
+/**
+ * Resolve a section's effective lifecycle. Folds legacy values into the three
+ * real states (Promoted → Approved, InReview → Submitted, Deprecated → Archived).
+ */
 export function getLifecycle(s: ManifestEntry): Lifecycle {
-  return s.lifecycle ?? "Promoted";
+  const raw = s.lifecycle;
+  if (!raw) return "Approved";
+  if (raw === "Promoted") return "Approved";
+  if (raw === "InReview") return "Submitted";
+  if (raw === "Deprecated") return "Archived";
+  if (raw === "Local" || raw === "Draft") return "Submitted";
+  return raw;
 }
 
-/** "InReview" → "In Review"; everything else passes through. */
 export function lifecycleLabel(l: Lifecycle): string {
-  return l === "InReview" ? "In Review" : l;
+  if (l === "InReview") return "In Review";
+  return l;
 }
 
 export function capitalize(s: string): string {

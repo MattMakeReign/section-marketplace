@@ -20,6 +20,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
+  APPROVAL_FIELD_LABELS,
   capitalize,
   getLifecycle,
   lifecycleLabel,
@@ -30,6 +31,8 @@ import {
   type Track,
   type Transition,
 } from "@mr/section-library-ui";
+
+const MOTION_OPTIONS = ["static", "low", "medium", "high", "experience"] as const;
 import type { BrandContextEntry } from "../../marketplace-data";
 
 type Viewport = "desktop" | "tablet" | "mobile";
@@ -364,6 +367,7 @@ export function Detail({
         onClose={() => setPanel(null)}
         open={leftOpen}
         brandContexts={brandContexts}
+        onSectionUpdate={(updated) => setOverlay(updated)}
       />
       <RightDrawer section={current} onClose={() => setPanel(null)} open={rightOpen} />
     </div>
@@ -442,11 +446,13 @@ function LeftDrawer({
   onClose,
   open,
   brandContexts,
+  onSectionUpdate,
 }: {
   section: ManifestEntry;
   onClose: () => void;
   open: boolean;
   brandContexts: BrandContextEntry[];
+  onSectionUpdate: (updated: ManifestEntry) => void;
 }) {
   const sectionTrack = (section.track ?? "stable") as Track;
   const sectionLifecycle = getLifecycle(section);
@@ -542,22 +548,404 @@ function LeftDrawer({
           {section.motionDensity?.length ? (
             <SpecRow label="Motion" value={section.motionDensity.join(" · ")} />
           ) : null}
-          {section.responsive?.profile ? (
-            <SpecRow label="Responsive" value={section.responsive.profile} />
-          ) : null}
           {section.attribution?.originatingProject ? (
             <SpecRow label="Origin" value={section.attribution.originatingProject} />
           ) : null}
           {section.attribution?.submittedAt ? (
             <SpecRow label="Submitted" value={section.attribution.submittedAt} />
           ) : null}
-          {section.attribution?.promotedAt ? (
-            <SpecRow label="Promoted" value={section.attribution.promotedAt} />
+          {section.attribution?.approvedAt || section.attribution?.promotedAt ? (
+            <SpecRow
+              label="Approved"
+              value={section.attribution.approvedAt ?? section.attribution.promotedAt!}
+            />
           ) : null}
         </dl>
       </div>
 
+      <CuratorPanel section={section} onUpdate={onSectionUpdate} />
     </aside>
+  );
+}
+
+/* ─────────────────────────── CuratorPanel ─────────────────────────── */
+
+/**
+ * Slim curation surface — editable description / tags / motionDensity +
+ * video drop-zone + lifecycle transitions. Visible on every detail page;
+ * primary use is curators reviewing Submitted/InReview/Approved sections.
+ *
+ * Saves go through PUT /api/sections/[id]/curation (Octokit-backed commit).
+ * Video uploads go through POST /api/sections/[id]/preview-upload (Supabase),
+ * then the returned URL is PUT into the curation endpoint.
+ */
+function CuratorPanel({
+  section,
+  onUpdate,
+}: {
+  section: ManifestEntry;
+  onUpdate: (updated: ManifestEntry) => void;
+}) {
+  const lifecycle = getLifecycle(section);
+  const transitions = transitionsFrom(lifecycle);
+
+  const [description, setDescription] = useState(section.description ?? "");
+  const [tags, setTags] = useState<string[]>(section.tags ?? []);
+  const [tagInput, setTagInput] = useState("");
+  const [motionDensity, setMotionDensity] = useState<string[]>(section.motionDensity ?? []);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveOk, setSaveOk] = useState(false);
+
+  const [videoUrl, setVideoUrl] = useState<string | null>(section.previews?.video ?? null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const [transitionPending, setTransitionPending] = useState<Lifecycle | null>(null);
+  const [transitionError, setTransitionError] = useState<string | null>(null);
+
+  // Resync local form state when the user navigates to a different section.
+  useEffect(() => {
+    setDescription(section.description ?? "");
+    setTags(section.tags ?? []);
+    setMotionDensity(section.motionDensity ?? []);
+    setVideoUrl(section.previews?.video ?? null);
+    setSaveError(null);
+    setSaveOk(false);
+    setUploadError(null);
+    setTransitionError(null);
+  }, [section.id, section.description, section.tags, section.motionDensity, section.previews?.video]);
+
+  // Live-evaluate the Approve gate against the in-progress edits so the
+  // curator sees the gate flip as they fix fields, before they save.
+  const draftSection: ManifestEntry = useMemo(
+    () => ({
+      ...section,
+      description,
+      tags,
+      motionDensity,
+      previews: { ...(section.previews ?? {}), static: section.previews?.static },
+    }),
+    [section, description, tags, motionDensity],
+  );
+  const missing = missingForApproval(draftSection);
+
+  function toggleMotion(m: string) {
+    setMotionDensity((cur) => (cur.includes(m) ? cur.filter((x) => x !== m) : [...cur, m]));
+  }
+
+  function commitTag() {
+    const t = tagInput.trim().toLowerCase().replace(/\s+/g, "-");
+    if (!t || tags.includes(t)) {
+      setTagInput("");
+      return;
+    }
+    setTags((cur) => [...cur, t]);
+    setTagInput("");
+  }
+  function removeTag(t: string) {
+    setTags((cur) => cur.filter((x) => x !== t));
+  }
+  function onTagKey(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      commitTag();
+    } else if (e.key === "Backspace" && tagInput === "" && tags.length > 0) {
+      setTags((cur) => cur.slice(0, -1));
+    }
+  }
+
+  async function save() {
+    setSaving(true);
+    setSaveError(null);
+    setSaveOk(false);
+    try {
+      const res = await fetch(`/api/sections/${section.id}/curation`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description, tags, motionDensity }),
+      });
+      const data = (await res.json()) as { ok: boolean; section?: ManifestEntry; error?: string };
+      if (!data.ok || !data.section) {
+        setSaveError(data.error ?? "Save failed");
+        return;
+      }
+      onUpdate(data.section);
+      setSaveOk(true);
+      setTimeout(() => setSaveOk(false), 2000);
+    } catch (err) {
+      setSaveError((err as Error)?.message ?? "Network error");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function uploadVideo(file: File) {
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const upRes = await fetch(`/api/sections/${section.id}/preview-upload`, {
+        method: "POST",
+        body: form,
+      });
+      const upData = (await upRes.json()) as { ok: boolean; url?: string; error?: string };
+      if (!upData.ok || !upData.url) {
+        setUploadError(upData.error ?? "Upload failed");
+        return;
+      }
+      // Persist the URL on section.json via the curation endpoint.
+      const putRes = await fetch(`/api/sections/${section.id}/curation`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ previewVideoUrl: upData.url }),
+      });
+      const putData = (await putRes.json()) as { ok: boolean; section?: ManifestEntry; error?: string };
+      if (!putData.ok || !putData.section) {
+        setUploadError(putData.error ?? "Saved video URL but couldn't update section.json");
+        return;
+      }
+      setVideoUrl(upData.url);
+      onUpdate(putData.section);
+    } catch (err) {
+      setUploadError((err as Error)?.message ?? "Network error");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function removeVideo() {
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const res = await fetch(`/api/sections/${section.id}/curation`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ previewVideoUrl: null }),
+      });
+      const data = (await res.json()) as { ok: boolean; section?: ManifestEntry; error?: string };
+      if (!data.ok || !data.section) {
+        setUploadError(data.error ?? "Couldn't remove video");
+        return;
+      }
+      setVideoUrl(null);
+      onUpdate(data.section);
+    } catch (err) {
+      setUploadError((err as Error)?.message ?? "Network error");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function onDrop(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) uploadVideo(file);
+  }
+
+  async function runTransition(t: Transition) {
+    setTransitionPending(t.to);
+    setTransitionError(null);
+    try {
+      const res = await fetch(`/api/sections/${section.id}/lifecycle`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: t.to }),
+      });
+      const data = (await res.json()) as { ok: boolean; section?: ManifestEntry; error?: string };
+      if (!data.ok) {
+        setTransitionError(data.error ?? "Action failed");
+        return;
+      }
+      if (data.section) onUpdate(data.section);
+    } catch (err) {
+      setTransitionError((err as Error)?.message ?? "Network error");
+    } finally {
+      setTransitionPending(null);
+    }
+  }
+
+  const descTooShort = description.trim().length > 0 && description.trim().length < 20;
+  const dirty =
+    description !== (section.description ?? "") ||
+    JSON.stringify(tags) !== JSON.stringify(section.tags ?? []) ||
+    JSON.stringify(motionDensity) !== JSON.stringify(section.motionDensity ?? []);
+
+  return (
+    <div className="mr-mk-curator">
+      <div className="mr-mk-detail__drawer-section-label">Curation</div>
+
+      <fieldset className="mr-mk-curator__field">
+        <label className="mr-mk-curator__label">
+          Description
+          <span className="mr-mk-curator__hint">{description.trim().length} chars</span>
+        </label>
+        <textarea
+          className="mr-mk-curator__textarea"
+          rows={3}
+          placeholder="1–2 sentences. What the section IS, structurally."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          aria-invalid={descTooShort}
+        />
+        {descTooShort ? (
+          <div className="mr-mk-curator__warn">Minimum 20 characters.</div>
+        ) : null}
+      </fieldset>
+
+      <fieldset className="mr-mk-curator__field">
+        <label className="mr-mk-curator__label">Tags</label>
+        <div className="mr-mk-curator__tagrow">
+          {tags.map((t) => (
+            <button
+              key={t}
+              type="button"
+              className="mr-mk-curator__tagchip"
+              onClick={() => removeTag(t)}
+              aria-label={`Remove tag ${t}`}
+            >
+              {t}
+              <span aria-hidden> ×</span>
+            </button>
+          ))}
+          <input
+            type="text"
+            className="mr-mk-curator__taginput"
+            placeholder={tags.length === 0 ? "split-2col, hero, minimal…" : ""}
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={onTagKey}
+            onBlur={commitTag}
+          />
+        </div>
+      </fieldset>
+
+      <fieldset className="mr-mk-curator__field">
+        <label className="mr-mk-curator__label">Motion density</label>
+        <div className="mr-mk-curator__motion">
+          {MOTION_OPTIONS.map((m) => {
+            const active = motionDensity.includes(m);
+            return (
+              <button
+                key={m}
+                type="button"
+                className={`mr-mk-curator__motionchip${active ? " mr-mk-curator__motionchip--active" : ""}`}
+                aria-pressed={active}
+                onClick={() => toggleMotion(m)}
+              >
+                {m}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      <fieldset className="mr-mk-curator__field">
+        <label className="mr-mk-curator__label">Video clip <span className="mr-mk-curator__hint">optional</span></label>
+        {videoUrl ? (
+          <div className="mr-mk-curator__video-wrap">
+            <video
+              className="mr-mk-curator__video"
+              src={videoUrl}
+              controls
+              muted
+              loop
+              playsInline
+            />
+            <button
+              type="button"
+              className="mr-mk-curator__video-remove"
+              onClick={removeVideo}
+              disabled={uploading}
+              aria-label="Remove video"
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <label
+            className={`mr-mk-curator__dropzone${dragOver ? " mr-mk-curator__dropzone--over" : ""}`}
+            onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={onDrop}
+          >
+            <input
+              type="file"
+              accept="video/mp4,video/webm"
+              hidden
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) uploadVideo(file);
+              }}
+            />
+            {uploading ? (
+              <span>Uploading…</span>
+            ) : (
+              <>
+                <span className="mr-mk-curator__dropzone-title">Drop a .webm or .mp4</span>
+                <span className="mr-mk-curator__dropzone-hint">or click to browse · max 15 MB</span>
+              </>
+            )}
+          </label>
+        )}
+        {uploadError ? <div className="mr-mk-curator__error">{uploadError}</div> : null}
+      </fieldset>
+
+      <div className="mr-mk-curator__save-row">
+        <button
+          type="button"
+          className="mr-mk-curator__save"
+          onClick={save}
+          disabled={!dirty || saving || descTooShort}
+        >
+          {saving ? "Saving…" : saveOk ? "Saved" : "Save changes"}
+        </button>
+        {saveError ? <span className="mr-mk-curator__error">{saveError}</span> : null}
+      </div>
+
+      {missing.length > 0 ? (
+        <div className="mr-mk-curator__gate">
+          Approval blocked:
+          <ul>
+            {missing.map((m) => (
+              <li key={m}>{APPROVAL_FIELD_LABELS[m]}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {transitions.length > 0 ? (
+        <div className="mr-mk-curator__transitions" role="group" aria-label="Lifecycle actions">
+          {transitions.map((t) => {
+            const isApproveBlocked = t.to === "Approved" && missing.length > 0;
+            const pending = transitionPending === t.to;
+            return (
+              <button
+                key={t.to}
+                type="button"
+                className={`mr-mk-curator__txbtn mr-mk-curator__txbtn--${t.kind}`}
+                onClick={() => runTransition(t)}
+                disabled={isApproveBlocked || pending || dirty}
+                title={
+                  dirty
+                    ? "Save your changes first"
+                    : isApproveBlocked
+                      ? "Approval requirements not met"
+                      : t.hint
+                }
+              >
+                {pending ? "…" : t.label}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+      {transitionError ? <div className="mr-mk-curator__error">{transitionError}</div> : null}
+    </div>
   );
 }
 

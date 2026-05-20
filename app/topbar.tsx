@@ -127,10 +127,10 @@ export function TopBar({
  * Visible on all routes — the marketplace is an admin tool, so the bell
  * is always available and curator surfaces are not gated.
  */
-const NOTIF_QUEUE: Lifecycle[] = ["Submitted", "InReview"];
-// No cap — the dropdown is the only entry to pending curation now that the
-// dedicated /review route is retired. The list scrolls inside the dropdown.
-const NOTIF_MAX = 50;
+const NOTIF_QUEUE: Lifecycle[] = ["Submitted"];
+// Cap dropdown at 12 — full queue lives at /review (restored in
+// promotion-system-v2). The dropdown is the quick-glance entry point.
+const NOTIF_MAX = 12;
 
 export function NotificationsMenu({ sections }: { sections: ManifestEntry[] }) {
   const [open, setOpen] = useState(false);
@@ -234,6 +234,9 @@ export function NotificationsMenu({ sections }: { sections: ManifestEntry[] }) {
             </ul>
           )}
 
+          <Link href="/review" className="mr-mk-notif-menu__footer" onClick={() => setOpen(false)}>
+            Open review queue →
+          </Link>
         </div>
       ) : null}
     </div>

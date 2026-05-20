@@ -109,6 +109,7 @@ export function FilterPill({
 export function SectionCard({
   section,
   previewSrc,
+  videoSrc,
   onOpen,
   brand = "MakeReign",
   cta,
@@ -117,6 +118,8 @@ export function SectionCard({
   section: ManifestEntry;
   /** URL for the static preview image. Caller's choice: HTTP route, blob:, data:, … */
   previewSrc?: string;
+  /** Optional video clip URL — autoplays muted on hover when present. */
+  videoSrc?: string;
   /** Click handler for the card body. The App opens the Detail modal. Ignored when `cta` is given. */
   onOpen?: () => void;
   /** Optional override for the brand line (defaults to "MakeReign"). */
@@ -143,6 +146,22 @@ export function SectionCard({
           ) : (
             <span className="mr-sl-card__fallback">{section.id}</span>
           )}
+          {videoSrc ? (
+            <video
+              className="mr-sl-card__video"
+              src={videoSrc}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden
+              onMouseEnter={(e) => { e.currentTarget.play().catch(() => {}); }}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0;
+              }}
+            />
+          ) : null}
         </div>
       </div>
       <div className="mr-sl-card__body">

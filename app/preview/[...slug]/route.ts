@@ -19,10 +19,21 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
 
   const manifest = await loadManifest();
   const section = manifest.sections?.find((s) => s.id === id);
-  if (!section || !section.path || !section.previews?.static) {
+  if (!section || !section.previews?.static) {
     return new Response("Preview not found", { status: 404 });
   }
 
+  // Promotion-system-v2: `previews.static` is a full URL (Supabase Storage)
+  // for sections submitted after 2026-05-19. Redirect to the URL — the CDN
+  // serves the bytes, this route just resolves the section id.
+  if (/^https?:\/\//i.test(section.previews.static)) {
+    return Response.redirect(section.previews.static, 302);
+  }
+
+  // Legacy (pre-v2): relative path on disk.
+  if (!section.path) {
+    return new Response("Preview not found", { status: 404 });
+  }
   const file = path.join(process.cwd(), section.path, section.previews.static);
   try {
     const buf = await readFile(file);

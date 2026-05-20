@@ -57,12 +57,13 @@
     "cinematic"
   ],
   "created": "2026-05-13",
-  "updated": "2026-05-13",
+  "updated": "2026-05-19",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-atlas",
-    "submittedAt": "2026-05-13"
+    "submittedAt": "2026-05-13",
+    "approvedAt": "2026-05-19"
   },
   "curation": {
     "intent": "Scroll-driven parallax gallery with four independently translating image columns and a centered scroll-cue indicator above.",

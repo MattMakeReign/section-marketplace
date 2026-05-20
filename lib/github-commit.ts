@@ -17,6 +17,8 @@
  */
 
 import { Octokit } from "@octokit/rest";
+import { writeFile, mkdir } from "node:fs/promises";
+import { dirname, join } from "node:path";
 
 export type FileEntry = {
   /** Path inside the repo, e.g. "sections/cta/banner-acme/section.json". */
@@ -66,6 +68,17 @@ export async function commitFiles(args: {
 }): Promise<CommitResult> {
   const { files, message, authorName, authorEmail } = args;
   if (files.length === 0) throw new Error("commitFiles called with no files");
+
+  // Local-dev fallback: when GITHUB_TOKEN isn't set, the marketplace's running
+  // a local dev server with no credentials. Instead of erroring (a frustrating
+  // dead-end for curator UI testing), write the files to disk and return a
+  // synthetic CommitResult. The next `pnpm build` regenerates index.json so the
+  // local app picks up the change. Production (Vercel) always has GITHUB_TOKEN
+  // set, so this branch never fires there — prod stays Octokit-backed and
+  // commits land in GitHub atomically.
+  if (!process.env.GITHUB_TOKEN) {
+    return commitFilesToLocalDisk(files, message);
+  }
 
   const octokit = getOctokit();
   const { owner, repo, branch } = getRepoIdentity();
@@ -127,5 +140,68 @@ export async function commitFiles(args: {
     commitSha: newCommitResp.data.sha,
     commitUrl: newCommitResp.data.html_url,
     branch,
+  };
+}
+
+/**
+ * Local-dev sibling of commitFiles — writes the same FileEntry list to disk
+ * under process.cwd(). Used when GITHUB_TOKEN isn't set (no token = no prod
+ * deployment, so we're on a designer's local Mac). Returns a synthetic
+ * CommitResult so callers don't need a separate code path.
+ *
+ * Also patches index.json in place where it can, so the UI sees the change
+ * before the next `pnpm build`. Falls back to "you'll need to re-run pnpm
+ * build" if the file in question isn't a section.json.
+ */
+async function commitFilesToLocalDisk(
+  files: FileEntry[],
+  message: string,
+): Promise<CommitResult> {
+  const root = process.cwd();
+  for (const file of files) {
+    const abs = join(root, file.path);
+    await mkdir(dirname(abs), { recursive: true });
+    if (file.encoding === "base64") {
+      await writeFile(abs, Buffer.from(file.content, "base64"));
+    } else {
+      await writeFile(abs, file.content, "utf8");
+    }
+  }
+
+  // Best-effort: patch index.json so the running app reflects manifest changes
+  // immediately. Only handles section.json updates — preview blobs, README, etc.
+  // are stored but not indexed.
+  try {
+    const indexPath = join(root, "index.json");
+    const { readFile } = await import("node:fs/promises");
+    const raw = await readFile(indexPath, "utf8").catch(() => null);
+    if (raw) {
+      const index = JSON.parse(raw) as {
+        sections?: Array<Record<string, unknown> & { id?: string; path?: string }>;
+      };
+      let touched = false;
+      for (const file of files) {
+        if (!file.path.endsWith("/section.json")) continue;
+        const sectionDir = file.path.replace(/\/section\.json$/, "");
+        const manifest = file.encoding === "utf8" ? JSON.parse(file.content) : null;
+        if (!manifest) continue;
+        const idx = (index.sections ?? []).findIndex((s) => s.path === sectionDir);
+        if (idx >= 0 && index.sections) {
+          index.sections[idx] = { ...index.sections[idx], ...manifest, path: sectionDir };
+          touched = true;
+        }
+      }
+      if (touched) {
+        await writeFile(indexPath, JSON.stringify(index, null, 2) + "\n", "utf8");
+      }
+    }
+  } catch {
+    // Non-fatal — the run still succeeds with the files on disk.
+  }
+
+  return {
+    commitSha: `local-${Date.now()}`,
+    commitUrl: `file://${root}`,
+    branch: `local-dev (${message})`,
   };
 }

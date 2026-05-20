@@ -24,6 +24,8 @@ import {
   getLifecycle,
   isValidTransition,
   LIFECYCLES,
+  missingForApproval,
+  APPROVAL_FIELD_LABELS,
   type Lifecycle,
   type ManifestEntry,
   type Manifest,
@@ -126,16 +128,38 @@ export async function POST(
     );
   }
 
+  // Server-side Approve gate (promotion-system-v2). Defense in depth: the
+  // curator UI disables the Approve button when fields are missing, but the
+  // server enforces the same check so a hand-rolled request can't bypass it.
+  // Checks against the freshly-loaded section.json — not the index entry,
+  // which can lag a curator's just-saved description/tags by one build cycle.
+  if (target === "Approved") {
+    const missing = missingForApproval(sectionManifest);
+    if (missing.length > 0) {
+      const labels = missing.map((f) => APPROVAL_FIELD_LABELS[f]).join(", ");
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Cannot approve — missing required fields: ${labels}`,
+          code: "approval_blocked",
+          missing,
+        },
+        { status: 409 },
+      );
+    }
+  }
+
   const today = isoDate();
   sectionManifest.lifecycle = target;
   sectionManifest.updated = today;
 
-  // Stamp `promotedAt` the first time a section reaches Promoted. Preserve
-  // existing attribution fields; only fill what's missing.
-  if (target === "Promoted") {
+  // Stamp `approvedAt` the first time a section reaches Approved. Preserve
+  // existing attribution fields; only fill what's missing. Legacy data with
+  // `promotedAt` is left alone — `getLifecycle()` already maps Promoted → Approved.
+  if (target === "Approved") {
     const attribution = (sectionManifest.attribution ?? {}) as Record<string, unknown>;
-    if (!attribution.promotedAt) {
-      sectionManifest.attribution = { ...attribution, promotedAt: today };
+    if (!attribution.approvedAt && !attribution.promotedAt) {
+      sectionManifest.attribution = { ...attribution, approvedAt: today };
     }
   }
 

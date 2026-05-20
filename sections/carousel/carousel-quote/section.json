@@ -4,7 +4,7 @@
   "category": "carousel",
   "version": "1.0.0",
   "track": "stable",
-  "lifecycle": "Promoted",
+  "lifecycle": "Approved",
   "description": "Horizontal scroll-snap carousel of quote cards. Pure CSS, no client JS. Each card snap-aligns center; users swipe / scroll horizontally. Works as a testimonial slider, a press-quote band, or a project highlights reel.",
   "props": {
     "items": {
