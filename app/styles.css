@@ -1482,12 +1482,13 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   border-top: 1px solid var(--chrome-border);
 }
 .mr-mk-detail__drawer-section-label {
-  font-family: var(--chrome-font-mono);
-  font-size: 10px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--chrome-fg-subtle);
-  margin-bottom: 10px;
+  font-family: var(--chrome-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--chrome-fg);
+  margin-bottom: var(--chrome-space-3);
 }
 
 /* Viewport toggle inside the left drawer */
