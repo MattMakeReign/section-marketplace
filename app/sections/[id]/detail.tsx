@@ -35,6 +35,14 @@ import {
   TrackBadge,
   LifecycleBadge,
   ViewportToggle,
+  Button,
+  Textarea,
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+  ToggleGroup,
+  ToggleGroupItem,
   type LifecycleName,
   type TrackName,
 } from "@mr/tools-ui";
@@ -822,99 +830,107 @@ function CuratorPanel({
     JSON.stringify(motionDensity) !== JSON.stringify(section.motionDensity ?? []);
 
   return (
-    <div className="mr-mk-curator">
-      <div className="mr-mk-detail__drawer-section-label">Curation</div>
-
-      <fieldset className="mr-mk-curator__field">
-        <label className="mr-mk-curator__label">
-          Description
-          <span className="mr-mk-curator__hint">{description.trim().length} chars</span>
-        </label>
-        <textarea
-          className="mr-mk-curator__textarea"
-          rows={3}
-          placeholder="1–2 sentences. What the section IS, structurally."
+    <div className="mr-curator">
+      <Field className="mr-curator__field">
+        <FieldLabel className="mr-curator__label">Description</FieldLabel>
+        <FieldDescription>
+          1–2 sentences. What the section IS, structurally.
+        </FieldDescription>
+        <Textarea
+          rows={4}
+          placeholder="e.g. Two-column hero with eyebrow + display headline + supporting copy + CTA on the left, dual-column vertical-marquee gallery on the right…"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          aria-invalid={descTooShort}
+          state={descTooShort ? "error" : "default"}
         />
         {descTooShort ? (
-          <div className="mr-mk-curator__warn">Minimum 20 characters.</div>
-        ) : null}
-      </fieldset>
+          <FieldError>Minimum 20 characters.</FieldError>
+        ) : (
+          <div className="mr-curator__char-count">
+            {description.trim().length} characters
+          </div>
+        )}
+      </Field>
 
-      <fieldset className="mr-mk-curator__field">
-        <label className="mr-mk-curator__label">Tags</label>
-        <div className="mr-mk-curator__tagrow">
+      <Field className="mr-curator__field">
+        <FieldLabel className="mr-curator__label">Tags</FieldLabel>
+        <FieldDescription>
+          Short, kebab-case keywords curators and the AI use to find this section.
+        </FieldDescription>
+        <div className="mr-curator__tagrow">
           {tags.map((t) => (
             <button
               key={t}
               type="button"
-              className="mr-mk-curator__tagchip"
+              className="mr-curator__tagchip"
               onClick={() => removeTag(t)}
               aria-label={`Remove tag ${t}`}
             >
               {t}
-              <span aria-hidden> ×</span>
+              <span className="mr-curator__tagchip-x" aria-hidden>×</span>
             </button>
           ))}
           <input
             type="text"
-            className="mr-mk-curator__taginput"
-            placeholder={tags.length === 0 ? "split-2col, hero, minimal…" : ""}
+            className="mr-curator__taginput"
+            placeholder={tags.length === 0 ? "split-2col, hero, minimal…" : "Add tag"}
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={onTagKey}
             onBlur={commitTag}
           />
         </div>
-      </fieldset>
+      </Field>
 
-      <fieldset className="mr-mk-curator__field">
-        <label className="mr-mk-curator__label">Motion density</label>
-        <div className="mr-mk-curator__motion">
-          {MOTION_OPTIONS.map((m) => {
-            const active = motionDensity.includes(m);
-            return (
-              <button
-                key={m}
-                type="button"
-                className={`mr-mk-curator__motionchip${active ? " mr-mk-curator__motionchip--active" : ""}`}
-                aria-pressed={active}
-                onClick={() => toggleMotion(m)}
-              >
-                {m}
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
+      <Field className="mr-curator__field">
+        <FieldLabel className="mr-curator__label">Motion density</FieldLabel>
+        <FieldDescription>
+          Tendencies the layout supports. Multi-select.
+        </FieldDescription>
+        <ToggleGroup
+          type="multiple"
+          value={motionDensity}
+          onValueChange={(v) => setMotionDensity(v)}
+          aria-label="Motion density"
+        >
+          {MOTION_OPTIONS.map((m) => (
+            <ToggleGroupItem key={m} value={m} aria-label={m}>
+              {m}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </Field>
 
-      <fieldset className="mr-mk-curator__field">
-        <label className="mr-mk-curator__label">Video clip <span className="mr-mk-curator__hint">optional</span></label>
+      <Field className="mr-curator__field">
+        <FieldLabel className="mr-curator__label">
+          Video clip <span className="mr-curator__optional">optional</span>
+        </FieldLabel>
+        <FieldDescription>
+          A short .webm or .mp4 that autoplays on card hover. Max 15 MB.
+        </FieldDescription>
         {videoUrl ? (
-          <div className="mr-mk-curator__video-wrap">
+          <div className="mr-curator__video-wrap">
             <video
-              className="mr-mk-curator__video"
+              className="mr-curator__video"
               src={videoUrl}
               controls
               muted
               loop
               playsInline
             />
-            <button
+            <Button
               type="button"
-              className="mr-mk-curator__video-remove"
+              variant="tertiary"
+              size="sm"
               onClick={removeVideo}
               disabled={uploading}
-              aria-label="Remove video"
             >
-              Remove
-            </button>
+              Remove video
+            </Button>
           </div>
         ) : (
           <label
-            className={`mr-mk-curator__dropzone${dragOver ? " mr-mk-curator__dropzone--over" : ""}`}
+            className={`mr-curator__dropzone${dragOver ? " mr-curator__dropzone--over" : ""}`}
             onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
@@ -930,34 +946,35 @@ function CuratorPanel({
               }}
             />
             {uploading ? (
-              <span>Uploading…</span>
+              <span className="mr-curator__dropzone-title">Uploading…</span>
             ) : (
               <>
-                <span className="mr-mk-curator__dropzone-title">Drop a .webm or .mp4</span>
-                <span className="mr-mk-curator__dropzone-hint">or click to browse · max 15 MB</span>
+                <span className="mr-curator__dropzone-title">Drop a .webm or .mp4</span>
+                <span className="mr-curator__dropzone-hint">or click to browse</span>
               </>
             )}
           </label>
         )}
-        {uploadError ? <div className="mr-mk-curator__error">{uploadError}</div> : null}
-      </fieldset>
+        {uploadError ? <FieldError>{uploadError}</FieldError> : null}
+      </Field>
 
-      <div className="mr-mk-curator__save-row">
-        <button
+      <div className="mr-curator__actions">
+        <Button
           type="button"
-          className="mr-mk-curator__save"
+          variant="primary"
+          shape="pill"
           onClick={save}
           disabled={!dirty || saving || descTooShort}
         >
           {saving ? "Saving…" : saveOk ? "Saved" : "Save changes"}
-        </button>
-        {saveError ? <span className="mr-mk-curator__error">{saveError}</span> : null}
+        </Button>
+        {saveError ? <FieldError>{saveError}</FieldError> : null}
       </div>
 
       {missing.length > 0 ? (
-        <div className="mr-mk-curator__gate">
-          Approval blocked:
-          <ul>
+        <div className="mr-curator__gate">
+          <div className="mr-curator__gate-title">Approval blocked</div>
+          <ul className="mr-curator__gate-list">
             {missing.map((m) => (
               <li key={m}>{APPROVAL_FIELD_LABELS[m]}</li>
             ))}
@@ -966,15 +983,17 @@ function CuratorPanel({
       ) : null}
 
       {transitions.length > 0 ? (
-        <div className="mr-mk-curator__transitions" role="group" aria-label="Lifecycle actions">
+        <div className="mr-curator__transitions" role="group" aria-label="Lifecycle actions">
           {transitions.map((t) => {
             const isApproveBlocked = t.to === "Approved" && missing.length > 0;
             const pending = transitionPending === t.to;
+            const variant = t.kind === "forward" ? "secondary" : t.kind === "back" ? "tertiary" : "ghost";
             return (
-              <button
+              <Button
                 key={t.to}
                 type="button"
-                className={`mr-mk-curator__txbtn mr-mk-curator__txbtn--${t.kind}`}
+                variant={variant}
+                size="sm"
                 onClick={() => runTransition(t)}
                 disabled={isApproveBlocked || pending || dirty}
                 title={
@@ -986,12 +1005,12 @@ function CuratorPanel({
                 }
               >
                 {pending ? "…" : t.label}
-              </button>
+              </Button>
             );
           })}
         </div>
       ) : null}
-      {transitionError ? <div className="mr-mk-curator__error">{transitionError}</div> : null}
+      {transitionError ? <FieldError>{transitionError}</FieldError> : null}
     </div>
   );
 }
