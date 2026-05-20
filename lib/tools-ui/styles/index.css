@@ -1,0 +1,15 @@
+/*
+ * @mr/tools-ui — Single-import stylesheet bundle.
+ *
+ * Consumers should import this from their root layout:
+ *   import "@mr/tools-ui/styles.css";
+ *
+ * Loads, in order:
+ *   1. tokens.css     — primitives (raw scale)
+ *   2. theme.css      — semantic aliases + dark variant + --chrome-* shim
+ *   3. components.css — component class rules backing the primitives
+ */
+
+@import "./tokens.css";
+@import "./theme.css";
+@import "./components.css";

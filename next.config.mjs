@@ -19,9 +19,10 @@ const nextConfig = {
   // Ignoring at build time so Vercel deploys succeed; runtime is unaffected.
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
-  // Resolve the (formerly workspace) `@mr/section-library-ui` package to the
-  // vendored copy under `lib/section-library-ui/`. This lets the marketplace
-  // build standalone on Vercel without the pnpm workspace context.
+  // Resolve `@mr/section-library-ui` and `@mr/tools-ui` to their vendored
+  // copies under `lib/`. This lets the marketplace build standalone on
+  // Vercel without the pnpm workspace context. Source-of-truth for each
+  // package is the vendored copy (no separate workspace package).
   webpack: (config) => {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
@@ -33,6 +34,11 @@ const nextConfig = {
         __dirname,
         "lib/section-library-ui"
       ),
+      "@mr/tools-ui/styles.css": path.resolve(
+        __dirname,
+        "lib/tools-ui/styles/index.css"
+      ),
+      "@mr/tools-ui": path.resolve(__dirname, "lib/tools-ui"),
     };
     return config;
   },

@@ -1,0 +1,279 @@
+/*
+ * @mr/tools-ui — Semantic tokens + themes + compatibility shim.
+ *
+ * Components consume these. Two themes ship: light (default editorial) and
+ * dark. Activate dark via [data-mr-theme="dark"] on <html>.
+ *
+ * Compatibility shim at the bottom maps legacy --chrome-* tokens to their
+ * --mr-* counterparts. Deleted in chunk 8 of the migration.
+ */
+
+:root,
+[data-mr-theme="light"] {
+  /* ── Surfaces ──────────────────────────────────────────────── */
+  --mr-bg: var(--mr-neutral-0);              /* page ground — eggshell */
+  --mr-surface: #ffffff;                     /* card surface — pure white pops on eggshell */
+  --mr-surface-muted: #f5f3f1;               /* muted panel / hover */
+  --mr-surface-elevated: #ffffff;            /* same as surface in light */
+  --mr-surface-inverse: var(--mr-neutral-950);
+
+  /* ── Foreground ────────────────────────────────────────────── */
+  --mr-fg: #000000;                          /* near-pure black for chrome */
+  --mr-fg-muted: var(--mr-neutral-500);      /* gravel */
+  --mr-fg-subtle: var(--mr-neutral-400);     /* slate */
+  --mr-fg-disabled: #b1b0b0;
+  --mr-fg-inverse: var(--mr-neutral-0);
+
+  /* ── Borders ───────────────────────────────────────────────── */
+  --mr-border: #e5e5e5;                      /* hairline */
+  --mr-border-strong: #000000;
+
+  /* ── Accents ───────────────────────────────────────────────── */
+  --mr-accent: var(--mr-accent-500);
+  --mr-accent-fg: var(--mr-neutral-0);
+  --mr-accent-hover: var(--mr-accent-600);
+
+  --mr-danger: var(--mr-danger-500);
+  --mr-danger-fg: var(--mr-neutral-0);
+  --mr-success: var(--mr-success-500);
+  --mr-warning: var(--mr-warning-500);
+
+  /* ── Track + lifecycle (marketplace domain) ──────────────────
+   * Semantic aliases for the raws. Stay in light theme — these are
+   * brand-domain colours, not surface-themed. */
+  --mr-track-stable: var(--mr-track-stable-raw);
+  --mr-track-experimental: var(--mr-track-experimental-raw);
+  --mr-track-legacy: var(--mr-track-legacy-raw);
+
+  --mr-lifecycle-local: var(--mr-lifecycle-local-raw);
+  --mr-lifecycle-draft: var(--mr-lifecycle-draft-raw);
+  --mr-lifecycle-submitted: var(--mr-lifecycle-submitted-raw);
+  --mr-lifecycle-inreview: var(--mr-lifecycle-inreview-raw);
+  --mr-lifecycle-approved: var(--mr-lifecycle-approved-raw);
+  --mr-lifecycle-promoted: var(--mr-lifecycle-promoted-raw);
+  --mr-lifecycle-deprecated: var(--mr-lifecycle-deprecated-raw);
+  --mr-lifecycle-archived: var(--mr-lifecycle-archived-raw);
+
+  /* ── Typography ────────────────────────────────────────────── */
+  --mr-font-display: var(--mr-font-display-raw);
+  --mr-font-body: var(--mr-font-body-raw);
+  --mr-font-mono: var(--mr-font-mono-raw);
+
+  /* Role tokens — bundled font-size + line-height + letter-spacing + weight.
+   * Reference via composite custom properties; consume one per text role. */
+
+  /* Display — for marquee/showpiece (rare in chrome) */
+  --mr-text-display-lg-size: 48px;
+  --mr-text-display-lg-leading: 1;
+  --mr-text-display-lg-tracking: -0.025em;
+  --mr-text-display-lg-weight: 500;
+
+  --mr-text-display-md-size: 36px;
+  --mr-text-display-md-leading: 1.05;
+  --mr-text-display-md-tracking: -0.02em;
+  --mr-text-display-md-weight: 500;
+
+  --mr-text-display-sm-size: 28px;
+  --mr-text-display-sm-leading: 1.1;
+  --mr-text-display-sm-tracking: -0.015em;
+  --mr-text-display-sm-weight: 500;
+
+  /* Heading — modal titles, card titles, detail page titles */
+  --mr-text-heading-lg-size: 24px;
+  --mr-text-heading-lg-leading: 1.2;
+  --mr-text-heading-lg-tracking: -0.01em;
+  --mr-text-heading-lg-weight: 500;
+
+  --mr-text-heading-md-size: 20px;
+  --mr-text-heading-md-leading: 1.25;
+  --mr-text-heading-md-tracking: -0.005em;
+  --mr-text-heading-md-weight: 500;
+
+  --mr-text-heading-sm-size: 16px;
+  --mr-text-heading-sm-leading: 1.3;
+  --mr-text-heading-sm-tracking: 0;
+  --mr-text-heading-sm-weight: 500;
+
+  /* Body — default chrome copy */
+  --mr-text-body-lg-size: 16px;
+  --mr-text-body-lg-leading: 1.5;
+  --mr-text-body-lg-tracking: 0;
+  --mr-text-body-lg-weight: 400;
+
+  --mr-text-body-md-size: 14px;
+  --mr-text-body-md-leading: 1.5;
+  --mr-text-body-md-tracking: 0;
+  --mr-text-body-md-weight: 400;
+
+  --mr-text-body-sm-size: 13px;
+  --mr-text-body-sm-leading: 1.45;
+  --mr-text-body-sm-tracking: 0;
+  --mr-text-body-sm-weight: 400;
+
+  /* Label — form labels, badge text, helper copy */
+  --mr-text-label-lg-size: 13px;
+  --mr-text-label-lg-leading: 1.4;
+  --mr-text-label-lg-tracking: 0;
+  --mr-text-label-lg-weight: 500;
+
+  --mr-text-label-md-size: 12px;
+  --mr-text-label-md-leading: 1.4;
+  --mr-text-label-md-tracking: 0;
+  --mr-text-label-md-weight: 500;
+
+  --mr-text-label-sm-size: 11px;
+  --mr-text-label-sm-leading: 1.4;
+  --mr-text-label-sm-tracking: 0;
+  --mr-text-label-sm-weight: 500;
+
+  /* Button — UI action text */
+  --mr-text-button-lg-size: 14px;
+  --mr-text-button-lg-leading: 1;
+  --mr-text-button-lg-tracking: 0;
+  --mr-text-button-lg-weight: 500;
+
+  --mr-text-button-md-size: 13px;
+  --mr-text-button-md-leading: 1;
+  --mr-text-button-md-tracking: 0;
+  --mr-text-button-md-weight: 500;
+
+  --mr-text-button-sm-size: 12px;
+  --mr-text-button-sm-leading: 1;
+  --mr-text-button-sm-tracking: 0;
+  --mr-text-button-sm-weight: 500;
+
+  /* Mono uppercase — eyebrow / spec-row labels / tech vocabulary */
+  --mr-text-mono-label-size: 10px;
+  --mr-text-mono-label-leading: 1.4;
+  --mr-text-mono-label-tracking: 0.06em;
+  --mr-text-mono-label-weight: 500;
+
+  /* ── Spacing (4px base + 6/10 intermediates for chrome arithmetic) ── */
+  --mr-space-0: 0;
+  --mr-space-px: 1px;
+  --mr-space-1: 4px;
+  --mr-space-1_5: 6px;       /* hairline gap, drawer-inset arithmetic */
+  --mr-space-2: 8px;
+  --mr-space-2_5: 10px;
+  --mr-space-3: 12px;
+  --mr-space-4: 16px;
+  --mr-space-5: 20px;
+  --mr-space-6: 24px;
+  --mr-space-8: 32px;
+  --mr-space-10: 40px;
+  --mr-space-12: 48px;
+  --mr-space-16: 64px;
+  --mr-space-20: 80px;
+  --mr-space-24: 96px;
+
+  /* ── Radii (small, editorial) ──────────────────────────────── */
+  --mr-radius-none: 0;
+  --mr-radius-1: 3px;        /* input fields */
+  --mr-radius-2: 6px;        /* small components */
+  --mr-radius-3: 10px;       /* cards */
+  --mr-radius-card: 10px;    /* alias for cards */
+  --mr-radius-panel: 14px;   /* drawers, stages */
+  --mr-radius-pill: 9999px;
+  --mr-radius-full: 9999px;
+
+  /* ── Shadows (hairline-first elevation) ────────────────────── */
+  --mr-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --mr-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --mr-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --mr-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -2px rgb(0 0 0 / 0.04);
+  --mr-shadow-overlay: 0 16px 48px -16px rgb(0 0 0 / 0.18), 0 4px 12px -4px rgb(0 0 0 / 0.08);
+  --mr-shadow-hairline: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+
+  /* ── Motion ────────────────────────────────────────────────── */
+  --mr-duration-instant: 100ms;
+  --mr-duration-fast: 200ms;
+  --mr-duration-base: 300ms;
+  --mr-duration-slow: 500ms;
+
+  --mr-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --mr-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --mr-ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --mr-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * Dark theme — obsidian ground, eggshell text. Same restraint.
+ * ────────────────────────────────────────────────────────────── */
+
+[data-mr-theme="dark"] {
+  --mr-bg: var(--mr-neutral-950);
+  --mr-surface: var(--mr-neutral-900);
+  --mr-surface-muted: var(--mr-neutral-800);
+  --mr-surface-elevated: var(--mr-neutral-800);
+  --mr-surface-inverse: var(--mr-neutral-0);
+
+  --mr-fg: var(--mr-neutral-50);
+  --mr-fg-muted: var(--mr-neutral-400);
+  --mr-fg-subtle: var(--mr-neutral-500);
+  --mr-fg-disabled: var(--mr-neutral-700);
+  --mr-fg-inverse: var(--mr-neutral-950);
+
+  --mr-border: var(--mr-neutral-800);
+  --mr-border-strong: var(--mr-neutral-50);
+
+  --mr-accent: var(--mr-accent-400);
+  --mr-accent-fg: var(--mr-neutral-950);
+  --mr-accent-hover: var(--mr-accent-500);
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * Compatibility shim — maps legacy --chrome-* tokens to --mr-*.
+ *
+ * The marketplace's existing app/styles.css ALSO defines --chrome-* in
+ * :root and theme variants. CSS cascade order means whichever block loads
+ * last wins. This shim is defensive: if a future chunk deletes the
+ * marketplace's --chrome-* definitions before all consumers are migrated,
+ * legacy classes still resolve.
+ *
+ * Deleted in chunk 8 of the tools-ui migration.
+ * ────────────────────────────────────────────────────────────── */
+
+:root {
+  --chrome-ground: var(--mr-bg);
+  --chrome-surface: var(--mr-surface);
+  --chrome-surface-muted: var(--mr-surface-muted);
+  --chrome-surface-inverse: var(--mr-surface-inverse);
+  --chrome-fg: var(--mr-fg);
+  --chrome-fg-muted: var(--mr-fg-muted);
+  --chrome-fg-subtle: var(--mr-fg-subtle);
+  --chrome-fg-disabled: var(--mr-fg-disabled);
+  --chrome-fg-inverse: var(--mr-fg-inverse);
+  --chrome-border: var(--mr-border);
+  --chrome-border-strong: var(--mr-border-strong);
+  --chrome-track-stable: var(--mr-track-stable);
+  --chrome-track-experimental: var(--mr-track-experimental);
+  --chrome-track-legacy: var(--mr-track-legacy);
+  --chrome-lifecycle-local: var(--mr-lifecycle-local);
+  --chrome-lifecycle-draft: var(--mr-lifecycle-draft);
+  --chrome-lifecycle-submitted: var(--mr-lifecycle-submitted);
+  --chrome-lifecycle-inreview: var(--mr-lifecycle-inreview);
+  --chrome-lifecycle-approved: var(--mr-lifecycle-approved);
+  --chrome-lifecycle-promoted: var(--mr-lifecycle-promoted);
+  --chrome-lifecycle-deprecated: var(--mr-lifecycle-deprecated);
+  --chrome-lifecycle-archived: var(--mr-lifecycle-archived);
+  --chrome-font-display: var(--mr-font-display);
+  --chrome-font-body: var(--mr-font-body);
+  --chrome-font-mono: var(--mr-font-mono);
+  --chrome-space-1: var(--mr-space-1);
+  --chrome-space-2: var(--mr-space-2);
+  --chrome-space-3: var(--mr-space-3);
+  --chrome-space-4: var(--mr-space-4);
+  --chrome-space-5: var(--mr-space-5);
+  --chrome-space-6: var(--mr-space-6);
+  --chrome-space-8: var(--mr-space-8);
+  --chrome-space-10: var(--mr-space-10);
+  --chrome-space-12: var(--mr-space-12);
+  --chrome-space-16: var(--mr-space-16);
+  --chrome-space-20: var(--mr-space-20);
+  --chrome-space-24: var(--mr-space-24);
+  --chrome-radius-1: var(--mr-radius-1);
+  --chrome-radius-2: var(--mr-radius-2);
+  --chrome-radius-3: var(--mr-radius-3);
+  --chrome-radius-card: var(--mr-radius-card);
+  --chrome-radius-pill: var(--mr-radius-pill);
+}

@@ -18,6 +18,7 @@ import {
   type ManifestEntry, type Lifecycle,
   getLifecycle, lifecycleLabel,
 } from "@mr/section-library-ui";
+import { Button } from "@mr/tools-ui";
 
 export function TopBar({
   sections,
@@ -258,12 +259,21 @@ function useTheme(): [ThemeChoice, (t: ThemeChoice) => void] {
   useEffect(() => {
     const root = document.documentElement;
     window.localStorage.setItem("mr-mk-theme", choice);
+    // Dual-write both attributes through chunks 2–7 of the tools-ui migration:
+    //   - data-theme       → legacy mr-mk-* / mr-sl-* CSS reads this
+    //   - data-mr-theme    → @mr/tools-ui reads this
+    // Chunk 8 removes data-theme entirely.
     if (choice !== "system") {
       root.dataset.theme = choice;
+      root.dataset.mrTheme = choice;
       return;
     }
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const apply = () => { root.dataset.theme = mq.matches ? "dark" : "light"; };
+    const apply = () => {
+      const resolved = mq.matches ? "dark" : "light";
+      root.dataset.theme = resolved;
+      root.dataset.mrTheme = resolved;
+    };
     apply();
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
@@ -384,7 +394,12 @@ export function ProfileMenu({ sections }: { sections: number }) {
 
           <hr className="mr-mk-profile-menu__divider" />
 
-          <button type="button" className="mr-mk-profile-menu__item">Log out</button>
+          {/* Smoke test for @mr/tools-ui chunk 1: Button primitive in the tree.
+              className preserves the legacy mr-mk-profile-menu__item styling
+              while we migrate. Drops back to a plain styled button in chunk 2. */}
+          <Button asChild variant="ghost" size="md">
+            <button type="button" className="mr-mk-profile-menu__item">Log out</button>
+          </Button>
         </div>
       ) : null}
     </div>

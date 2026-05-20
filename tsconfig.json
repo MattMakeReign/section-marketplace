@@ -19,9 +19,11 @@
     "paths": {
       "@/*": ["./*"],
       "@mr/section-library-ui": ["./lib/section-library-ui/index.ts"],
-      "@mr/section-library-ui/styles.css": ["./lib/section-library-ui/styles.css"]
+      "@mr/section-library-ui/styles.css": ["./lib/section-library-ui/styles.css"],
+      "@mr/tools-ui": ["./lib/tools-ui/index.ts"],
+      "@mr/tools-ui/styles.css": ["./lib/tools-ui/styles/index.css"]
     }
   },
-  "include": ["scripts/**/*.ts", "app/**/*.ts", "app/**/*.tsx", "components/**/*.tsx", "sections/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+  "include": ["scripts/**/*.ts", "app/**/*.ts", "app/**/*.tsx", "components/**/*.tsx", "sections/**/*.tsx", "lib/**/*.ts", "lib/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
