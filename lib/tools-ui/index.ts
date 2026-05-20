@@ -55,6 +55,23 @@ export { Separator } from "./primitives/separator";
 export { ToggleGroup, ToggleGroupItem } from "./primitives/toggle-group";
 export { Card, cardVariants, type CardProps } from "./primitives/card";
 export { Badge, badgeVariants, type BadgeProps } from "./primitives/badge";
+export {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "./primitives/tabs";
+export {
+  Sheet,
+  SheetTrigger,
+  SheetPortal,
+  SheetClose,
+  SheetOverlay,
+  SheetContent,
+  SheetTitle,
+  SheetDescription,
+  type SheetContentProps,
+} from "./primitives/sheet";
 
 // Marketplace-domain composites
 export { TopBar, type TopBarComponent } from "./components/top-bar";
@@ -82,6 +99,11 @@ export {
   type FilterOption,
 } from "./components/filter-pill";
 export { DensityToggle } from "./components/density-toggle";
+export { SpecRow } from "./components/spec-row";
+export {
+  ViewportToggle,
+  type ViewportName,
+} from "./components/viewport-toggle";
 
 // Helpers
 export { cn } from "./lib/cn";

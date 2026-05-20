@@ -31,6 +31,13 @@ import {
   type Track,
   type Transition,
 } from "@mr/section-library-ui";
+import {
+  TrackBadge,
+  LifecycleBadge,
+  ViewportToggle,
+  type LifecycleName,
+  type TrackName,
+} from "@mr/tools-ui";
 
 const MOTION_OPTIONS = ["static", "low", "medium", "high", "experience"] as const;
 import type { BrandContextEntry } from "../../marketplace-data";
@@ -281,24 +288,11 @@ export function Detail({
        * two clusters sit on one horizontal axis). Shifts right when the
        * drawer opens so it sits clear of the drawer chrome. */}
       <div className="mr-mk-detail__topchrome" data-shift={panelOpen}>
-        <div
-          className="mr-mk-detail__viewport-toggle mr-mk-detail__viewport-toggle--chrome"
-          role="radiogroup"
-          aria-label="Preview viewport"
-        >
-          {(["desktop", "tablet", "mobile"] as Viewport[]).map((v) => (
-            <button
-              key={v}
-              type="button"
-              role="radio"
-              aria-checked={viewport === v}
-              className={`mr-mk-detail__viewport-btn${viewport === v ? " mr-mk-detail__viewport-btn--active" : ""}`}
-              onClick={() => setViewport(v)}
-            >
-              {capitalize(v)}
-            </button>
-          ))}
-        </div>
+        <ViewportToggle
+          value={viewport}
+          onChange={(v) => setViewport(v as Viewport)}
+          className="mr-mk-detail__viewport-toggle--chrome"
+        />
       </div>
 
       {/* Top-right chrome — 3-icon action bar (Info / Install / Refresh)
@@ -529,20 +523,15 @@ function LeftDrawer({
           ) : null}
           <SpecRow
             label="Track"
-            value={
-              <span className="mr-sl-badge" data-track={sectionTrack}>
-                <span className="mr-sl-badge__dot" />
-                {sectionTrack}
-              </span>
-            }
+            value={<TrackBadge track={sectionTrack as TrackName} />}
           />
           <SpecRow
             label="Lifecycle"
             value={
-              <span className="mr-sl-badge" data-lifecycle={sectionLifecycle}>
-                <span className="mr-sl-badge__dot" />
-                {lifecycleLabel(sectionLifecycle)}
-              </span>
+              <LifecycleBadge
+                lifecycle={sectionLifecycle as LifecycleName}
+                label={lifecycleLabel(sectionLifecycle)}
+              />
             }
           />
           {section.motionDensity?.length ? (
