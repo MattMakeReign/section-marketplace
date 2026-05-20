@@ -27,15 +27,20 @@ import { useRouter } from "next/navigation";
 import type { Manifest } from "./marketplace-data";
 import { TopBar } from "./topbar";
 import {
-  // Filter row icons
+  // Filter row icons (still in section-library subpath)
   IconCategory, IconCollection, IconAnimation, IconTag, IconTrack, IconSort, IconLifecycle,
-  // Shared types / helpers / presentational components
+  // Vocab + helpers
   type ManifestEntry, type Track, type Lifecycle,
   TRACKS, LIFECYCLES, getLifecycle, lifecycleLabel, capitalize,
-  FilterPill, SectionCard,
   CLIENTS,
+  CANONICAL_CATEGORIES, CANONICAL_IDS,
 } from "@mr/section-library-ui";
-import { CANONICAL_CATEGORIES, CANONICAL_IDS } from "@mr/section-library-ui";
+import {
+  FilterPill,
+  SectionCard,
+  DensityToggle,
+  type LifecycleName,
+} from "@mr/tools-ui";
 
 const ALL = "all";
 type Sort = "name-asc" | "category" | "track" | "newest";
@@ -197,7 +202,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
         search={{ value: query, onChange: setQuery }}
       />
 
-      <div className="mr-sl-filters">
+      <div className="mr-filter-row">
         <FilterPill
           label="Clients"
           icon={<IconCollection />}
@@ -227,7 +232,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
               id: l,
               label: lifecycleLabel(l),
               count: lifecycleCounts[l] ?? 0,
-              dot: `var(--chrome-lifecycle-${l.toLowerCase()})`,
+              dot: `var(--mr-lifecycle-${l.toLowerCase()})`,
             })),
           ]}
           onChange={setLifecycle}
@@ -249,32 +254,17 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           onChange={setTag}
         />
 
-        <div className="mr-sl-filters__spacer" />
+        <div className="mr-filter-row__spacer" />
 
-        <div
-          className="mr-sl-density"
-          role="radiogroup"
-          aria-label="Grid density"
-        >
-          {[2, 3, 4].map((n) => (
-            <button
-              key={n}
-              type="button"
-              role="radio"
-              aria-checked={density === n}
-              aria-label={`${n}-column grid`}
-              className={`mr-sl-density__btn${density === n ? " mr-sl-density__btn--active" : ""}`}
-              onClick={() => setDensity(n as 2 | 3 | 4)}
-            >
-              <DensityIcon cols={n as 2 | 3 | 4} />
-            </button>
-          ))}
-        </div>
+        <DensityToggle
+          value={density}
+          onChange={(n) => setDensity(n as 2 | 3 | 4)}
+        />
 
       </div>
 
       {filtered.length === 0 ? (
-        <div className="mr-sl-empty">
+        <div className="mr-empty">
           {lifecycle !== ALL && category === ALL && track === ALL && animation === ALL && tag === ALL && query === "" ? (
             <p>
               No sections currently in <strong>{lifecycleLabel(lifecycle as Lifecycle)}</strong>.
@@ -287,11 +277,12 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           )}
         </div>
       ) : (
-        <div className="mr-sl-grid" data-density={density}>
+        <div className="mr-grid" data-density={density}>
           {filtered.map((s) => (
             <SectionCard
               key={s.id}
               section={s}
+              lifecycle={getLifecycle(s) as LifecycleName}
               previewSrc={s.previews?.static ? `/preview/${s.id}` : undefined}
               videoSrc={s.previews?.video}
               onOpen={() => openSection(s.id)}
@@ -301,24 +292,6 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
       )}
 
     </>
-  );
-}
-
-/* Tiny column-count glyph for the grid-density toggle. Renders N vertical bars. */
-function DensityIcon({ cols }: { cols: 2 | 3 | 4 }) {
-  // Bar widths + x-offsets are pre-computed so the icon stays optically balanced
-  // across 2/3/4 — equal stroke width, equal gaps, centred in a 16-square viewBox.
-  const layouts: Record<2 | 3 | 4, Array<{ x: number; w: number }>> = {
-    2: [{ x: 3, w: 4 }, { x: 9, w: 4 }],
-    3: [{ x: 2, w: 3 }, { x: 6.5, w: 3 }, { x: 11, w: 3 }],
-    4: [{ x: 1.5, w: 2.5 }, { x: 5, w: 2.5 }, { x: 8.5, w: 2.5 }, { x: 12, w: 2.5 }],
-  };
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
-      {layouts[cols].map((bar, i) => (
-        <rect key={i} x={bar.x} y={3} width={bar.w} height={10} rx={1} />
-      ))}
-    </svg>
   );
 }
 

@@ -52,6 +52,9 @@ export {
   type AvatarProps,
 } from "./primitives/avatar";
 export { Separator } from "./primitives/separator";
+export { ToggleGroup, ToggleGroupItem } from "./primitives/toggle-group";
+export { Card, cardVariants, type CardProps } from "./primitives/card";
+export { Badge, badgeVariants, type BadgeProps } from "./primitives/badge";
 
 // Marketplace-domain composites
 export { TopBar, type TopBarComponent } from "./components/top-bar";
@@ -64,6 +67,21 @@ export {
   type ProfileMenuTheme,
   type ProfileMenuActionItem,
 } from "./components/profile-menu";
+export {
+  TrackBadge,
+  LifecycleBadge,
+  type TrackName,
+  type LifecycleName,
+} from "./components/badges";
+export {
+  SectionCard,
+  type SectionCardSummary,
+} from "./components/section-card";
+export {
+  FilterPill,
+  type FilterOption,
+} from "./components/filter-pill";
+export { DensityToggle } from "./components/density-toggle";
 
 // Helpers
 export { cn } from "./lib/cn";
