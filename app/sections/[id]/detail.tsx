@@ -137,14 +137,14 @@ export function Detail({
 }) {
   const router = useRouter();
 
-  // Drawer state — info (left) + install (right) share the same slot,
-  // mutually exclusive. Default open with info so curator info is visible
+  // Drawer state — info / install / curation share the same left-side slot,
+  // mutually exclusive. Default opens info so section context is visible
   // without a click; toolbar buttons toggle from there.
-  type Panel = "info" | "install" | null;
+  type Panel = "info" | "install" | "curation" | null;
   const searchParams = useSearchParams();
   const urlPanel = searchParams?.get("panel");
   const initialPanel: Panel =
-    urlPanel === "info" || urlPanel === "install"
+    urlPanel === "info" || urlPanel === "install" || urlPanel === "curation"
       ? urlPanel
       : urlPanel === "closed"
         ? null
@@ -154,6 +154,7 @@ export function Detail({
     setPanel((cur) => (cur === p ? null : p));
   const leftOpen = panel === "info";
   const rightOpen = panel === "install";
+  const curationOpen = panel === "curation";
   const panelOpen = panel !== null;
 
   // Live overlay for curator-mutated sections, so transition clicks
@@ -328,6 +329,19 @@ export function Detail({
           </button>
           <button
             type="button"
+            className={`mr-mk-detail__tool${curationOpen ? " mr-mk-detail__tool--active" : ""}`}
+            aria-pressed={curationOpen}
+            aria-label="Curation"
+            title="Curation"
+            onClick={() => togglePanel("curation")}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M11.5 2.5l2 2-8 8H3.5v-2l8-8z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              <path d="M10 4l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
             className="mr-mk-detail__tool"
             aria-label="Reload preview"
             title="Reload preview"
@@ -361,9 +375,14 @@ export function Detail({
         onClose={() => setPanel(null)}
         open={leftOpen}
         brandContexts={brandContexts}
-        onSectionUpdate={(updated) => setOverlay(updated)}
       />
       <RightDrawer section={current} onClose={() => setPanel(null)} open={rightOpen} />
+      <CurationDrawer
+        section={current}
+        onClose={() => setPanel(null)}
+        open={curationOpen}
+        onSectionUpdate={(updated) => setOverlay(updated)}
+      />
     </div>
   );
 }
@@ -440,13 +459,11 @@ function LeftDrawer({
   onClose,
   open,
   brandContexts,
-  onSectionUpdate,
 }: {
   section: ManifestEntry;
   onClose: () => void;
   open: boolean;
   brandContexts: BrandContextEntry[];
-  onSectionUpdate: (updated: ManifestEntry) => void;
 }) {
   const sectionTrack = (section.track ?? "stable") as Track;
   const sectionLifecycle = getLifecycle(section);
@@ -551,6 +568,47 @@ function LeftDrawer({
           ) : null}
         </dl>
       </div>
+
+    </aside>
+  );
+}
+
+/* ─────────────────────────── CurationDrawer ─────────────────────────── */
+
+function CurationDrawer({
+  section,
+  onClose,
+  open,
+  onSectionUpdate,
+}: {
+  section: ManifestEntry;
+  onClose: () => void;
+  open: boolean;
+  onSectionUpdate: (updated: ManifestEntry) => void;
+}) {
+  const ref = useSlide<HTMLElement>(open, DRAWER_OPEN_STYLES, DRAWER_CLOSED_STYLES);
+  return (
+    <aside
+      ref={ref}
+      className="mr-mk-detail__drawer mr-mk-detail__drawer--left"
+      data-open={open}
+      aria-hidden={!open}
+      aria-label="Curation"
+    >
+      <header className="mr-mk-detail__drawer-head">
+        <div className="mr-mk-detail__drawer-eyebrow">Curation</div>
+        <h2 className="mr-mk-detail__drawer-title">{section.name}</h2>
+        <button
+          type="button"
+          className="mr-mk-detail__drawer-close"
+          onClick={onClose}
+          aria-label="Close curation"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </button>
+      </header>
 
       <CuratorPanel section={section} onUpdate={onSectionUpdate} />
     </aside>
