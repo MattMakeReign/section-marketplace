@@ -22,9 +22,36 @@ html[data-theme="light"] {
   color-scheme: light;
 }
 
-html, body {
+/* Body baseline for /render/* routes.
+ *
+ * Specificity has to beat the marketplace chrome's body rule in
+ * `app/layout.css`:
+ *   `:root[data-theme="light"] body { background: var(--chrome-ground); }`
+ *   (specificity 0,0,2,1)
+ *
+ * A plain `body { ... }` rule (specificity 0,0,0,1) loses to that, which is
+ * why compiled.css's body block in the section bundle was being overridden by
+ * the marketplace chrome's white. We match the chrome rule's specificity
+ * here AND let source order win: render.css is a nested-route layout import,
+ * so it loads after the root layout's CSS bundle.
+ *
+ * The values use design-system custom properties — compiled.css redefines
+ * those tokens on `:root` per section, so each project's body baseline
+ * (Halden's parchment + Plex, Atlas's white + sans, etc.) flows through
+ * the same selector. Pixel-perfect without per-section overrides here.
+ */
+:root[data-theme="light"] body,
+:root[data-theme="dark"] body,
+html:not([data-theme]) body {
   background: var(--surface);
   color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  background: var(--surface);
 }
 
 /* ─────────────────────────────────────────────────────────────

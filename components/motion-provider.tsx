@@ -1,28 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import { installMotion, createMatchMedia } from "@/design-system/motion";
-import { installSmoothScroll } from "@/design-system/smooth-scroll";
-
 /**
- * MotionProvider — installs the canonical motion runtime once on mount:
- *   - GSAP defaults + plugin registration (ScrollTrigger)
- *   - gsap.matchMedia() container (responsive + reduced-motion)
- *   - Lenis smooth-scroll singleton, wired to GSAP's ticker + ScrollTrigger
+ * MotionProvider — re-export shell.
  *
- * Mount once at the root of the app. Sections never instantiate motion or
- * smooth-scroll themselves — they consume what this provider sets up.
+ * Per `task-marketplace-runtime-frozen-wrapper` (2026-05-21): the marketplace
+ * must render sections PIXEL-IDENTICAL to their origin project. To guarantee
+ * that, the motion runtime is shared with every project via `@mr/canonical-stack`
+ * (vendored at `lib/canonical-stack/`). This file is a thin shell so existing
+ * `@/components/motion-provider` imports keep resolving.
+ *
+ * Edit the runtime at `lib/canonical-stack/motion-provider.tsx`, not here.
  */
-export function MotionProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    installMotion();
-    const mm = createMatchMedia();
-    const teardownLenis = installSmoothScroll();
-    return () => {
-      teardownLenis();
-      mm.kill();
-    };
-  }, []);
 
-  return <>{children}</>;
-}
+export { MotionProvider } from "@mr/canonical-stack";

@@ -16,9 +16,20 @@
  * with chrome variables. Next.js still flattens all imports into the
  * global CSS bundle, but the visual isolation is enforced by the route
  * boundary in practice — only `/render/*` pages mount this layout.
+ *
+ * `@mr/canonical-stack/styles.css` is REQUIRED here. It defines the
+ * `[data-mr-reveal]` CSS-driven entrance animation that `useReveal()` in
+ * sections relies on — useReveal flips `data-mr-revealed="true"` but does
+ * NOT register a GSAP tween; the animation is a pure CSS transition driven
+ * by these stylesheet rules. Without this import, useReveal calls are no-ops.
+ * It also ships the Lenis global utility classes (`html.lenis`, `.lenis-smooth`)
+ * the MotionProvider's Lenis singleton depends on for correct scroll layout.
+ * Halden's `app/layout.tsx` imports the same file — keeping the render shell
+ * byte-identical to the origin project.
  */
 
 import { MotionProvider } from "@/components/motion-provider";
+import "@mr/canonical-stack/styles.css";
 import "./render.css";
 
 export const metadata = {
