@@ -17,12 +17,16 @@
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-const MARKETPLACE_ROOT = dirname(HERE); // .../section-marketplace/
-const CONTEXTS_DIR = join(MARKETPLACE_ROOT, "brand-contexts");
+// Resolve relative to process.cwd() so the resolver finds brand-contexts/
+// in BOTH local dev AND Vercel serverless functions. Previously this used
+// `fileURLToPath(import.meta.url)`, which works locally (file lives at
+// .../section-marketplace/lib/brand-contexts.ts so dirname(dirname(HERE))
+// = project root) but breaks on Vercel where the bundled file lives at
+// .next/server/chunks/* and the dirname climb lands somewhere meaningless.
+// Next.js sets process.cwd() to the project root in both environments.
+const CONTEXTS_DIR = join(process.cwd(), "brand-contexts");
 
 export type BrandContextStatus = "active" | "deprecated";
 
