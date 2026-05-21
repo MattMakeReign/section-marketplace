@@ -13,7 +13,9 @@
   "motionDensity": [
     "low"
   ],
-  "previews": {},
+  "previews": {
+    "static": "preview.png"
+  },
   "tags": [
     "pricing",
     "3-col-grid",
