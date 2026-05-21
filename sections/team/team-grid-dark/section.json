@@ -1,0 +1,36 @@
+{
+  "id": "team-grid-dark",
+  "name": "Team Grid Dark",
+  "category": "team",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Dark-background team section with a monospace eyebrow and serif headline above a multi-up portrait grid (4-up desktop, 3-up tablet, 2-up mobile). Each card exposes an image slot and a name/role panel with inverted-radius corner cutouts.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/team-grid-dark/preview.png"
+  },
+  "tags": [
+    "team-grid",
+    "dark-bg",
+    "portrait-cards",
+    "multi-up",
+    "eyebrow-headline",
+    "editorial"
+  ],
+  "created": "2026-05-21",
+  "updated": "2026-05-21",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-21"
+  },
+  "context": "mr-halden-miller"
+}
