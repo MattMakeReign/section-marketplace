@@ -11,7 +11,7 @@
     "@/components/section-grid"
   ],
   "motionDensity": [
-    "static"
+    "low"
   ],
   "previews": {
     "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/pricing-three-tier/preview.png"
