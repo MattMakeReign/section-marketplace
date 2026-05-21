@@ -44,6 +44,16 @@ import {
 
 const ALL = "all";
 type Sort = "name-asc" | "category" | "track" | "newest";
+
+/** Parse a section.json.context reference ("mr-halden-miller" or
+ * "mr-halden-miller@2.0.0") into just the project id. Returns null for
+ * empty / "_neutral" (universal section). Mirrors parseContextReference
+ * in lib/brand-contexts.ts. */
+function projectIdFromContextRef(ref: string | null | undefined): string | null {
+  if (!ref || ref === "_neutral") return null;
+  const at = ref.indexOf("@");
+  return at === -1 ? ref : ref.slice(0, at);
+}
 const SORTS: Array<{ id: Sort; label: string }> = [
   { id: "name-asc", label: "Name A → Z" },
   { id: "category", label: "Category" },
@@ -51,7 +61,15 @@ const SORTS: Array<{ id: Sort; label: string }> = [
   { id: "newest", label: "Newest" },
 ];
 
-export function Gallery({ manifest }: { manifest: Manifest }) {
+import type { BrandContextEntry } from "./marketplace-data";
+
+export function Gallery({
+  manifest,
+  brandContexts = [],
+}: {
+  manifest: Manifest;
+  brandContexts?: BrandContextEntry[];
+}) {
   // Detail route fires `router.refresh()` after curator transitions, so the
   // gallery picks up state changes via the server-component re-render — no
   // need for a local optimistic overlay anymore.
@@ -66,6 +84,11 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
   const [sort, setSort] = useState<Sort>("name-asc");
   const [density, setDensity] = useState<2 | 3 | 4>(3);
   const [client, setClient] = useState<string>(ALL);
+  // Project filter — value is a brand-context id (e.g. "mr-halden-miller").
+  // Per decision-marketplace-frozen-section-bundles, brand contexts are
+  // metadata-only and one project owns one design system. Sections reference
+  // their origin project via section.json.context.
+  const [project, setProject] = useState<string>(ALL);
   const router = useRouter();
 
   // `?lifecycle=<state>` deep-links from elsewhere (e.g. the Submit-for-curation
@@ -169,6 +192,10 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
         const matched = (s.tags ?? []).some((t) => t.toLowerCase() === clientLower);
         if (!matched) return false;
       }
+      // Project filter — match by section.context (brand-context id). Sections
+      // without a context are universal and only appear when "All projects"
+      // is selected.
+      if (project !== ALL && projectIdFromContextRef(s.context) !== project) return false;
       if (category !== ALL) {
         if (category === "__other") {
           if ((CANONICAL_IDS as string[]).includes(s.category)) return false;
@@ -194,9 +221,9 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
       }
     });
     return list;
-  }, [sections, query, client, category, track, lifecycle, animation, tag, sort]);
+  }, [sections, query, client, project, category, track, lifecycle, animation, tag, sort]);
 
-  const filtersDirty = query !== "" || client !== ALL || category !== ALL || track !== ALL || lifecycle !== ALL || animation !== ALL || tag !== ALL || sort !== "name-asc";
+  const filtersDirty = query !== "" || client !== ALL || project !== ALL || category !== ALL || track !== ALL || lifecycle !== ALL || animation !== ALL || tag !== ALL || sort !== "name-asc";
 
   /** Client filter options — counts how many sections are tagged with each
    * canonical client. All four are always shown so the filter taxonomy
@@ -209,8 +236,40 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
     });
   }, [countableBase]);
 
+  /** Project filter options — one row per registered brand context, plus a
+   * count of how many currently-visible sections reference it. Skips the
+   * marketplace's pseudo-context "_neutral" (not a real project). Each
+   * option carries an optional `group` set to its client tag — the FilterPill
+   * uses this to render section headings when multiple projects share a
+   * client. Per decision-marketplace-frozen-section-bundles, projects own a
+   * design system; the client tag is metadata only. */
+  const projectOptions = useMemo(() => {
+    const usageById = new Map<string, number>();
+    for (const s of countableBase) {
+      const pid = projectIdFromContextRef(s.context);
+      if (pid) usageById.set(pid, (usageById.get(pid) ?? 0) + 1);
+    }
+    // Sort: projects grouped by client (so Halden Miller LLC's projects
+    // cluster together), then alphabetical within each client. Client-less
+    // projects sort last under the "~" pseudo-group sentinel.
+    const withClient = brandContexts
+      .filter((c) => c.id !== "_neutral")
+      .map((c) => ({
+        id: c.id,
+        label: c.name,
+        count: usageById.get(c.id) ?? 0,
+        _client: c.client ?? "~",
+      }))
+      .sort((a, b) => {
+        const groupCmp = a._client.localeCompare(b._client);
+        return groupCmp !== 0 ? groupCmp : a.label.localeCompare(b.label);
+      });
+    // Strip the sort-key before returning so the FilterOption shape stays clean.
+    return withClient.map(({ _client, ...rest }) => rest);
+  }, [brandContexts, countableBase]);
+
   function clearAll() {
-    setQuery(""); setClient(ALL); setCategory(ALL); setTrack(ALL); setLifecycle(ALL); setAnimation(ALL); setTag(ALL); setSort("name-asc");
+    setQuery(""); setClient(ALL); setProject(ALL); setCategory(ALL); setTrack(ALL); setLifecycle(ALL); setAnimation(ALL); setTag(ALL); setSort("name-asc");
   }
 
   // Card click handler — navigates to the full-page section detail route.
@@ -235,6 +294,17 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
             ...clientOptions,
           ]}
           onChange={setClient}
+        />
+
+        <FilterPill
+          label="Projects"
+          icon={<IconCollection />}
+          value={project}
+          options={[
+            { id: ALL, label: "All projects", count: countableBase.length },
+            ...projectOptions,
+          ]}
+          onChange={setProject}
         />
 
         <FilterPill

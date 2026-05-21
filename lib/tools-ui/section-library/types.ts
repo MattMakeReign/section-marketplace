@@ -44,6 +44,13 @@ export type ManifestEntry = {
   motionDensity?: string[];
   dependencies?: string[];
   /**
+   * Brand-context reference. Points at `brand-contexts/<id>/context.json` in
+   * the marketplace. Used to attribute a section to the project it was
+   * authored in, and to drive the Projects filter pill in the gallery.
+   * `null` / undefined / "_neutral" → no project (universal section).
+   */
+  context?: string | null;
+  /**
    * Preview media. `static` is the still image (URL or legacy relative path).
    * `video` is an optional short clip (URL only) showcasing motion — uploaded
    * via the curator drop-zone in the marketplace detail page.

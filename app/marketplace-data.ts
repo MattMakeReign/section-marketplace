@@ -35,6 +35,14 @@ export async function loadManifest(): Promise<Manifest> {
 export type BrandContextEntry = {
   id: string;
   name: string;
+  /**
+   * Optional client tag — a free-form string identifying the client this
+   * project belongs to. Multiple projects can share one client and group
+   * together in the Projects filter dropdown. Per decision-marketplace-
+   * frozen-section-bundles, client is metadata only — it does not own a
+   * design system.
+   */
+  client?: string;
   version: string;
   description?: string;
   author?: string;
