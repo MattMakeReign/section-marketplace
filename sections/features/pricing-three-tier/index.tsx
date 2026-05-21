@@ -1,1 +1,0 @@
-export { PricingThreeTier } from "./PricingThreeTier";
