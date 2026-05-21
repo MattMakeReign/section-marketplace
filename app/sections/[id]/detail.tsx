@@ -191,23 +191,21 @@ export function Detail({
 
   // Iframe sizing model.
   //
-  // ALL viewports render at a fixed pixel width matching the canonical
-  // browser-chrome grid breakpoint for that device:
-  //   - Desktop: 1440px (the workspace chrome's default 1440·12-col grid)
-  //   - Tablet:   768px
-  //   - Mobile:   390px
-  //
-  // The iframe scales DOWN (capped at 1) to fit the stage so the section
-  // always sees its TRUE design-viewport width regardless of how wide or
-  // narrow the marketplace stage happens to be. This guarantees pixel
-  // parity with the section's own /sample render in its origin project,
-  // because both surfaces feed the section the same viewport width and
-  // therefore the same `clamp()` outputs for fluid type/space tokens.
+  // - Desktop: the iframe fills 100% of the stage. The section inside
+  //   sees the REAL stage width as its viewport and reflows responsively
+  //   on every resize. No scaling, no fixed 1440 viewport.
+  // - Tablet/Mobile: the iframe renders at the device's pixel width
+  //   (768/390) and scales DOWN (capped at 1) to fit the stage — gives
+  //   a device-frame preview with breathing room on a wide stage.
   const [viewport, setViewport] = useState<Viewport>("desktop");
   const frameRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [iframeKey, setIframeKey] = useState(0);
   useEffect(() => {
+    if (viewport === "desktop") {
+      setScale(1);
+      return;
+    }
     const frame = frameRef.current;
     if (!frame) return;
     const targetW = DEVICE_WIDTH[viewport];
@@ -256,9 +254,9 @@ export function Detail({
             title={`${current.name} preview`}
             className="mr-mk-detail__iframe"
             style={{
-              width: `${DEVICE_WIDTH[viewport]}px`,
-              height: `${100 / scale}%`,
-              transform: `scale(${scale})`,
+              width: isDesktop ? "100%" : `${DEVICE_WIDTH[viewport]}px`,
+              height: isDesktop ? "100%" : `${100 / scale}%`,
+              transform: isDesktop ? "none" : `scale(${scale})`,
             } as CSSProperties}
           />
         </div>
