@@ -1,0 +1,20 @@
+/* === source: design-system/fonts.css === */
+/*
+ * fonts.css — Halden Miller font loading.
+ *
+ * Three IBM Plex families, loaded from Google Fonts:
+ *   - Plex Mono (400) — uppercase eyebrow labels, tags, captions.
+ *   - Plex Sans (400 / 500 / 700) — body copy, button labels.
+ *   - Plex Serif (400, italic) — all headings (H0–H6).
+ *
+ * Plex Serif keeps weight 400 only — headings rely on size, italic, and
+ * tracking for emphasis. Italic is loaded so designers can highlight a
+ * single phrase per headline (Halden Miller's editorial signature).
+ *
+ * If we ever want the true variable Plex Sans woff2, swap this for a
+ * self-hosted @font-face block sourcing the file from
+ * https://github.com/IBM/plex/releases and update --font-plex-sans in
+ * tokens.css to "IBM Plex Sans Variable".
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap");
