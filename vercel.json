@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build && npm run build:app",
+  "buildCommand": "npm run build && npm run rebuild-css && npm run build:app",
   "installCommand": "npm install --no-package-lock",
   "framework": "nextjs"
 }

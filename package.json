@@ -8,6 +8,7 @@
     "build:app": "next build",
     "start:app": "next start -p 3020",
     "build": "tsx scripts/build-manifest.ts",
+    "rebuild-css": "node scripts/rebuild-section-css.mjs",
     "validate": "tsx scripts/validate.ts",
     "typecheck": "tsc --noEmit"
   },
