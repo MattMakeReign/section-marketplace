@@ -1,0 +1,36 @@
+{
+  "id": "pricing-three-tier",
+  "name": "Pricing Three Tier",
+  "category": "features",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "3-column pricing grid with a centered serif headline and eyebrow label above. Each tier card exposes a name, price, feature checklist, CTA button, and a footer descriptor note. Third card uses an inverted dark treatment. Below the grid, a slim inline CTA bar with an avatar cluster, supporting text, and a pill button.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/pricing-three-tier/preview.png"
+  },
+  "tags": [
+    "pricing",
+    "3-col-grid",
+    "tier-cards",
+    "dark-card-accent",
+    "checklist",
+    "cta-bar"
+  ],
+  "created": "2026-05-21",
+  "updated": "2026-05-21",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-21"
+  },
+  "context": "mr-halden-miller"
+}
