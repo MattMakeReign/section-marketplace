@@ -1,6 +1,6 @@
 {
-  "generated": "2026-05-19T13:03:31.784Z",
-  "count": 2,
+  "generated": "2026-05-21T11:31:27.486Z",
+  "count": 3,
   "contexts": [
     {
       "id": "_neutral",
@@ -18,14 +18,27 @@
     {
       "id": "mr-atlas",
       "name": "MakeReign Atlas",
-      "version": "1.0.0",
-      "description": "Atlas — MakeReign's flagship demo project. Cool monochrome with electric accent. Diverges visibly from the marketplace's warm-editorial baseline so brand-context scoping is easy to see at a glance.",
+      "client": "MakeReign",
+      "version": "2.0.0",
+      "description": "Metadata-only brand context. Per decision-marketplace-frozen-section-bundles (2026-05-21), brand contexts no longer ship CSS bundles — each section travels with its own pre-compiled.css. Atlas remains a demo / playground brand for verifying the install-time adaptation contract.",
       "author": "techo",
-      "originatingProject": "atlas",
+      "originatingProject": "mr-atlas",
       "created": "2026-05-13",
-      "updated": "2026-05-13",
+      "updated": "2026-05-21",
       "status": "active",
-      "tokensHash": null,
+      "sectionsUsing": []
+    },
+    {
+      "id": "mr-halden-miller",
+      "name": "Halden Miller",
+      "client": "Halden Miller LLC",
+      "version": "2.0.0",
+      "description": "Metadata-only brand context. Per decision-marketplace-frozen-section-bundles (2026-05-21), brand contexts no longer ship CSS bundles — each section travels with its own pre-compiled.css. This file exists solely to power the Projects filter / dropdown.",
+      "author": "mattthompson",
+      "originatingProject": "mr-halden-miller",
+      "created": "2026-05-21",
+      "updated": "2026-05-21",
+      "status": "active",
       "sectionsUsing": []
     }
   ]

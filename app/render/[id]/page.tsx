@@ -1,28 +1,19 @@
 /**
  * /render/[id] — self-contained section renderer.
  *
- * The Library App's Preview tab iframes THIS route, same-origin. No
- * dependency on a sibling demo project being online — the marketplace
- * bundles its own copy of the section primitives + a neutral design
- * system (forked from starter-pack as the canonical baseline).
+ * The Library App's Preview tab iframes THIS route, same-origin. Per
+ * `decision-marketplace-frozen-section-bundles` (2026-05-21), each section
+ * travels with its own pre-compiled CSS bundle (`sections/<cat>/<id>/
+ * compiled.css`) produced at submit time inside the source project's
+ * Tailwind build. The marketplace renders sections PIXEL-IDENTICAL to their
+ * origin project \u2014 we just inline the compiled CSS as a <style> tag and
+ * let the browser render the React component on top of it. No brand-context
+ * CSS injection, no scoped wrappers, no neutral baseline transformation.
  *
- * Sections live two levels deep: `sections/<category>/<id>/index.tsx`.
- * This page server-resolves the category by scanning, then hands the
- * `cat/id` pair to a client component for `next/dynamic` to expand
- * into one webpack chunk per section.
- *
- * BRAND CONTEXT — sections may reference a brand-context in their
- * `section.json.context` field. When present, this page server-loads the
- * context's tokens.css (already scoped to `[data-section-context="<id>"]`)
- * and injects it as a `<style>` tag, then tags the render shell with the
- * matching `data-section-context` attribute. Variables cascade from the
- * shell down into the section, overriding the marketplace's global `:root`.
- * Tailwind utilities generated from `@theme` resolve those variables at
- * runtime, so brand styling reaches both raw CSS and utility classes.
- *
- * Pipeline: same-origin render → no localhost:3010, no probe, no fallback.
- * The honest "what does this layout look like" against the curator's
- * authored context, or the neutral baseline if none.
+ * Sections live two levels deep: `sections/<category>/<id>/index.tsx`. This
+ * page server-resolves the category by scanning, then hands the `cat/id`
+ * pair to a client component for `next/dynamic` to expand into one webpack
+ * chunk per section.
  */
 
 import { Suspense } from "react";
@@ -31,7 +22,6 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { SectionsContainer } from "@/components/sections-container";
 import { LiveRenderClient } from "./live";
-import { resolveBrandContext, type ResolvedBrandContext } from "@/lib/brand-contexts";
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -58,45 +48,41 @@ function readSectionContext(category: string, id: string): string | null {
   }
 }
 
+function readCompiledCss(category: string, id: string): string | null {
+  const cssPath = path.join(SECTIONS_DIR, category, id, "compiled.css");
+  if (!existsSync(cssPath)) return null;
+  try {
+    return readFileSync(cssPath, "utf8");
+  } catch {
+    return null;
+  }
+}
+
 export default async function RenderPage({ params }: { params: RouteParams }) {
   const { id } = await params;
   const category = findCategoryForSection(id);
   if (!category) notFound();
 
   const contextRef = readSectionContext(category, id);
-  const context: ResolvedBrandContext | null = resolveBrandContext(contextRef);
+  const compiledCss = readCompiledCss(category, id);
 
   return (
     <>
-      {context?.tokensCss ? (
+      {/* Section's frozen Tailwind build \u2014 same bytes that the source
+       * project's CSS pipeline emitted at submit time. Pixel-identical
+       * to the origin. Inlined so there's no second round trip and no
+       * dependency on serving from public/. */}
+      {compiledCss ? (
         <style
-          data-brand-context={context.id}
+          data-section-css={id}
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: context.tokensCss }}
-        />
-      ) : null}
-      {/* Inject components.css AFTER tokens so its var() references resolve
-       * against the scoped token values. The bundle was wrapped in
-       * [data-section-context="<id>"] { … } at submit time via native CSS
-       * nesting, so .btn / .field / etc. only apply inside the section
-       * preview shell — marketplace chrome is unaffected. */}
-      {context?.componentsCss ? (
-        <style
-          data-brand-context-components={context.id}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: context.componentsCss }}
-        />
-      ) : null}
-      {context?.fontsCss ? (
-        <style
-          data-brand-context-fonts={context.id}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: context.fontsCss }}
+          dangerouslySetInnerHTML={{ __html: compiledCss }}
         />
       ) : null}
       <main
         className="mr-render-shell"
-        data-section-context={context?.id ?? undefined}
+        data-section-context={contextRef ?? undefined}
+        data-has-compiled-css={compiledCss ? "true" : "false"}
       >
         <SectionsContainer>
           <Suspense fallback={<div className="mr-render-loading" />}>

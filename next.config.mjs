@@ -13,15 +13,23 @@ const nextConfig = {
   outputFileTracingExcludes: {
     "*": [".next/cache/**/*"],
   },
-  // Force-include the brand-contexts/ directory in every serverless function
-  // bundle. `lib/brand-contexts.ts` reads these files dynamically via
-  // readFileSync at runtime; Next.js's static analyzer can't detect the
-  // dependency, so without this the directory gets stripped from the bundle
-  // and `/render/[id]` returns null context → no scoped styling. Same goes
-  // for sections/**/section.json which the render route reads dynamically.
+  // Force-include files the routes read dynamically at runtime so they make
+  // it into Vercel's serverless function bundles. Next.js's static analyzer
+  // can't trace dynamic readFileSync calls.
+  //
+  //   brand-contexts/**/context.json — metadata reads from lib/brand-contexts.ts
+  //     (powers the section detail Specs panel + the Projects filter).
+  //   sections/**/section.json — read by /render/[id] for the context ref.
+  //   sections/**/compiled.css — the frozen Tailwind build inlined by
+  //     /render/[id] as a <style> tag. See
+  //     decision-marketplace-frozen-section-bundles.
   outputFileTracingIncludes: {
-    "/render/[id]": ["./brand-contexts/**/*", "./sections/**/section.json"],
-    "/sections/[id]": ["./brand-contexts/**/*"],
+    "/render/[id]": [
+      "./brand-contexts/**/context.json",
+      "./sections/**/section.json",
+      "./sections/**/compiled.css",
+    ],
+    "/sections/[id]": ["./brand-contexts/**/context.json"],
   },
   // Suppress the floating Next.js dev-mode badge so it doesn't appear
   // twice on the section detail page (once for the marketplace shell,

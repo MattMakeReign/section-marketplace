@@ -1,31 +1,32 @@
 /**
- * Brand context resolver.
+ * Brand context resolver — METADATA ONLY.
  *
- * A "brand context" is a versioned bundle of design-system inputs (tokens,
- * fonts, brand assets) that a section was authored against. Sections REFERENCE
- * a context by id in `section.json.context`; the marketplace render route
- * loads it scoped to the section preview.
+ * A "brand context" is the project a section was authored in (e.g. "mr-halden-
+ * miller"). Per `decision-marketplace-frozen-section-bundles` (2026-05-21),
+ * brand contexts NO LONGER ship CSS bundles. Each section travels with its
+ * own pre-compiled.css produced at submit time inside the source project's
+ * Tailwind build. The marketplace renders sections pixel-identical to their
+ * origin; brand contexts exist for METADATA — populating the Projects filter,
+ * showing a project label on the section detail page, grouping by client.
  *
- * Two reference shapes (Option C — default float, opt-in pin):
- *   "acme-2025"          → float to latest version of `acme-2025`
- *   "acme-2025@1.0.0"    → pin to that specific version
+ * Two reference shapes on section.json.context:
+ *   "mr-halden-miller"          \u2192 floats to the latest metadata on disk
+ *   "mr-halden-miller@2.0.0"    \u2192 pinned (version field is informational only
+ *                                  in this metadata-only world)
  *
- * `null`, undefined, or `"_neutral"` → renders against the marketplace's
- * neutral default (the global `:root` in `design-system/tokens.css`).
+ * `null`, undefined, or `"_neutral"` \u2192 section has no associated project.
  *
- * Architecture: `decision-section-brand-contexts.md` in the workspace tracker.
+ * Architecture: `decision-marketplace-frozen-section-bundles.md` in the
+ * workspace tracker. Supersedes the CSS-bundle approach from
+ * `decision-section-brand-contexts.md` (2026-05-13).
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 // Resolve relative to process.cwd() so the resolver finds brand-contexts/
-// in BOTH local dev AND Vercel serverless functions. Previously this used
-// `fileURLToPath(import.meta.url)`, which works locally (file lives at
-// .../section-marketplace/lib/brand-contexts.ts so dirname(dirname(HERE))
-// = project root) but breaks on Vercel where the bundled file lives at
-// .next/server/chunks/* and the dirname climb lands somewhere meaningless.
-// Next.js sets process.cwd() to the project root in both environments.
+// in both local dev AND Vercel serverless functions. Next.js sets
+// process.cwd() to the project root in both environments.
 const CONTEXTS_DIR = join(process.cwd(), "brand-contexts");
 
 export type BrandContextStatus = "active" | "deprecated";
@@ -33,6 +34,8 @@ export type BrandContextStatus = "active" | "deprecated";
 export type BrandContextMeta = {
   id: string;
   name: string;
+  /** Optional human-readable client tag. Multiple projects can share one client. */
+  client?: string;
   version: string;
   description: string;
   author: string;
@@ -40,25 +43,23 @@ export type BrandContextMeta = {
   created: string;
   updated: string;
   status: BrandContextStatus;
-  tokensHash: string | null;
+  /** List of section ids that reference this project. Maintained by build-manifest. */
   sectionsUsing: string[];
 };
 
 export type ResolvedBrandContext = {
   id: string;
-  requestedVersion: string | null;    // present iff caller pinned (e.g. "acme-2025@1.0.0")
-  resolvedVersion: string;            // actual version on disk
+  /** Present iff caller pinned (e.g. "mr-halden-miller@2.0.0"). Informational only. */
+  requestedVersion: string | null;
+  /** Actual version on disk. */
+  resolvedVersion: string;
   meta: BrandContextMeta;
-  tokensCss: string | null;           // null for _neutral or any context without tokens.css
-  fontsCss: string | null;            // null when no fonts.css present
-  componentsCss: string | null;       // null when no components.css present — already
-                                      // scoped to [data-section-context="<id>"] via native CSS nesting
 };
 
 /**
  * Parse a `section.json.context` reference into `{ id, version }`.
- * Returns `null` for null/undefined/empty/_neutral — caller should render
- * against the marketplace's neutral default.
+ * Returns `null` for null/undefined/empty/_neutral — caller should treat the
+ * section as having no associated project.
  */
 export function parseContextReference(
   ref: string | null | undefined,
@@ -86,15 +87,9 @@ export function readBrandContextMeta(id: string): BrandContextMeta | null {
 }
 
 /**
- * Resolve a `section.json.context` reference into the actual context bundle
- * that should render. Returns null for the neutral default (no scoped CSS
- * needed — the marketplace's global `:root` is the baseline).
- *
- * Currently the marketplace stores one version per context. The version field
- * in `context.json` is the truth. If a pin is requested and the on-disk version
- * differs, the resolver still returns the on-disk version + records the mismatch
- * via `requestedVersion` — callers can warn or fall back. (Multi-version on-disk
- * storage is a follow-up; the resolver shape is forward-compatible.)
+ * Resolve a `section.json.context` reference into the matching brand context
+ * metadata. Returns null when the reference is empty/_neutral OR the context
+ * directory doesn't exist on disk.
  */
 export function resolveBrandContext(
   ref: string | null | undefined,
@@ -103,26 +98,18 @@ export function resolveBrandContext(
   if (!parsed) return null;
   const meta = readBrandContextMeta(parsed.id);
   if (!meta) return null;
-
-  const tokensPath = join(CONTEXTS_DIR, parsed.id, "tokens.css");
-  const fontsPath = join(CONTEXTS_DIR, parsed.id, "fonts.css");
-  const componentsPath = join(CONTEXTS_DIR, parsed.id, "components.css");
-
   return {
     id: parsed.id,
     requestedVersion: parsed.version,
     resolvedVersion: meta.version,
     meta,
-    tokensCss: existsSync(tokensPath) ? readFileSync(tokensPath, "utf8") : null,
-    fontsCss: existsSync(fontsPath) ? readFileSync(fontsPath, "utf8") : null,
-    componentsCss: existsSync(componentsPath) ? readFileSync(componentsPath, "utf8") : null,
   };
 }
 
 /**
  * List all brand contexts that exist on disk. Used by:
  *   - the build script to write `brand-contexts/index.json`
- *   - the Library App to render the "Browse by brand" filter
+ *   - the Library App to render the Projects filter / "Browse by brand"
  */
 export function listBrandContexts(): BrandContextMeta[] {
   if (!existsSync(CONTEXTS_DIR)) return [];
