@@ -13,6 +13,16 @@ const nextConfig = {
   outputFileTracingExcludes: {
     "*": [".next/cache/**/*"],
   },
+  // Force-include the brand-contexts/ directory in every serverless function
+  // bundle. `lib/brand-contexts.ts` reads these files dynamically via
+  // readFileSync at runtime; Next.js's static analyzer can't detect the
+  // dependency, so without this the directory gets stripped from the bundle
+  // and `/render/[id]` returns null context → no scoped styling. Same goes
+  // for sections/**/section.json which the render route reads dynamically.
+  outputFileTracingIncludes: {
+    "/render/[id]": ["./brand-contexts/**/*", "./sections/**/section.json"],
+    "/sections/[id]": ["./brand-contexts/**/*"],
+  },
   // Suppress the floating Next.js dev-mode badge so it doesn't appear
   // twice on the section detail page (once for the marketplace shell,
   // once inside the same-origin `/render/<id>` iframe).

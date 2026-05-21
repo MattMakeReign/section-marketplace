@@ -75,6 +75,18 @@ export default async function RenderPage({ params }: { params: RouteParams }) {
           dangerouslySetInnerHTML={{ __html: context.tokensCss }}
         />
       ) : null}
+      {/* Inject components.css AFTER tokens so its var() references resolve
+       * against the scoped token values. The bundle was wrapped in
+       * [data-section-context="<id>"] { … } at submit time via native CSS
+       * nesting, so .btn / .field / etc. only apply inside the section
+       * preview shell — marketplace chrome is unaffected. */}
+      {context?.componentsCss ? (
+        <style
+          data-brand-context-components={context.id}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: context.componentsCss }}
+        />
+      ) : null}
       {context?.fontsCss ? (
         <style
           data-brand-context-fonts={context.id}

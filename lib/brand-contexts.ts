@@ -47,6 +47,8 @@ export type ResolvedBrandContext = {
   meta: BrandContextMeta;
   tokensCss: string | null;           // null for _neutral or any context without tokens.css
   fontsCss: string | null;            // null when no fonts.css present
+  componentsCss: string | null;       // null when no components.css present — already
+                                      // scoped to [data-section-context="<id>"] via native CSS nesting
 };
 
 /**
@@ -100,6 +102,7 @@ export function resolveBrandContext(
 
   const tokensPath = join(CONTEXTS_DIR, parsed.id, "tokens.css");
   const fontsPath = join(CONTEXTS_DIR, parsed.id, "fonts.css");
+  const componentsPath = join(CONTEXTS_DIR, parsed.id, "components.css");
 
   return {
     id: parsed.id,
@@ -108,6 +111,7 @@ export function resolveBrandContext(
     meta,
     tokensCss: existsSync(tokensPath) ? readFileSync(tokensPath, "utf8") : null,
     fontsCss: existsSync(fontsPath) ? readFileSync(fontsPath, "utf8") : null,
+    componentsCss: existsSync(componentsPath) ? readFileSync(componentsPath, "utf8") : null,
   };
 }
 
