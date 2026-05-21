@@ -77,6 +77,12 @@ const nextConfig = {
         "lib/tools-ui/styles/index.css"
       ),
       "@mr/tools-ui": path.resolve(__dirname, "lib/tools-ui"),
+      // @mr/canonical-stack — vendored so sections that import the motion +
+      // smooth-scroll runtime can resolve it in the marketplace's standalone
+      // Vercel build (no pnpm workspace context). Source of truth is
+      // repos/canonical-stack/src/; sync via the canonical-source pattern.
+      "@mr/canonical-stack/styles.css": path.resolve(__dirname, "lib/canonical-stack/styles.css"),
+      "@mr/canonical-stack": path.resolve(__dirname, "lib/canonical-stack/index.ts"),
     };
     return config;
   },

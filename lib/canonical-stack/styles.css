@@ -1,0 +1,339 @@
+/* ─────────────────────────────────────────────────────────────
+ * @mr/canonical-stack — global stylesheet
+ *
+ * Consumers `@import` this once at the root of their app:
+ *
+ *   import "@mr/canonical-stack/styles.css";
+ *
+ * What's here:
+ *   - Lenis smooth-scroll global classes (required when MotionProvider
+ *     installs the Lenis singleton). Without these, Lenis fights native
+ *     scroll behaviour and animations stutter.
+ *
+ * What's NOT here:
+ *   - Design tokens (colours, type, spacing). Each project owns its own.
+ *   - Section-specific styles. Sections style themselves locally.
+ * ───────────────────────────────────────────────────────────── */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * useReveal — canonical scroll-in entrance pattern.
+ *
+ * Authored at JSX level via `data-mr-reveal`; flipped on viewport entry
+ * via `data-mr-revealed="true"` (set by the hook). CSS-driven transition,
+ * no JS framerate / GSAP / Lenis dependency. Works in any host context
+ * that loads this stylesheet — including the marketplace render iframe.
+ *
+ *   - Default state: opacity 0, lifted 28px, 10px blur.
+ *   - Revealed:      opacity 1, translate 0, blur 0.
+ *   - Duration:      900ms with a clean cubic ease.
+ *   - Stagger:       parent sets `--mr-reveal-stagger`, each child carries
+ *                    `--mr-reveal-index`. Delay = stagger × index.
+ *
+ * Reduced motion: transition collapses to a 220ms opacity fade with no
+ * translate, no blur. Driven by the @media block below.
+ *
+ * Wireframe mode: the global motion-suppression block further down in this
+ * file (`transition-duration: 0s !important`) already silences this rule.
+ * No extra wireframe handling needed here.
+ * ───────────────────────────────────────────────────────────── */
+
+[data-mr-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(10px);
+  transition:
+    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(
+    var(--mr-reveal-index, 0) * var(--mr-reveal-stagger, 0ms)
+  );
+  will-change: opacity, transform, filter;
+}
+
+[data-mr-reveal][data-mr-revealed="true"] {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-mr-reveal] {
+    transform: none;
+    filter: none;
+    transition: opacity 220ms linear;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * Wireframe render mode
+ *
+ * Activated by `<html data-mr-render="wireframe">`. The attribute is set
+ * synchronously by the no-flash init script (see `wireframeInitScript()`
+ * in wireframe.ts) before React mounts, so the override layer is applied
+ * before the first paint.
+ *
+ * Scope: semantic CONTENT tokens only — colours, fonts, button + image
+ * treatment. The workspace chrome lives outside this scope (uses
+ * `--chrome-*` tokens, untouched here). Spacing, radii, breakpoints,
+ * section rhythm inherit from the project's full DS — wireframe is about
+ * showing the same structure, just stripped.
+ *
+ * V1 defaults — overridable in the wireframe DS page (future).
+ * ───────────────────────────────────────────────────────────── */
+
+html[data-mr-render="wireframe"] {
+  /* ── Greyscale ramp (5-step) ──────────────────────────────── */
+  --wf-0: #ffffff;
+  --wf-1: #f4f4f4;
+  --wf-2: #e0e0e0;
+  --wf-3: #b8b8b8;
+  --wf-4: #6f6f6f;
+  --wf-5: #1a1a1a;
+
+  /* ── Semantic content tokens, remapped ────────────────────── */
+  /* !important is required because the design-system explorer writes
+   * user-driven token edits as INLINE styles on <html> (via
+   * `document.documentElement.style.setProperty`). Inline styles beat
+   * regular stylesheet rules, so without !important the explorer's edits
+   * leak through into wireframe mode (purple "PRIMARY" buttons etc.).
+   * `!important` on a stylesheet declaration wins against a regular inline
+   * style — that's the rule we need here. */
+  --surface: var(--wf-0) !important;
+  --surface-muted: var(--wf-1) !important;
+  --surface-elevated: var(--wf-0) !important;
+  /* Even "inverse" (dark band) surfaces flip to light grey in wireframe.
+   * No dark sections — the whole canvas reads as a single light page so
+   * we never have to chase white-text-on-dark contrast. fg-inverse also
+   * collapses to the dark wireframe fg for the same reason: anything
+   * styled "for dark surfaces" now sits on light. */
+  --surface-inverse: var(--wf-2) !important;
+  --fg: var(--wf-5) !important;
+  --fg-muted: var(--wf-4) !important;
+  --fg-subtle: var(--wf-3) !important;
+  --fg-inverse: var(--wf-5) !important;
+  --border: var(--wf-2) !important;
+  --border-strong: var(--wf-3) !important;
+  --accent: var(--wf-5) !important;
+  --accent-fg: var(--wf-0) !important;
+  --accent-hover: var(--wf-4) !important;
+
+  /* Button tokens — the explorer's Page primitives editor used to set
+   * these inline (now retired, but project-level overrides can still
+   * touch them). Force the wireframe values. */
+  --button-primary-bg: var(--wf-5) !important;
+  --button-primary-fg: var(--wf-0) !important;
+  --button-secondary-bg: transparent !important;
+  --button-secondary-fg: var(--wf-5) !important;
+
+  /* ── Neutral sans across all type roles ───────────────────── */
+  /* Default = Inter Regular. Designer can change in the wireframe DS.
+   * `--font-mono` is collapsed into the same sans too so the wireframe
+   * reads as a single typeface across the entire page — no eyebrow
+   * monospace, no code-block mono either. Wireframe = one face. */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  --font-serif: var(--font-sans) !important;
+  --font-mono: var(--font-sans) !important;
+  --font-display: var(--font-sans) !important;
+  --font-body: var(--font-sans) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * Chrome-isolation note
+ *
+ * Every rule below uses `:not([data-mr-chrome]):not([data-mr-chrome] *)`
+ * so the workspace chrome (bar root has `data-mr-chrome="bar"`, with all
+ * panels + bar buttons nested inside) is excluded from the wireframe
+ * treatment. The chrome ALWAYS renders in design mode — wireframe is
+ * a re-skin of the designed page only, never the tool surface.
+ *
+ * If a new chrome surface is added that renders outside the bar root,
+ * tag its root with `data-mr-chrome="<name>"` and these selectors will
+ * skip it automatically.
+ * ───────────────────────────────────────────────────────────── */
+
+/* Type weight — flatten to a single weight across the page. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):is(h1, h2, h3, h4, h5, h6, p, strong, b, button, a, span, li, td, th) {
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+/* Text colour — force every canvas TEXT element to the wireframe fg so
+ * Tailwind utilities like `text-white` (used by cards that overlay a
+ * photo) don't disappear against the wireframe placeholder background.
+ *
+ * Scoped to text-bearing elements only — buttons and links keep their
+ * own colour rules so the dark-filled PRIMARY button's white label
+ * stays visible against its dark fill. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):is(h1, h2, h3, h4, h5, h6, p, span, li, td, th, blockquote, em, strong, b, dt, dd, label, small, figcaption) {
+  color: var(--fg) !important;
+}
+
+/* Motion suppression — no CSS transitions or animations. GSAP helpers
+ * already short-circuit via `isWireframeMode()` checks in motion.ts.
+ * Lenis smooth-scroll is suspended at the MotionProvider level (see
+ * motion-provider.tsx). */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *),
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *)::before,
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *)::after {
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+/* Interaction suppression — wireframe is a STATIC responsive wireframe,
+ * not an interactive prototype. `pointer-events: none` on the canvas
+ * disables every click, hover, and form interaction on the designed
+ * page. The workspace chrome (data-mr-chrome subtree) is excluded, so
+ * the bar buttons + tray still work. Scrolling is unaffected — that's
+ * window-level, not pointer-driven. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *) {
+  cursor: default !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):is(:hover, :focus, :focus-visible, :active) {
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Stroke kill — every stroke/border/outline on the canvas disappears.
+ * Wireframe = flat solid shapes, no hairlines.
+ * `outline` covers focus rings too (no focus rings in a static doc). */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *) {
+  border-color: transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+}
+
+/* Solid-grey "object" treatment — anything that reads as a contained
+ * UI element (card, input, FAQ row, badge, pill, callout) gets a flat
+ * wf-1 fill. Detection via Tailwind rounded utility + a list of common
+ * container tags. Project-specific cards usually carry one of these.
+ *
+ * Buttons are handled separately below — they need a solid dark fill so
+ * they read as obviously interactive, not as a hole in the card.
+ *
+ * Cards opted into the dark tone (`data-mr-tone="dark"`) are excluded
+ * here and re-filled solid dark below, preserving the section author's
+ * light/dark differentiation when wireframing. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):not([data-mr-tone="dark"])[class*="rounded"],
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):is(input, textarea, select, summary, details, fieldset) {
+  background: var(--wf-1) !important;
+  background-color: var(--wf-1) !important;
+  background-image: none !important;
+  color: var(--wf-5) !important;
+}
+
+/* Dark-toned cards — opt-in via `data-mr-tone="dark"`. Stay dark in
+ * wireframe so the section author's premium-tier / inverse-card
+ * differentiation survives. Text inside is forced light below. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *)[data-mr-tone="dark"] {
+  background: var(--wf-5) !important;
+  background-color: var(--wf-5) !important;
+  background-image: none !important;
+  color: var(--wf-0) !important;
+}
+
+/* Text inside a dark-toned card — flip to light. Wins over the canvas
+ * text-colour rule on line 140 because it has higher specificity (the
+ * `[data-mr-tone="dark"]` attribute selector adds a class-level point). */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *)[data-mr-tone="dark"] :not([data-mr-chrome]):not([data-mr-chrome] *):is(h1, h2, h3, h4, h5, h6, p, span, li, td, th, blockquote, em, strong, b, dt, dd, label, small, figcaption, div) {
+  color: var(--wf-0) !important;
+}
+
+/* Buttons — solid dark fill, light label. The extra `:not([data-mr-tone="dark"])`
+ * is a specificity equaliser: the card rule above carries the same negation,
+ * and without this here a `<a class="btn rounded-buttons">` (which matches
+ * both selectors) would lose to the card rule by one specificity point and
+ * paint light-grey-on-light-grey. Buttons themselves never carry the tone
+ * attribute, so the negation is matching-wise a no-op. Source order then
+ * ensures this rule wins. Covers project conventions (`.btn`, `.ds-btn`),
+ * native buttons, `[role="button"]`, and submit/button inputs. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):not([data-mr-tone="dark"]):is(button, [role="button"], a.button, a.btn, .btn, .ds-btn, input[type="submit"], input[type="button"], input[type="reset"]) {
+  background: var(--wf-5) !important;
+  background-color: var(--wf-5) !important;
+  background-image: none !important;
+  color: var(--wf-0) !important;
+}
+
+/* Buttons INSIDE a dark-toned card — flip to inverse (light fill, dark
+ * text) so they don't disappear into the dark card surface. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *)[data-mr-tone="dark"] :not([data-mr-chrome]):not([data-mr-chrome] *):is(button, [role="button"], a.button, a.btn, .btn, .ds-btn, input[type="submit"], input[type="button"], input[type="reset"]) {
+  background: var(--wf-0) !important;
+  background-color: var(--wf-0) !important;
+  color: var(--wf-5) !important;
+}
+
+/* Text inside a wireframe button — the canvas-wide text-colour rule
+ * (h1/p/span/etc. → var(--fg) which is wf-5) would otherwise paint
+ * button labels dark on the dark fill. Re-assert wf-0 for any text
+ * element nested inside a button-like ancestor. Mirrors the canvas
+ * text rule's `:not([data-mr-chrome])` exclusions so specificity
+ * matches; source order then ensures this rule wins. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):is(button, [role="button"], a.button, a.btn, .btn, .ds-btn) :not([data-mr-chrome]):not([data-mr-chrome] *):is(span, strong, b, em, small, p, h1, h2, h3, h4, h5, h6) {
+  color: var(--wf-0) !important;
+}
+
+/* Text inside an inverse button (button inside a dark-toned card) —
+ * flip back to dark text so the label is legible on the light pill. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *)[data-mr-tone="dark"] :not([data-mr-chrome]):not([data-mr-chrome] *):is(button, [role="button"], a.button, a.btn, .btn, .ds-btn) :not([data-mr-chrome]):not([data-mr-chrome] *):is(span, strong, b, em, small, p, h1, h2, h3, h4, h5, h6) {
+  color: var(--wf-5) !important;
+}
+
+/* Images / videos — solid grey placeholders. No outline (strokes are
+ * killed globally above). `transform: none !important` cancels
+ * scroll-triggered parallax that sections apply directly to images via
+ * GSAP (bypassing the `reveal()` / `scrollIn()` helpers which already
+ * short-circuit in wireframe mode). */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *):is(img, video, picture) {
+  filter: grayscale(1) opacity(0);
+  background: var(--wf-1);
+  transform: none !important;
+}
+
+/* Shadows — flat. Wireframe is no elevation. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *) {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Gradients — flat. Wireframe is solid fills only. Many sections use
+ * gradient overlays for fade-in/fade-out edges on image columns,
+ * "vignette" decorations on cards, etc. These read as kinetic motion
+ * even when they're static. Killing all background gradients across the
+ * canvas keeps the wireframe consistently flat. */
+html[data-mr-render="wireframe"] body :not([data-mr-chrome]):not([data-mr-chrome] *) {
+  background-image: none !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+}
