@@ -22,6 +22,27 @@ html[data-theme="light"] {
   color-scheme: light;
 }
 
+/* Canonical browser-chrome grid tokens.
+ *
+ * In a real consuming project (Halden, Atlas, etc.) these tokens get
+ * written to :root by `gridInitScript()` from @mr/browser-workspace
+ * BEFORE React mounts, so SectionGrid's `var(--grid-max)` /
+ * `var(--grid-gutter)` / `var(--grid-margin)` are always set on first
+ * paint. The marketplace render shell never mounts the workspace
+ * chrome, so we bake the canonical defaults (1440 · 12 · 24 · 24) in
+ * here. Same numbers the workspace ships as the default preset.
+ *
+ * Pixel-parity rationale: sections must see the SAME grid contract on
+ * both surfaces (origin project vs. marketplace preview), otherwise
+ * `<SectionGrid>` produces different column widths and the layout
+ * drifts even when the type tokens match. */
+:root {
+  --grid-max: 1440px;
+  --grid-cols: 12;
+  --grid-gutter: 24px;
+  --grid-margin: 24px;
+}
+
 /* Body baseline for /render/* routes.
  *
  * Specificity has to beat the marketplace chrome's body rule in
