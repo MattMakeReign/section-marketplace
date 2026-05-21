@@ -77,6 +77,21 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
     if (l && LIFECYCLES.includes(l as Lifecycle)) setLifecycle(l);
   }, []);
 
+  // `countableBase` — the sections that the user actually CAN see right now.
+  // Filter pill counts (Category / Track / Animation / Tags / Clients) compute
+  // against this so e.g. "Low (4)" matches what clicking "Low" actually
+  // returns. Without this, counts include Archived sections that the gallery
+  // default-hides, producing confusing "Low (11)" pills that only deliver 4
+  // results. The Lifecycle pill keeps the full distribution since that's the
+  // surface for summoning Archived/Deprecated explicitly.
+  const countableBase = useMemo(() => {
+    if (lifecycle !== ALL) return sections;
+    return sections.filter((s) => {
+      const sLifecycle = getLifecycle(s);
+      return sLifecycle !== "Archived" && sLifecycle !== "Deprecated";
+    });
+  }, [sections, lifecycle]);
+
   // Derived filter option lists.
   //
   // Categories are the **canonical 16** (see `@mr/section-library-ui/canonical-categories`).
@@ -92,21 +107,24 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
     const counts = new Map<string, number>();
     let other = 0;
     for (const id of CANONICAL_IDS) counts.set(id, 0);
-    sections.forEach((s) => {
+    countableBase.forEach((s) => {
       if (counts.has(s.category)) counts.set(s.category, (counts.get(s.category) ?? 0) + 1);
       else other += 1;
     });
     const result = CANONICAL_CATEGORIES.map(c => ({ id: c.id, label: c.label, count: counts.get(c.id) ?? 0 }));
     if (other > 0) result.push({ id: "__other", label: "Uncategorised", count: other });
     return result;
-  }, [sections]);
+  }, [countableBase]);
 
   const trackCounts = useMemo(() => {
     const c: Record<string, number> = { stable: 0, experimental: 0, legacy: 0 };
-    sections.forEach((s) => { const t = (s.track ?? "stable") as Track; c[t] = (c[t] ?? 0) + 1; });
+    countableBase.forEach((s) => { const t = (s.track ?? "stable") as Track; c[t] = (c[t] ?? 0) + 1; });
     return c;
-  }, [sections]);
+  }, [countableBase]);
 
+  // Lifecycle counts use the RAW sections list — this pill is the entry point
+  // for summoning Archived / Deprecated, so the count must reflect the full
+  // dataset including default-hidden lifecycles.
   const lifecycleCounts = useMemo(() => {
     const c: Record<string, number> = {};
     for (const l of LIFECYCLES) c[l] = 0;
@@ -119,15 +137,20 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
 
   const animationOptions = useMemo(() => {
     const counts = new Map<string, number>();
-    sections.forEach((s) => (s.motionDensity ?? []).forEach((m) => counts.set(m, (counts.get(m) ?? 0) + 1)));
-    return Array.from(counts.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([id, count]) => ({ id, count }));
-  }, [sections]);
+    countableBase.forEach((s) => (s.motionDensity ?? []).forEach((m) => counts.set(m, (counts.get(m) ?? 0) + 1)));
+    // Sort by MOTION_OPTIONS ordinal (static → experience), not alphabetical,
+    // so the popover reads as a scale and matches the curator slider's order.
+    const motionOrder = ["static", "low", "medium", "high", "experience"];
+    return Array.from(counts.entries())
+      .sort(([a], [b]) => motionOrder.indexOf(a) - motionOrder.indexOf(b))
+      .map(([id, count]) => ({ id, count }));
+  }, [countableBase]);
 
   const tagOptions = useMemo(() => {
     const counts = new Map<string, number>();
-    sections.forEach((s) => (s.tags ?? []).forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1)));
+    countableBase.forEach((s) => (s.tags ?? []).forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1)));
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).map(([id, count]) => ({ id, count }));
-  }, [sections]);
+  }, [countableBase]);
 
   // Active filter list (drives the filtered + sorted output).
   const filtered = useMemo(() => {
@@ -181,10 +204,10 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
   const clientOptions = useMemo(() => {
     return CLIENTS.map((c) => {
       const cLower = c.toLowerCase();
-      const count = sections.filter((s) => (s.tags ?? []).some((t) => t.toLowerCase() === cLower)).length;
+      const count = countableBase.filter((s) => (s.tags ?? []).some((t) => t.toLowerCase() === cLower)).length;
       return { id: c, label: c, count };
     });
-  }, [sections]);
+  }, [countableBase]);
 
   function clearAll() {
     setQuery(""); setClient(ALL); setCategory(ALL); setTrack(ALL); setLifecycle(ALL); setAnimation(ALL); setTag(ALL); setSort("name-asc");
@@ -208,7 +231,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           icon={<IconCollection />}
           value={client}
           options={[
-            { id: ALL, label: "All clients", count: sections.length },
+            { id: ALL, label: "All clients", count: countableBase.length },
             ...clientOptions,
           ]}
           onChange={setClient}
@@ -218,7 +241,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           label="Category"
           icon={<IconCategory />}
           value={category}
-          options={[{ id: ALL, label: "All categories", count: sections.length }, ...categories.map((c) => ({ id: c.id, label: c.label, count: c.count }))]}
+          options={[{ id: ALL, label: "All categories", count: countableBase.length }, ...categories.map((c) => ({ id: c.id, label: c.label, count: c.count }))]}
           onChange={setCategory}
         />
 
@@ -227,7 +250,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           icon={<IconLifecycle />}
           value={lifecycle}
           options={[
-            { id: ALL, label: "All lifecycle states", count: sections.length },
+            { id: ALL, label: "All lifecycle states", count: countableBase.length },
             ...LIFECYCLES.map((l) => ({
               id: l,
               label: lifecycleLabel(l),
@@ -242,7 +265,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           label="Animation"
           icon={<IconAnimation />}
           value={animation}
-          options={[{ id: ALL, label: "All densities", count: sections.length }, ...animationOptions.map((a) => ({ id: a.id, label: capitalize(a.id), count: a.count }))]}
+          options={[{ id: ALL, label: "All densities", count: countableBase.length }, ...animationOptions.map((a) => ({ id: a.id, label: capitalize(a.id), count: a.count }))]}
           onChange={setAnimation}
         />
 
@@ -250,7 +273,7 @@ export function Gallery({ manifest }: { manifest: Manifest }) {
           label="Tags"
           icon={<IconTag />}
           value={tag}
-          options={[{ id: ALL, label: "All tags", count: sections.length }, ...tagOptions.map((t) => ({ id: t.id, label: t.id, count: t.count }))]}
+          options={[{ id: ALL, label: "All tags", count: countableBase.length }, ...tagOptions.map((t) => ({ id: t.id, label: t.id, count: t.count }))]}
           onChange={setTag}
         />
 
