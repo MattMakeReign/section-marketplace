@@ -1,0 +1,68 @@
+{
+  "id": "hero-split-bold",
+  "name": "Hero Split Bold",
+  "category": "hero",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Two-column hero with a 7/5 grid split — large display headline occupying the left column, supporting body copy and a paired primary/secondary CTA in the right column, bottom-aligned to the headline. No media slots; text-only layout.",
+  "props": {
+    "headline": {
+      "type": "string",
+      "default": "A bold hero, split clean down the middle."
+    },
+    "supporting": {
+      "type": "string",
+      "default": "Drop a line of supporting copy here that explains what this site is and who it's for."
+    },
+    "primaryCta": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "secondaryCta": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/hero-split-bold/preview.png"
+  },
+  "tags": [
+    "hero",
+    "split-2col",
+    "headline-led",
+    "dual-cta",
+    "minimal",
+    "editorial"
+  ],
+  "created": "2026-05-22",
+  "updated": "2026-05-22",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "demo-cool-tech",
+    "submittedAt": "2026-05-22"
+  },
+  "context": "demo-cool-tech"
+}
