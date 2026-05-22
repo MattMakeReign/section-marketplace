@@ -4,7 +4,7 @@
   "category": "hero",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Two-column hero with a 7/5 grid split — large display headline occupying the left column, supporting body copy and a paired primary/secondary CTA in the right column, bottom-aligned to the headline. No media slots; text-only layout.",
   "props": {
     "headline": {
