@@ -1,1 +1,0 @@
-export { TeamGridDark } from "./TeamGridDark";
