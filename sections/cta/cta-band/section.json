@@ -1,0 +1,33 @@
+{
+  "id": "cta-band",
+  "name": "Cta — Band",
+  "category": "cta",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Inverted full-width band with a single primary CTA. Used to close a page with one decisive call to action.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [
+    "cta",
+    "closing",
+    "band"
+  ],
+  "created": "2026-05-22",
+  "updated": "2026-05-22",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-22"
+  },
+  "context": "mr-halden-miller"
+}
