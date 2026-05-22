@@ -1,0 +1,36 @@
+{
+  "id": "insights-carousel",
+  "name": "Insights Editorial Carousel",
+  "category": "editorial",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Editorial carousel with a two-row header — eyebrow label, large serif headline left, and prev/next pill controls with a text link right — above a horizontal slider of tall image-led story cards that bleed past the viewport's right edge. Each card exposes an image, title, and body slot.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/insights-carousel/preview.png"
+  },
+  "tags": [
+    "carousel",
+    "editorial",
+    "image-led",
+    "overflow-scroll",
+    "headline-left",
+    "split-header"
+  ],
+  "created": "2026-05-22",
+  "updated": "2026-05-22",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-22"
+  },
+  "context": "mr-halden-miller"
+}
