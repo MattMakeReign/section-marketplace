@@ -1,0 +1,45 @@
+{
+  "id": "team-grid-dark",
+  "name": "Team Grid Dark",
+  "category": "team",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Dark-background team section with a monospace eyebrow and large serif headline stacked top-left, followed by a multi-column portrait grid. Each card exposes a portrait image with a name/role label panel anchored to the bottom-right with inverted-radius corner cutouts.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "medium"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/team-grid-dark/preview.png"
+  },
+  "tags": [
+    "team-grid",
+    "dark-bg",
+    "portrait-cards",
+    "headline-led",
+    "editorial",
+    "staggered-cards"
+  ],
+  "created": "2026-05-24",
+  "updated": "2026-05-24",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-24"
+  },
+  "context": "mr-halden-miller",
+  "controller": {
+    "label": "Team grid — dark",
+    "defaultProps": "{\n            members: TEAM_GRID_DEFAULTS,\n            gridColumns: 4,\n            cardHeightPx: 307,\n            cardRadiusPx: 12,\n            cardGapPx: 16,\n            imageFit: \"cover\",\n            showPanel: true,\n            panelPosition: \"bottom-right\",\n            background: \"dark\",\n            showHeadline: true,\n            headlineAlign: \"left\",\n            staggerMs: 80,\n          }",
+    "imports": [
+      {
+        "spec": "import { DEFAULT_MEMBERS as TEAM_GRID_DEFAULTS } from \"@/sections/team-grid-dark/TeamGridDark\";"
+      }
+    ]
+  }
+}
