@@ -663,6 +663,14 @@ function CuratorPanel({
   const [transitionPending, setTransitionPending] = useState<Lifecycle | null>(null);
   const [transitionError, setTransitionError] = useState<string | null>(null);
 
+  // Delete (Archived-only). Typed-id confirmation — designer must type the
+  // section id into the input before the destructive button enables.
+  const router = useRouter();
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deletePending, setDeletePending] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
   // Resync local form state when the user navigates to a different section.
   useEffect(() => {
     setDescription(section.description ?? "");
@@ -802,6 +810,30 @@ function CuratorPanel({
     setDragOver(false);
     const file = e.dataTransfer.files[0];
     if (file) uploadVideo(file);
+  }
+
+  async function runDelete() {
+    setDeletePending(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/sections/${section.id}/delete`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: section.id }),
+      });
+      const data = (await res.json()) as { ok: boolean; error?: string };
+      if (!data.ok) {
+        setDeleteError(data.error ?? "Delete failed");
+        return;
+      }
+      // Section gone — leave the detail page.
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      setDeleteError((err as Error)?.message ?? "Network error");
+    } finally {
+      setDeletePending(false);
+    }
   }
 
   async function runTransition(t: Transition) {
@@ -1066,6 +1098,93 @@ function CuratorPanel({
         </div>
       ) : null}
       {transitionError ? <FieldError>{transitionError}</FieldError> : null}
+
+      {lifecycle === "Archived" ? (
+        <div
+          className="mr-curator__danger"
+          style={{
+            marginTop: 24,
+            paddingTop: 16,
+            borderTop: "1px solid var(--mr-border, rgba(0,0,0,0.08))",
+          }}
+        >
+          {!deleteOpen ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setDeleteOpen(true);
+                setDeleteError(null);
+                setDeleteConfirm("");
+              }}
+              style={{ color: "var(--mr-danger, #b42318)" }}
+            >
+              Delete permanently
+            </Button>
+          ) : (
+            <Field className="mr-curator__field">
+              <FieldLabel style={{ color: "var(--mr-danger, #b42318)" }}>
+                Delete permanently
+              </FieldLabel>
+              <FieldDescription>
+                Removes <code>{section.id}</code> — source, manifest, README, assets —
+                from the marketplace repo. The commit lives in git history but
+                the section won&apos;t be recoverable from the UI. Type
+                {" "}<code>{section.id}</code> below to confirm.
+              </FieldDescription>
+              <input
+                type="text"
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value)}
+                placeholder={section.id}
+                disabled={deletePending}
+                style={{
+                  width: "100%",
+                  padding: "8px 10px",
+                  fontFamily: "var(--mr-font-mono, ui-monospace, monospace)",
+                  fontSize: 12,
+                  border: "1px solid var(--mr-border, rgba(0,0,0,0.16))",
+                  borderRadius: "var(--mr-radius-card, 8px)",
+                  background: "var(--mr-surface, #fff)",
+                  color: "var(--mr-fg, #111)",
+                }}
+              />
+              <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setDeleteOpen(false);
+                    setDeleteError(null);
+                    setDeleteConfirm("");
+                  }}
+                  disabled={deletePending}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={runDelete}
+                  disabled={deleteConfirm !== section.id || deletePending}
+                  style={{ color: "var(--mr-danger, #b42318)" }}
+                  title={
+                    deleteConfirm !== section.id
+                      ? `Type ${section.id} to enable`
+                      : "Permanently remove this section"
+                  }
+                >
+                  {deletePending ? "Deleting…" : "Delete permanently"}
+                </Button>
+              </div>
+              {deleteError ? <FieldError>{deleteError}</FieldError> : null}
+            </Field>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

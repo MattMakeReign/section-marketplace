@@ -22,7 +22,7 @@
  *   - Spec strip + install command (bottom)
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import type { Manifest } from "./marketplace-data";
 import { TopBar } from "./topbar";
@@ -372,19 +372,417 @@ export function Gallery({
       ) : (
         <div className="mr-grid" data-density={density}>
           {filtered.map((s) => (
-            <SectionCard
+            <SectionCardWithMenu
               key={s.id}
               section={s}
               lifecycle={getLifecycle(s) as LifecycleName}
-              previewSrc={s.previews?.static ? `/preview/${s.id}` : undefined}
-              videoSrc={s.previews?.video}
               onOpen={() => openSection(s.id)}
+              onChanged={() => router.refresh()}
             />
           ))}
         </div>
       )}
 
     </>
+  );
+}
+
+/* ─────────────────────────── SectionCardWithMenu ─────────────────────────── */
+
+/**
+ * Wraps a SectionCard with a hover-revealed ⋯ menu that exposes lifecycle
+ * actions (Archive / Unarchive) and — for Archived sections — a Delete
+ * permanently action with typed-id confirmation.
+ *
+ * Lives in gallery.tsx (not tools-ui) so the marketplace owns the curator
+ * affordance; the underlying SectionCard stays a pure presentational
+ * primitive.
+ */
+function SectionCardWithMenu({
+  section,
+  lifecycle,
+  onOpen,
+  onChanged,
+}: {
+  section: ManifestEntry;
+  lifecycle: LifecycleName;
+  onOpen: () => void;
+  onChanged: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"menu" | "confirm-delete">("menu");
+  const [confirm, setConfirm] = useState("");
+  const [pending, setPending] = useState<null | "archive" | "unarchive" | "delete">(null);
+  const [error, setError] = useState<string | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click / Esc.
+  useEffect(() => {
+    if (!open) return;
+    function onDoc(e: MouseEvent) {
+      if (!wrapRef.current?.contains(e.target as Node)) {
+        setOpen(false);
+        setMode("menu");
+        setConfirm("");
+        setError(null);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        setMode("menu");
+        setConfirm("");
+        setError(null);
+      }
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  async function runLifecycle(to: "Archived" | "Submitted", kind: "archive" | "unarchive") {
+    setPending(kind);
+    setError(null);
+    try {
+      const res = await fetch(`/api/sections/${section.id}/lifecycle`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to }),
+      });
+      const data = (await res.json()) as { ok: boolean; error?: string };
+      if (!data.ok) {
+        setError(data.error ?? "Action failed");
+        return;
+      }
+      setOpen(false);
+      setMode("menu");
+      onChanged();
+    } catch (e) {
+      setError((e as Error)?.message ?? "Network error");
+    } finally {
+      setPending(null);
+    }
+  }
+
+  async function runDelete() {
+    setPending("delete");
+    setError(null);
+    try {
+      const res = await fetch(`/api/sections/${section.id}/delete`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: section.id }),
+      });
+      const data = (await res.json()) as { ok: boolean; error?: string };
+      if (!data.ok) {
+        setError(data.error ?? "Delete failed");
+        return;
+      }
+      setOpen(false);
+      setMode("menu");
+      setConfirm("");
+      onChanged();
+    } catch (e) {
+      setError((e as Error)?.message ?? "Network error");
+    } finally {
+      setPending(null);
+    }
+  }
+
+  const isArchived = lifecycle === "Archived";
+
+  return (
+    <div
+      ref={wrapRef}
+      className="mr-card-menu-wrap"
+      style={{ position: "relative" }}
+      data-menu-open={open || undefined}
+    >
+      <SectionCard
+        section={section}
+        lifecycle={lifecycle}
+        previewSrc={section.previews?.static ? `/preview/${section.id}` : undefined}
+        videoSrc={section.previews?.video}
+        onOpen={onOpen}
+      />
+      <button
+        type="button"
+        className="mr-card-menu-trigger"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+          setMode("menu");
+          setError(null);
+        }}
+        aria-label={`Actions for ${section.name}`}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        style={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          width: 28,
+          height: 28,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 0,
+          borderRadius: 999,
+          border: "1px solid var(--mr-border, rgba(0,0,0,0.12))",
+          background: "var(--mr-surface, #fff)",
+          color: "var(--mr-fg, #111)",
+          opacity: open ? 1 : 0,
+          transition: "opacity 120ms ease",
+          cursor: "pointer",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
+          zIndex: 2,
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+          <circle cx="3" cy="7" r="1.25" fill="currentColor" />
+          <circle cx="7" cy="7" r="1.25" fill="currentColor" />
+          <circle cx="11" cy="7" r="1.25" fill="currentColor" />
+        </svg>
+      </button>
+
+      {open ? (
+        <div
+          role="menu"
+          aria-label={`${section.name} actions`}
+          style={{
+            position: "absolute",
+            top: 46,
+            right: 12,
+            minWidth: 200,
+            padding: 6,
+            background: "var(--mr-surface, #fff)",
+            border: "1px solid var(--mr-border, rgba(0,0,0,0.12))",
+            borderRadius: 10,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            zIndex: 3,
+            fontSize: 13,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {mode === "menu" ? (
+            <>
+              {!isArchived ? (
+                <MenuItem
+                  label={pending === "archive" ? "Archiving…" : "Archive"}
+                  hint="Hide from the catalogue"
+                  onClick={() => runLifecycle("Archived", "archive")}
+                  disabled={pending !== null}
+                />
+              ) : (
+                <>
+                  <MenuItem
+                    label={pending === "unarchive" ? "Unarchiving…" : "Unarchive"}
+                    hint="Return to the review queue"
+                    onClick={() => runLifecycle("Submitted", "unarchive")}
+                    disabled={pending !== null}
+                  />
+                  <MenuDivider />
+                  <MenuItem
+                    label="Delete permanently"
+                    hint="Remove all files from the repo"
+                    danger
+                    onClick={() => {
+                      setMode("confirm-delete");
+                      setConfirm("");
+                      setError(null);
+                    }}
+                    disabled={pending !== null}
+                  />
+                </>
+              )}
+              {!isArchived ? (
+                <>
+                  <MenuDivider />
+                  <div
+                    style={{
+                      padding: "6px 10px",
+                      fontSize: 11,
+                      color: "var(--mr-fg-muted, rgba(0,0,0,0.55))",
+                    }}
+                  >
+                    Archive first to enable Delete.
+                  </div>
+                </>
+              ) : null}
+            </>
+          ) : (
+            <div style={{ padding: "8px 10px" }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "var(--mr-danger, #b42318)",
+                  fontWeight: 600,
+                  marginBottom: 6,
+                }}
+              >
+                Delete permanently
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "var(--mr-fg-muted, rgba(0,0,0,0.6))",
+                  marginBottom: 8,
+                  lineHeight: 1.4,
+                }}
+              >
+                Type <code>{section.id}</code> to confirm. Source, manifest,
+                README, and assets will be removed from the repo.
+              </div>
+              <input
+                type="text"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                placeholder={section.id}
+                disabled={pending === "delete"}
+                autoFocus
+                style={{
+                  width: "100%",
+                  padding: "6px 8px",
+                  fontFamily: "var(--mr-font-mono, ui-monospace, monospace)",
+                  fontSize: 11,
+                  border: "1px solid var(--mr-border, rgba(0,0,0,0.16))",
+                  borderRadius: 6,
+                  background: "var(--mr-surface, #fff)",
+                  color: "var(--mr-fg, #111)",
+                  marginBottom: 8,
+                }}
+              />
+              <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("menu");
+                    setConfirm("");
+                    setError(null);
+                  }}
+                  disabled={pending === "delete"}
+                  style={menuBtnStyle}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={runDelete}
+                  disabled={confirm !== section.id || pending === "delete"}
+                  style={{
+                    ...menuBtnStyle,
+                    color: "var(--mr-danger, #b42318)",
+                    fontWeight: 600,
+                  }}
+                >
+                  {pending === "delete" ? "Deleting…" : "Delete"}
+                </button>
+              </div>
+            </div>
+          )}
+          {error ? (
+            <div
+              style={{
+                padding: "6px 10px",
+                marginTop: 4,
+                fontSize: 11,
+                color: "var(--mr-danger, #b42318)",
+              }}
+            >
+              {error}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/* Reveal trigger on wrap hover via inline style — keeps everything in
+          one file. The data-menu-open attribute keeps the button visible
+          while the menu is open. */}
+      <style jsx>{`
+        .mr-card-menu-wrap:hover :global(.mr-card-menu-trigger),
+        .mr-card-menu-wrap[data-menu-open] :global(.mr-card-menu-trigger) {
+          opacity: 1 !important;
+        }
+        .mr-card-menu-wrap :global(.mr-card-menu-trigger):focus-visible {
+          opacity: 1 !important;
+          outline: 2px solid var(--mr-focus, rgba(0, 90, 220, 0.55));
+          outline-offset: 2px;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+const menuBtnStyle: CSSProperties = {
+  padding: "5px 10px",
+  fontSize: 11,
+  background: "transparent",
+  border: "1px solid var(--mr-border, rgba(0,0,0,0.12))",
+  borderRadius: 6,
+  color: "var(--mr-fg, #111)",
+  cursor: "pointer",
+};
+
+function MenuDivider() {
+  return (
+    <div
+      style={{
+        height: 1,
+        background: "var(--mr-border, rgba(0,0,0,0.08))",
+        margin: "4px 6px",
+      }}
+    />
+  );
+}
+
+function MenuItem({
+  label,
+  hint,
+  onClick,
+  disabled,
+  danger,
+}: {
+  label: string;
+  hint?: string;
+  onClick: () => void;
+  disabled?: boolean;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        display: "block",
+        width: "100%",
+        textAlign: "left",
+        padding: "8px 10px",
+        border: 0,
+        background: "transparent",
+        color: danger ? "var(--mr-danger, #b42318)" : "var(--mr-fg, #111)",
+        borderRadius: 6,
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.55 : 1,
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled) e.currentTarget.style.background = "var(--mr-surface-elevated, rgba(0,0,0,0.04))";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "transparent";
+      }}
+    >
+      <div style={{ fontSize: 13, fontWeight: 500 }}>{label}</div>
+      {hint ? (
+        <div style={{ fontSize: 11, color: "var(--mr-fg-muted, rgba(0,0,0,0.55))", marginTop: 2 }}>
+          {hint}
+        </div>
+      ) : null}
+    </button>
   );
 }
 
