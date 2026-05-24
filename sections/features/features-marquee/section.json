@@ -1,0 +1,73 @@
+{
+  "id": "features-marquee",
+  "name": "Features Marquee",
+  "category": "features",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Centered editorial header (label pill + large display heading) above a full-bleed infinite-scroll horizontal marquee of tall portrait image cards. Each card carries a bottom gradient overlay with plus-prefixed bullet labels; heading fades in on scroll entrance and card images parallax-shift while in viewport.",
+  "props": {
+    "eyebrow": {
+      "type": "string",
+      "default": "Featured"
+    },
+    "heading": {
+      "type": "string",
+      "default": "A few essentials."
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "src": {
+            "type": "string"
+          },
+          "srcSet": {
+            "type": "string"
+          },
+          "alt": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "medium"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/features-marquee/preview.png"
+  },
+  "tags": [
+    "marquee",
+    "horizontal-scroll",
+    "image-cards",
+    "editorial",
+    "parallax",
+    "features"
+  ],
+  "created": "2026-05-24",
+  "updated": "2026-05-24",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-24"
+  },
+  "context": "mr-halden-miller",
+  "controller": {
+    "label": "Features marquee",
+    "defaultProps": "{\n            items: MARQUEE_DEFAULTS,\n            direction: \"left\",\n            durationSeconds: 40,\n            cardWidthPx: 573,\n            cardHeightPx: 573,\n            cardRadiusPx: 16,\n            cardGapPx: 12,\n            parallaxPx: 60,\n            pauseOnHover: false,\n            showHeader: true,\n            showLabels: true,\n            headerAlign: \"center\",\n          }"
+  }
+}
