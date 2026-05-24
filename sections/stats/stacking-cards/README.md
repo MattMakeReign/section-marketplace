@@ -1,6 +1,6 @@
 # Stacking — scroll-pinned cards
 
-Scroll-pinned stacking cards with progressive scale and fade.
+Scroll-pinned stacking cards.
 
 Motion density: low.
 
