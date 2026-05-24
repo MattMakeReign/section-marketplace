@@ -1,0 +1,36 @@
+{
+  "id": "blog-list-rows",
+  "name": "Blog Editorial List Rows",
+  "category": "editorial",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Vertical blog index with a top header block (eyebrow + serif H1) and a stacked list of post rows separated by hairline dividers. Each row is a 3-column layout: thumbnail with hover overlay, serif title paired with mono category/date label, and a sans-serif excerpt.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/blog-list-rows/preview.png"
+  },
+  "tags": [
+    "editorial",
+    "blog-index",
+    "list-rows",
+    "3col-row",
+    "divider-list",
+    "serif-headline"
+  ],
+  "created": "2026-05-24",
+  "updated": "2026-05-24",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-24"
+  },
+  "context": "mr-halden-miller"
+}
