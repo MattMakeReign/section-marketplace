@@ -4,7 +4,7 @@
   "category": "hero",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Two-column hero with text left and an auto-scrolling dual-strip image gallery right. Left column exposes eyebrow label, large display headline, supporting copy, and a single CTA button. Right column renders two vertical image strips that drift in opposite directions inside a top/bottom fade mask; collapses to a single horizontal marquee on mobile.",
   "props": {
     "eyebrow": {
