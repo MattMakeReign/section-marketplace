@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+ * Web fonts — Halden Miller uses three IBM Plex families.
+ * Import FIRST so @font-face declarations are registered before tokens.css
+ * references them. fonts.css uses an @import url() to Google Fonts.
+ */
+@import "../design-system/fonts.css";
+
+/*
+ * Design-system token layer.
+ * Values live in design-system/tokens.css (raw + semantic).
+ * Tailwind v4 @theme mapping lives in design-system/theme.css.
+ */
+@import "../design-system/tokens.css";
+@import "../design-system/theme.css";
+@import "../design-system/components.css";
+
+/* ─────────────────────────────────────────────────────────────
+ * Baseline — apply semantic tokens to the document.
+ * Components should not need to repeat these.
+ * ───────────────────────────────────────────────────────────── */
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--text-body-medium);
+  line-height: var(--text-body-medium--line-height);
+  letter-spacing: var(--text-body-medium--letter-spacing);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * Font-family role utilities.
+ *
+ * Tailwind v4's @theme block exposes font-sans / font-serif / font-mono
+ * automatically, but doesn't generate utility classes for our project-
+ * specific role tokens (font-display, font-body). Define them explicitly
+ * so `<h1 class="font-display">` resolves to var(--font-display) and
+ * picks up live overrides from the design-system explorer.
+ * ───────────────────────────────────────────────────────────── */
+
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+
+/* ─────────────────────────────────────────────────────────────
+ * Lenis smooth-scroll (canonical scroll runtime).
+ * The MotionProvider instantiates a singleton on mount; these styles
+ * let it take over scrolling without fighting native behaviour.
+ * Add data-lenis-prevent to any element that must keep native scrolling
+ * (modals, sidebars with inner overflow, etc).
+ * ───────────────────────────────────────────────────────────── */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}

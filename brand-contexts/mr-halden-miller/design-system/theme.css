@@ -1,0 +1,242 @@
+/*
+ * theme.css — Tailwind v4 @theme mapping for Halden Miller.
+ *
+ * Exposes tokens.css custom properties as Tailwind utilities.
+ *
+ * Two flavours of utility name are generated:
+ *   1. Semantic (text-heading-1, bg-surface, rounded-md) — canonical, used by sections.
+ *   2. Brand-named (bg-parchment-cream, text-midnight-ink, rounded-buttons-pill) — brand vocabulary, for designer override.
+ *
+ * Components SHOULD prefer semantic utilities so they adapt cleanly when
+ * installed into other projects. Brand utilities exist for project-specific
+ * polish where the brand voice matters.
+ *
+ * Each role token carries sub-tokens
+ * (`--text-{name}--line-height`, `--text-{name}--letter-spacing`,
+ * `--text-{name}--font-weight`) so a single utility like
+ * `text-heading-1` applies the full bundle.
+ */
+
+@theme {
+  /* ── Colour: semantic ─────────────────────────────────────── */
+  --color-surface:           var(--surface);
+  --color-surface-muted:     var(--surface-muted);
+  --color-surface-elevated:  var(--surface-elevated);
+  --color-surface-inverse:   var(--surface-inverse);
+
+  --color-fg:          var(--fg);
+  --color-fg-muted:    var(--fg-muted);
+  --color-fg-subtle:   var(--fg-subtle);
+  --color-fg-inverse:  var(--fg-inverse);
+
+  --color-border:         var(--border);
+  --color-border-strong:  var(--border-strong);
+
+  --color-accent:        var(--accent);
+  --color-accent-fg:     var(--accent-fg);
+  --color-accent-hover:  var(--accent-hover);
+
+  --color-danger:   var(--danger);
+  --color-success:  var(--success);
+  --color-warning:  var(--warning);
+
+  /* ── Colour: brand vocabulary (escape hatch) ──────────────── */
+  /* `bg-parchment-cream`, `text-midnight-ink`, `border-weathered-stone`. */
+  --color-parchment-cream:  var(--color-parchment-cream);
+  --color-pressed-linen:    var(--color-pressed-linen);
+  --color-weathered-stone:  var(--color-weathered-stone);
+  --color-obsidian-shade:   var(--color-obsidian-shade);
+  --color-deep-walnut:      var(--color-deep-walnut);
+  --color-midnight-ink:     var(--color-midnight-ink);
+  --color-ember-red:        var(--color-ember-red);
+  --color-kiln-amber:       var(--color-kiln-amber);
+  --color-fern-success:     var(--color-fern-success);
+
+  /* ── Typography: families ─────────────────────────────────── */
+  --font-sans:     var(--font-sans);
+  --font-serif:    var(--font-serif);
+  --font-mono:     var(--font-mono);
+  --font-display:  var(--font-display);
+  --font-body:     var(--font-body);
+
+  /* Brand-named font utilities — match Halden's vocabulary
+   * (`font-plex-serif`, `font-plex-sans`, `font-plex-mono`). */
+  --font-plex-serif:  var(--font-plex-serif);
+  --font-plex-sans:   var(--font-plex-sans);
+  --font-plex-mono:   var(--font-plex-mono);
+
+  /* ── Typography: HEADING ROLES ────────────────────────────── */
+  /* Halden Miller headings are ALL Plex Serif at weight 400 — emphasis
+   * comes from size, italic, and tracking, never weight.
+   * Sizes are static (not fluid clamp) to match the brand reference. */
+
+  /* H0 — Hero / showpiece display. 96px. */
+  --text-heading-0: 6rem;
+  --text-heading-0--line-height: 1.05;
+  --text-heading-0--letter-spacing: -0.026em;   /* -2.5px @ 96 */
+  --text-heading-0--font-weight: 400;
+
+  /* H1 — Page title. 64px. */
+  --text-heading-1: 4rem;
+  --text-heading-1--line-height: 1.125;
+  --text-heading-1--letter-spacing: -0.039em;   /* -2.5px @ 64 */
+  --text-heading-1--font-weight: 400;
+
+  /* H2 — Major section heading. 48px. */
+  --text-heading-2: 3rem;
+  --text-heading-2--line-height: 1.083;
+  --text-heading-2--letter-spacing: -0.0417em;  /* -2px @ 48 */
+  --text-heading-2--font-weight: 400;
+
+  /* H3 — Sub-section heading. 40px. */
+  --text-heading-3: 2.5rem;
+  --text-heading-3--line-height: 1.1;
+  --text-heading-3--letter-spacing: -0.025em;   /* -1px @ 40 */
+  --text-heading-3--font-weight: 400;
+
+  /* H4 — Block heading. 32px. */
+  --text-heading-4: 2rem;
+  --text-heading-4--line-height: 1.125;
+  --text-heading-4--letter-spacing: -0.031em;   /* -1px @ 32 */
+  --text-heading-4--font-weight: 400;
+
+  /* H5 — Small heading. 24px. */
+  --text-heading-5: 1.5rem;
+  --text-heading-5--line-height: 1.167;
+  --text-heading-5--letter-spacing: -0.021em;   /* -0.5px @ 24 */
+  --text-heading-5--font-weight: 400;
+
+  /* H6 — Eyebrow label / tag. MONO uppercase. 12px. */
+  --text-heading-6: 0.75rem;
+  --text-heading-6--line-height: 1.333;
+  --text-heading-6--letter-spacing: 0.0625em;   /* 0.75px @ 12 */
+  --text-heading-6--font-weight: 400;
+
+  /* ── Typography: BODY ROLES ───────────────────────────────── */
+  /* Body Large — Lead / intro paragraph. 20px. */
+  --text-body-large: 1.25rem;
+  --text-body-large--line-height: 1.4;
+  --text-body-large--letter-spacing: 0;
+  --text-body-large--font-weight: 400;
+
+  /* Body Medium — Default body. 16px. */
+  --text-body-medium: 1rem;
+  --text-body-medium--line-height: 1.5;
+  --text-body-medium--letter-spacing: 0;
+  --text-body-medium--font-weight: 400;
+
+  /* Body Small — Small body / UI copy. 14px. */
+  --text-body-small: 0.875rem;
+  --text-body-small--line-height: 1.43;
+  --text-body-small--letter-spacing: 0;
+  --text-body-small--font-weight: 400;
+
+  /* ── Typography: UI ROLES (mono, uppercase) ───────────────── */
+  /* Button Large — Plex Sans medium @ 16px. */
+  --text-button-large: 1rem;
+  --text-button-large--line-height: 1.25;
+  --text-button-large--letter-spacing: 0;
+  --text-button-large--font-weight: 500;
+
+  /* Button Small — Plex Sans medium @ 14px. */
+  --text-button-small: 0.875rem;
+  --text-button-small--line-height: 1.25;
+  --text-button-small--letter-spacing: 0;
+  --text-button-small--font-weight: 500;
+
+  /* Label Large — 12px. Works as both an uppercase mono micro-label and as
+   * a sentence-case sans micro-title on cards / panels. Tracking dialled to
+   * 0.02em (≈0.24px @ 12) — still has a hint of breathing room for the
+   * uppercase use, but stops sentence-case usage looking pulled apart. */
+  --text-label-large: 0.75rem;
+  --text-label-large--line-height: 1.333;
+  --text-label-large--letter-spacing: 0.02em;     /* 0.24px @ 12 */
+  --text-label-large--font-weight: 400;
+
+  /* Label Small — Plex Mono uppercase @ 10px (Halden's caption step). */
+  --text-label-small: 0.625rem;
+  --text-label-small--line-height: 1.2;
+  --text-label-small--letter-spacing: 0.075em;    /* 0.75px @ 10 */
+  --text-label-small--font-weight: 400;
+
+  /* ── Typography: weights (free utility scale) ─────────────── */
+  --font-weight-regular: var(--weight-regular);
+  --font-weight-medium:  var(--weight-medium);
+  --font-weight-bold:    var(--weight-bold);
+
+  /* ── Typography: line-height + tracking (free) ────────────── */
+  --leading-tight:    var(--leading-tight);
+  --leading-snug:     var(--leading-snug);
+  --leading-normal:   var(--leading-normal);
+  --leading-relaxed:  var(--leading-relaxed);
+
+  --tracking-tight:   var(--tracking-tight);
+  --tracking-normal:  var(--tracking-normal);
+  --tracking-wide:    var(--tracking-wide);
+  --tracking-wider:   var(--tracking-wider);
+
+  /* ── Spacing ──────────────────────────────────────────────── */
+  /* DO NOT define --spacing-N for literal pixel values here — Halden's
+   * pixel-named scale (4, 8, 12, …, 120 px) conflicts with Tailwind v4's
+   * index convention where p-N = calc(var(--spacing) * N) = N × 0.25rem.
+   * Leaving the @theme block without --spacing-N overrides keeps Tailwind's
+   * default base unit intact, so p-8 = 32px, gap-6 = 24px, etc.
+   *
+   * Halden's brand-named pixel scale lives in tokens.css :root as
+   * --spacing-{0,4,8,…,120}. Reach for them via var() or arbitrary values
+   * (`p-[var(--spacing-120)]`) when the brand-specific value is needed. */
+
+  /* Section vertical rhythm — generates `py-section-{sm,md,lg,xl}` utilities. */
+  --spacing-section-sm: var(--section-py-sm);
+  --spacing-section-md: var(--section-py-md);
+  --spacing-section-lg: var(--section-py-lg);
+  --spacing-section-xl: var(--section-py-xl);
+
+  /* ── Radii ────────────────────────────────────────────────── */
+  /* Semantic. */
+  --radius-none:  var(--radius-none);
+  --radius-sm:    var(--radius-sm);
+  --radius-md:    var(--radius-md);
+  --radius-lg:    var(--radius-lg);
+  --radius-xl:    var(--radius-xl);
+  --radius-full:  var(--radius-full);
+
+  /* Brand vocabulary. */
+  --radius-tags:          var(--radius-tags);
+  --radius-cards:         var(--radius-cards);
+  --radius-inputs:        var(--radius-inputs);
+  --radius-buttons:       var(--radius-buttons);
+  --radius-cards-large:   var(--radius-cards-large);
+  --radius-buttons-pill:  var(--radius-buttons-pill);
+
+  /* ── Shadows ──────────────────────────────────────────────── */
+  --shadow-xs:               var(--shadow-xs);
+  --shadow-sm:               var(--shadow-sm);
+  --shadow-md:               var(--shadow-md);
+  --shadow-hairline:         var(--shadow-hairline);
+  --shadow-hairline-strong:  var(--shadow-hairline-strong);
+  --shadow-button-bevel:     var(--shadow-button-bevel);
+
+  /* ── Motion ───────────────────────────────────────────────── */
+  --duration-instant:     var(--duration-instant);
+  --duration-fast:        var(--duration-fast);
+  --duration-base:        var(--duration-base);
+  --duration-slow:        var(--duration-slow);
+  --duration-deliberate:  var(--duration-deliberate);
+
+  --ease-standard:  var(--ease-standard);
+  --ease-out:       var(--ease-out);
+  --ease-in:        var(--ease-in);
+  --ease-in-out:    var(--ease-in-out);
+
+  /* ── Breakpoints ──────────────────────────────────────────── */
+  /* Declared as literal values (NOT `var(--breakpoint-X)` indirection).
+   * Tailwind v4 evaluates @theme breakpoint vars at build time; the var()
+   * self-reference would resolve null and produce empty @media wrappers,
+   * silently breaking every responsive utility (md:*, lg:*, etc.). */
+  --breakpoint-sm:   29.9375rem;   /* 479 */
+  --breakpoint-md:   47.9375rem;   /* 767 */
+  --breakpoint-lg:   61.9375rem;   /* 991 */
+  --breakpoint-xl:   80rem;        /* 1280 */
+  --breakpoint-2xl:  112.5rem;     /* 1800 — page max */
+}
