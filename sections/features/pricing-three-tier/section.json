@@ -4,7 +4,7 @@
   "category": "features",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Centered editorial headline with eyebrow label above a 3-column pricing card grid. Each card exposes tier name, price + cadence, feature checklist, CTA button, and a footer note. Third card uses an inverted dark treatment. Below the grid, a full-width guidance bar with avatar cluster, short copy, and a secondary CTA button.",
   "dependencies": [
     "@/components/section",
