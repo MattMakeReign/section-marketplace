@@ -4,7 +4,7 @@
   "category": "stats",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Centered headline above a tall list of three image cards that sticky-stack on scroll. Each card carries a frosted-glass tile in its bottom-left corner with a stat number and short caption — a unique read-as-you-scroll experience for showcasing capabilities or principles.",
   "dependencies": [
     "@/components/section",
