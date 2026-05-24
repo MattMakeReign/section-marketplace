@@ -1,0 +1,37 @@
+{
+  "id": "pricing-three-tier",
+  "name": "Pricing Three Tier",
+  "category": "features",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Centered editorial headline above a three-card pricing grid with one featured dark tier, eyebrow strips on each tier, and a guidance CTA bar with avatar cluster underneath.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [
+    "pricing",
+    "three-tier",
+    "editorial"
+  ],
+  "created": "2026-05-24",
+  "updated": "2026-05-24",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-24"
+  },
+  "context": "mr-halden-miller",
+  "controller": {
+    "label": "Pricing — three tier",
+    "defaultProps": "{\n            tierCount: 3,\n            featuredIndex: 2,\n            cardPaddingPx: 32,\n            cardRadiusPx: 16,\n            cardGapPx: 24,\n            showEyebrowTab: true,\n            showDivider: true,\n            showHeadline: true,\n            headlineAlign: \"center\",\n            showAvatarBar: true,\n          }"
+  }
+}

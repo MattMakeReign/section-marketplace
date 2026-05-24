@@ -1,0 +1,1 @@
+export { PricingThreeTier } from "./PricingThreeTier";
