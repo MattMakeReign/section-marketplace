@@ -1,8 +1,8 @@
 # Process Steps Portraits
 
-Dark editorial process section with a left-aligned eyebrow, serif headline, and body copy above a 3-up grid of tall portrait cards. Each card overlays a step number, title, and short description on a ken-burns animated portrait image.
+Process steps section with three labelled portrait cards showing your team or contact points across phases of an engagement.
 
-Motion density: medium.
+Motion density: low.
 
 ## Tokens consumed
 
