@@ -28,6 +28,11 @@
   "context": "mr-halden-miller",
   "controller": {
     "label": "Process — steps portraits",
-    "defaultProps": "{\n            headlineAlign: \"left\",\n            columns: 3,\n            cardHeightPx: 480,\n            cardRadiusPx: 12,\n            cardGapPx: 24,\n            staggerMs: 120,\n            washStrength: 60,\n            steps: PROCESS_STEPS,\n          }"
+    "defaultProps": "{\n            headlineAlign: \"left\",\n            columns: 3,\n            cardHeightPx: 480,\n            cardRadiusPx: 12,\n            cardGapPx: 24,\n            staggerMs: 120,\n            washStrength: 60,\n            steps: PROCESS_STEPS,\n          }",
+    "imports": [
+      {
+        "spec": "import { DEFAULT_STEPS as PROCESS_STEPS } from \"@/sections/process-steps-portraits/ProcessStepsPortraits\";"
+      }
+    ]
   }
 }
