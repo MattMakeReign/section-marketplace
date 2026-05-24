@@ -4,7 +4,7 @@
   "category": "team",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Dark-background team section with a monospace eyebrow and large serif headline stacked top-left, followed by a multi-column portrait grid. Each card exposes a portrait image with a name/role label panel anchored to the bottom-right with inverted-radius corner cutouts.",
   "dependencies": [
     "@/components/section",
