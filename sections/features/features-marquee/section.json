@@ -4,7 +4,7 @@
   "category": "features",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Centered editorial header (label pill + large display heading) above a full-bleed infinite-scroll horizontal marquee of tall portrait image cards. Each card carries a bottom gradient overlay with plus-prefixed bullet labels; heading fades in on scroll entrance and card images parallax-shift while in viewport.",
   "props": {
     "eyebrow": {
