@@ -1,0 +1,33 @@
+{
+  "id": "kinetic-word-reveal",
+  "name": "Kinetic Word Reveal",
+  "category": "interactive",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "A large display word where each letter, on hover, swaps to a media tile. Neighbouring letters slide aside to make room with a back-out spring; image holds briefly then retracts with a tiny tilt-and-pop. Built with GSAP tweens.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [],
+  "created": "2026-05-25",
+  "updated": "2026-05-25",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab",
+    "submittedAt": "2026-05-25"
+  },
+  "context": "mr-gsap-lab",
+  "controller": {
+    "label": "Kinetic Word Reveal",
+    "defaultProps": "kwrSample.props"
+  }
+}
