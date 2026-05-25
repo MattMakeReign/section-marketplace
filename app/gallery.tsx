@@ -71,9 +71,16 @@ export function Gallery({
   brandContexts?: BrandContextEntry[];
 }) {
   // Detail route fires `router.refresh()` after curator transitions, so the
-  // gallery picks up state changes via the server-component re-render — no
-  // need for a local optimistic overlay anymore.
-  const sections = manifest.sections ?? [];
+  // gallery picks up state changes via the server-component re-render.
+  // Local `deletedIds` covers the Vercel-rebuild gap: a successful Delete
+  // removes the card immediately, even while the deploy still serves the
+  // old `index.json` baked into the build.
+  const allSections = manifest.sections ?? [];
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+  const sections = useMemo(
+    () => allSections.filter((s) => !deletedIds.has(s.id)),
+    [allSections, deletedIds],
+  );
 
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>(ALL);
@@ -378,6 +385,13 @@ export function Gallery({
               lifecycle={getLifecycle(s) as LifecycleName}
               onOpen={() => openSection(s.id)}
               onChanged={() => router.refresh()}
+              onDeleted={(id) => {
+                setDeletedIds((prev) => {
+                  const next = new Set(prev);
+                  next.add(id);
+                  return next;
+                });
+              }}
             />
           ))}
         </div>
@@ -390,9 +404,11 @@ export function Gallery({
 /* ─────────────────────────── SectionCardWithMenu ─────────────────────────── */
 
 /**
- * Wraps a SectionCard with a hover-revealed ⋯ menu that exposes lifecycle
- * actions (Archive / Unarchive) and — for Archived sections — a Delete
- * permanently action with typed-id confirmation.
+ * Wraps a SectionCard with a hover-revealed ⋯ menu that exposes two sibling
+ * actions: Archive and Delete permanently. Archive is disabled when the
+ * section is already Archived. Delete shows an "Are you sure?" prompt; on
+ * success it calls onDeleted(id) so the parent gallery can hide the card
+ * immediately (covers the Vercel-rebuild gap).
  *
  * Lives in gallery.tsx (not tools-ui) so the marketplace owns the curator
  * affordance; the underlying SectionCard stays a pure presentational
@@ -403,15 +419,16 @@ function SectionCardWithMenu({
   lifecycle,
   onOpen,
   onChanged,
+  onDeleted,
 }: {
   section: ManifestEntry;
   lifecycle: LifecycleName;
   onOpen: () => void;
   onChanged: () => void;
+  onDeleted: (id: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"menu" | "confirm-delete">("menu");
-  const [confirm, setConfirm] = useState("");
   const [pending, setPending] = useState<null | "archive" | "delete">(null);
   const [error, setError] = useState<string | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -423,7 +440,6 @@ function SectionCardWithMenu({
       if (!wrapRef.current?.contains(e.target as Node)) {
         setOpen(false);
         setMode("menu");
-        setConfirm("");
         setError(null);
       }
     }
@@ -431,7 +447,6 @@ function SectionCardWithMenu({
       if (e.key === "Escape") {
         setOpen(false);
         setMode("menu");
-        setConfirm("");
         setError(null);
       }
     }
@@ -483,8 +498,7 @@ function SectionCardWithMenu({
       }
       setOpen(false);
       setMode("menu");
-      setConfirm("");
-      onChanged();
+      onDeleted(section.id);
     } catch (e) {
       setError((e as Error)?.message ?? "Network error");
     } finally {
@@ -582,7 +596,6 @@ function SectionCardWithMenu({
                 danger
                 onClick={() => {
                   setMode("confirm-delete");
-                  setConfirm("");
                   setError(null);
                 }}
                 disabled={pending !== null}
@@ -604,38 +617,18 @@ function SectionCardWithMenu({
                 style={{
                   fontSize: 11,
                   color: "var(--mr-fg-muted, rgba(0,0,0,0.6))",
-                  marginBottom: 8,
+                  marginBottom: 10,
                   lineHeight: 1.4,
                 }}
               >
-                Type <code>{section.id}</code> to confirm. Source, manifest,
-                README, and assets will be removed from the repo.
+                Delete <strong>{section.name}</strong>? Source, manifest, README,
+                and assets will be removed from the repo. This can't be undone.
               </div>
-              <input
-                type="text"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder={section.id}
-                disabled={pending === "delete"}
-                autoFocus
-                style={{
-                  width: "100%",
-                  padding: "6px 8px",
-                  fontFamily: "var(--mr-font-mono, ui-monospace, monospace)",
-                  fontSize: 11,
-                  border: "1px solid var(--mr-border, rgba(0,0,0,0.16))",
-                  borderRadius: 6,
-                  background: "var(--mr-surface, #fff)",
-                  color: "var(--mr-fg, #111)",
-                  marginBottom: 8,
-                }}
-              />
               <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
                 <button
                   type="button"
                   onClick={() => {
                     setMode("menu");
-                    setConfirm("");
                     setError(null);
                   }}
                   disabled={pending === "delete"}
@@ -646,14 +639,15 @@ function SectionCardWithMenu({
                 <button
                   type="button"
                   onClick={runDelete}
-                  disabled={confirm !== section.id || pending === "delete"}
+                  disabled={pending === "delete"}
+                  autoFocus
                   style={{
                     ...menuBtnStyle,
                     color: "var(--mr-danger, #b42318)",
                     fontWeight: 600,
                   }}
                 >
-                  {pending === "delete" ? "Deleting…" : "Delete"}
+                  {pending === "delete" ? "Deleting…" : "Yes, delete"}
                 </button>
               </div>
             </div>

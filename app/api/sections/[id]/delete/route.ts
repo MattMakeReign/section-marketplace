@@ -102,11 +102,17 @@ export async function DELETE(
       { status: 500 },
     );
   }
+  // Idempotency: if the section's files are already gone from the tree (a
+  // previous delete already landed; the build's index.json just hasn't caught
+  // up yet), treat the call as success. Lets the curator UI optimistically
+  // hide the card without surfacing a confusing red error on retry.
   if (paths.length === 0) {
-    return NextResponse.json(
-      { ok: false, error: `no files found under ${sectionDir}`, code: "not_found" },
-      { status: 404 },
-    );
+    return NextResponse.json({
+      ok: true,
+      deleted: sectionDir,
+      fileCount: 0,
+      alreadyDeleted: true,
+    });
   }
 
   try {
