@@ -289,6 +289,20 @@ export function KineticWordReveal({
        *  fallback first, then re-renders in the target family. */}
       <link rel="stylesheet" href={fontHref} />
 
+      {/* Preload all reveal images so the first hover doesn't trigger a
+       *  network fetch + visible flash. These hidden imgs sit in the DOM
+       *  from first paint; browser caches them; createMedia spawns new <img>
+       *  elements with the same src and gets instant cache hits. */}
+      <div
+        aria-hidden
+        style={{ position: "absolute", width: 1, height: 1, opacity: 0, pointerEvents: "none", overflow: "hidden", left: -9999 }}
+      >
+        {items.map((it) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={`pre-${it.id}`} src={it.src} alt="" loading="eager" decoding="async" />
+        ))}
+      </div>
+
       <p
         ref={wordRef}
         // Re-key on word so React rebuilds the letter set; the effect's
