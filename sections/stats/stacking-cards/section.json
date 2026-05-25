@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "track": "experimental",
   "lifecycle": "Submitted",
-  "description": "Scroll-pinned stacking cards.",
+  "description": "Scroll-pinned stacking cards section.",
   "dependencies": [
     "@/components/section",
     "@/components/section-grid"
@@ -17,17 +17,22 @@
     "static": "preview.png"
   },
   "tags": [],
-  "created": "2026-05-24",
-  "updated": "2026-05-24",
+  "created": "2026-05-25",
+  "updated": "2026-05-25",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-halden-miller",
-    "submittedAt": "2026-05-24"
+    "submittedAt": "2026-05-25"
   },
   "context": "mr-halden-miller",
   "controller": {
     "label": "Stacking cards",
-    "defaultProps": "{\n            headlineAlign: \"center\",\n            cardHeightVh: 70,\n            cardRadiusPx: 12,\n            cardPaddingPx: 32,\n            baseTopPx: 120,\n            stickyStaggerPx: 60,\n            cardGapPx: 24,\n            tilePaddingPx: 24,\n            tileRadiusPx: 8,\n            headlineGapPx: 120,\n            showGradient: true,\n            scaleStep: 0.04,\n            gridSpan: 12,\n          }"
+    "defaultProps": "{\n            cards: STACKING_CARDS_DEFAULTS,\n            headlineAlign: \"center\",\n            cardHeightVh: 70,\n            cardRadiusPx: 12,\n            cardPaddingPx: 32,\n            baseTopPx: 120,\n            stickyStaggerPx: 60,\n            cardGapPx: 24,\n            tilePaddingPx: 24,\n            tileRadiusPx: 8,\n            headlineGapPx: 120,\n            showGradient: true,\n            scaleStep: 0.04,\n            gridSpan: 12,\n          }",
+    "imports": [
+      {
+        "spec": "import { DEFAULT_CARDS as STACKING_CARDS_DEFAULTS } from \"@/sections/stacking-cards\";"
+      }
+    ]
   }
 }

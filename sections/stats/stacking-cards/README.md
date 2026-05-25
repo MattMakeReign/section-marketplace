@@ -1,6 +1,6 @@
 # Stacking — scroll-pinned cards
 
-Scroll-pinned stacking cards.
+Scroll-pinned stacking cards section.
 
 Motion density: low.
 
