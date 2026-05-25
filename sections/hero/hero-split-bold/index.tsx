@@ -1,1 +1,0 @@
-export { HeroSplitBold } from "./HeroSplitBold";
