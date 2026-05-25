@@ -4,7 +4,7 @@
   "category": "team",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Dark-background team section with editorial headline and 8 portrait cards.",
   "dependencies": [
     "@/components/section",
@@ -18,7 +18,7 @@
   },
   "tags": [],
   "created": "2026-05-24",
-  "updated": "2026-05-24",
+  "updated": "2026-05-25",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
