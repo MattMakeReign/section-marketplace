@@ -1,0 +1,45 @@
+{
+  "id": "process-steps-portraits",
+  "name": "Process Steps Portraits",
+  "category": "process",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Dark editorial process section with a left-aligned eyebrow, serif headline, and body copy above a 3-up grid of tall portrait cards. Each card overlays a step number, title, and short description on a ken-burns animated portrait image.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "medium"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/process-steps-portraits/preview.png"
+  },
+  "tags": [
+    "process-steps",
+    "portrait-cards",
+    "3-up-grid",
+    "dark-bg",
+    "editorial",
+    "scroll-reveal"
+  ],
+  "created": "2026-05-25",
+  "updated": "2026-05-25",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-25"
+  },
+  "context": "mr-halden-miller",
+  "controller": {
+    "label": "Process — steps portraits",
+    "defaultProps": "{\n            headlineAlign: \"left\",\n            columns: 3,\n            cardHeightPx: 480,\n            cardRadiusPx: 12,\n            cardGapPx: 24,\n            staggerMs: 120,\n            washStrength: 60,\n            steps: PROCESS_STEPS,\n          }",
+    "imports": [
+      {
+        "spec": "import { DEFAULT_STEPS as PROCESS_STEPS } from \"@/sections/process-steps-portraits/ProcessStepsPortraits\";"
+      }
+    ]
+  }
+}
