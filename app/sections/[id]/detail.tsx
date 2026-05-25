@@ -1058,6 +1058,7 @@ function CuratorPanel({
         {saveError ? <FieldError>{saveError}</FieldError> : null}
       </div>
 
+      <div className="mr-curator__footer">
       {missing.length > 0 ? (
         <div className="mr-curator__gate">
           <div className="mr-curator__gate-title">Approval blocked</div>
@@ -1068,8 +1069,6 @@ function CuratorPanel({
           </ul>
         </div>
       ) : null}
-
-      <div className="mr-curator__footer">
       {transitions.length > 0 ? (
         <div className="mr-curator__transitions" role="group" aria-label="Lifecycle actions">
           {transitions.map((t) => {
