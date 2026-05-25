@@ -4,7 +4,7 @@
   "category": "editorial",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Editorial carousel with a two-row header — eyebrow label, serif headline left, and prev/next pill controls with a text link right — above a horizontal 3-up image-led story card strip that bleeds past the viewport edge. Each card exposes a tall image, title, and body caption below.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-halden-miller",
-    "submittedAt": "2026-05-25"
+    "submittedAt": "2026-05-25",
+    "approvedAt": "2026-05-25"
   },
   "context": "mr-halden-miller",
   "controller": {
