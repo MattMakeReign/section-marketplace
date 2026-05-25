@@ -4,7 +4,7 @@
   "category": "hero",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Full-bleed hero with bold display headline and supporting paragraph aligned to the left edge.",
   "dependencies": [
     "@/components/section",
@@ -18,7 +18,7 @@
   },
   "tags": [],
   "created": "2026-05-24",
-  "updated": "2026-05-24",
+  "updated": "2026-05-25",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
