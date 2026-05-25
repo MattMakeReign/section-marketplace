@@ -4,7 +4,7 @@
   "category": "features",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Archived",
   "description": "Centered editorial headline above a three-card pricing grid with one featured dark tier.",
   "dependencies": [
     "@/components/section",
@@ -18,7 +18,7 @@
   },
   "tags": [],
   "created": "2026-05-24",
-  "updated": "2026-05-24",
+  "updated": "2026-05-25",
   "submittedBy": "mattthompson",
   "attribution": {
     "originalCreator": "mattthompson",
