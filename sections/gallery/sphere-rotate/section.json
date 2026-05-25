@@ -1,0 +1,45 @@
+{
+  "id": "sphere-rotate",
+  "name": "Sphere Rotate Gallery",
+  "category": "gallery",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Interactive 3D image cluster arranged via Fibonacci spiral distribution on a virtual sphere surface. Mixed-size image tiles and labeled color cards float on a dark background; drag, swipe, or scroll rotates the sphere with inertia easing.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "experience"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/sphere-rotate/preview.png"
+  },
+  "tags": [
+    "3d-sphere",
+    "fibonacci-grid",
+    "image-cluster",
+    "interactive-rotate",
+    "dark-bg",
+    "editorial"
+  ],
+  "created": "2026-05-25",
+  "updated": "2026-05-25",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab",
+    "submittedAt": "2026-05-25"
+  },
+  "context": "mr-gsap-lab",
+  "controller": {
+    "label": "Sphere Rotate",
+    "defaultProps": "{\n            items: SPHERE_ITEMS,\n            heightVh: 100,\n            background: \"dark\",\n            imageSizeVw: 10,\n            imageSizeVwMobile: 14,\n            imageRadiusPx: 6,\n            sphereRadiusFactor: 0.2,\n            sphereRadiusFactorMobile: 0.3,\n            perspectiveVw: 50,\n            perspectiveVwMobile: 70,\n            inertiaSeconds: 1,\n            dragSensitivity: 4,\n            wheelEnabled: false,\n            wheelSensitivity: 10,\n            autoSpin: false,\n            autoSpinSpeed: 8,\n          }",
+    "imports": [
+      {
+        "spec": "import { DEFAULT_ITEMS as SPHERE_ITEMS } from \"@/sections/sphere-rotate\";"
+      }
+    ]
+  }
+}
