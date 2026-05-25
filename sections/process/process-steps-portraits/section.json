@@ -4,7 +4,7 @@
   "category": "process",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Dark editorial process section with a left-aligned eyebrow, serif headline, and body copy above a 3-up grid of tall portrait cards. Each card overlays a step number, title, and short description on a ken-burns animated portrait image.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-halden-miller",
-    "submittedAt": "2026-05-25"
+    "submittedAt": "2026-05-25",
+    "approvedAt": "2026-05-25"
   },
   "context": "mr-halden-miller",
   "controller": {
