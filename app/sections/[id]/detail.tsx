@@ -1069,6 +1069,7 @@ function CuratorPanel({
         </div>
       ) : null}
 
+      <div className="mr-curator__footer">
       {transitions.length > 0 ? (
         <div className="mr-curator__transitions" role="group" aria-label="Lifecycle actions">
           {transitions.map((t) => {
@@ -1100,14 +1101,7 @@ function CuratorPanel({
       {transitionError ? <FieldError>{transitionError}</FieldError> : null}
 
       {lifecycle === "Archived" ? (
-        <div
-          className="mr-curator__danger"
-          style={{
-            marginTop: 24,
-            paddingTop: 16,
-            borderTop: "1px solid var(--mr-border, rgba(0,0,0,0.08))",
-          }}
-        >
+        <div className="mr-curator__danger">
           {!deleteOpen ? (
             <Button
               type="button"
@@ -1185,6 +1179,7 @@ function CuratorPanel({
           )}
         </div>
       ) : null}
+      </div>
     </div>
   );
 }

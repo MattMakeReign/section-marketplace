@@ -1481,6 +1481,36 @@ button { font: inherit; border: 0; background: transparent; cursor: pointer; col
   padding: 18px 0;
   border-top: 1px solid var(--chrome-border);
 }
+
+/* ── Curator footer ─────────────────────────────────────────────
+ * Pins the lifecycle actions (Approve / Archive) — and the danger
+ * zone (Delete) when shown — to the bottom of the curation drawer.
+ * Negative margins extend the bar flush to the drawer's edges,
+ * cancelling the drawer's 24px padding so the bar sits at the
+ * very bottom regardless of how much content scrolls above it. */
+.mr-curator__footer {
+  position: sticky;
+  bottom: -24px;
+  margin: 0 -24px -24px;
+  padding: 16px 24px 24px;
+  background: var(--chrome-surface);
+  border-top: 1px solid var(--chrome-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1;
+}
+/* Reset the per-block borders inside the footer — the footer owns
+ * the divider now. */
+.mr-curator__footer .mr-curator__transitions {
+  padding-top: 0;
+  border-top: none;
+}
+.mr-curator__footer .mr-curator__danger {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  border-top: none !important;
+}
 .mr-mk-detail__drawer-section-label {
   font-family: var(--chrome-font-body);
   font-size: 14px;
