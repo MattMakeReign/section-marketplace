@@ -4,7 +4,7 @@
   "category": "team",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Dark-background team section with a monospace eyebrow and serif headline above an 8-portrait grid (4-up desktop, 3-up tablet, 2-up mobile). Each card exposes a name/role panel with inverted-radius corner cutouts at the bottom-right.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-halden-miller",
-    "submittedAt": "2026-05-25"
+    "submittedAt": "2026-05-25",
+    "approvedAt": "2026-05-25"
   },
   "context": "mr-halden-miller",
   "controller": {
