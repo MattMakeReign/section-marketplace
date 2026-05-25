@@ -1,0 +1,40 @@
+{
+  "id": "kinetic-word-reveal",
+  "name": "Kinetic Word Reveal",
+  "category": "hero",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Full-viewport dark hero with a single oversized display word centered on screen. Each letter is an interactive slot — hover expands it into a media tile while neighboring letters spring apart; tile retracts with a tilt-and-pop on mouse-out. No supporting copy or CTA slots.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "experience"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/kinetic-word-reveal/preview.png"
+  },
+  "tags": [
+    "headline-led",
+    "letter-interaction",
+    "media-reveal",
+    "dark-bg",
+    "full-viewport",
+    "typographic"
+  ],
+  "created": "2026-05-25",
+  "updated": "2026-05-25",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab",
+    "submittedAt": "2026-05-25"
+  },
+  "context": "mr-gsap-lab",
+  "controller": {
+    "label": "Kinetic Word Reveal",
+    "defaultProps": "kwrSample.props"
+  }
+}
