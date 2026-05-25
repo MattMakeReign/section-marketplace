@@ -412,7 +412,7 @@ function SectionCardWithMenu({
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"menu" | "confirm-delete">("menu");
   const [confirm, setConfirm] = useState("");
-  const [pending, setPending] = useState<null | "archive" | "unarchive" | "delete">(null);
+  const [pending, setPending] = useState<null | "archive" | "delete">(null);
   const [error, setError] = useState<string | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -443,7 +443,7 @@ function SectionCardWithMenu({
     };
   }, [open]);
 
-  async function runLifecycle(to: "Archived" | "Submitted", kind: "archive" | "unarchive") {
+  async function runLifecycle(to: "Archived", kind: "archive") {
     setPending(kind);
     setError(null);
     try {
@@ -569,49 +569,24 @@ function SectionCardWithMenu({
         >
           {mode === "menu" ? (
             <>
-              {!isArchived ? (
-                <MenuItem
-                  label={pending === "archive" ? "Archiving…" : "Archive"}
-                  hint="Hide from the catalogue"
-                  onClick={() => runLifecycle("Archived", "archive")}
-                  disabled={pending !== null}
-                />
-              ) : (
-                <>
-                  <MenuItem
-                    label={pending === "unarchive" ? "Unarchiving…" : "Unarchive"}
-                    hint="Return to the review queue"
-                    onClick={() => runLifecycle("Submitted", "unarchive")}
-                    disabled={pending !== null}
-                  />
-                  <MenuDivider />
-                  <MenuItem
-                    label="Delete permanently"
-                    hint="Remove all files from the repo"
-                    danger
-                    onClick={() => {
-                      setMode("confirm-delete");
-                      setConfirm("");
-                      setError(null);
-                    }}
-                    disabled={pending !== null}
-                  />
-                </>
-              )}
-              {!isArchived ? (
-                <>
-                  <MenuDivider />
-                  <div
-                    style={{
-                      padding: "6px 10px",
-                      fontSize: 11,
-                      color: "var(--mr-fg-muted, rgba(0,0,0,0.55))",
-                    }}
-                  >
-                    Archive first to enable Delete.
-                  </div>
-                </>
-              ) : null}
+              <MenuItem
+                label={pending === "archive" ? "Archiving…" : "Archive"}
+                hint="Hide from the catalogue"
+                onClick={() => runLifecycle("Archived", "archive")}
+                disabled={pending !== null || isArchived}
+              />
+              <MenuDivider />
+              <MenuItem
+                label="Delete permanently"
+                hint="Remove all files from the repo"
+                danger
+                onClick={() => {
+                  setMode("confirm-delete");
+                  setConfirm("");
+                  setError(null);
+                }}
+                disabled={pending !== null}
+              />
             </>
           ) : (
             <div style={{ padding: "8px 10px" }}>

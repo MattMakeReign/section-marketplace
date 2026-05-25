@@ -6,13 +6,11 @@
  * lifecycle route but committing tree entries with `sha: null` via
  * `deleteFiles()` in `lib/github-commit.ts`.
  *
- * Guards (defense in depth — the UI also enforces these):
- *   - The section must be at lifecycle "Archived". The UI hides Delete until
- *     Archive runs first, but a hand-rolled DELETE without an archive returns
- *     409 lifecycle_required.
+ * Guard (defense in depth — the UI also enforces it):
  *   - Body must contain `{ confirm: "<section-id>" }` — typed-id confirmation,
  *     same pattern git uses for `--force` on protected branches. Saves the
- *     designer from a fat-fingered fetch.
+ *     designer from a fat-fingered fetch. Delete is available regardless of
+ *     lifecycle — Archive and Delete are sibling actions in the kebab menu.
  *
  * Not in scope (deliberate):
  *   - Supabase preview cleanup. `previews.video` / `previews.static` URLs are
@@ -30,7 +28,6 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import {
-  getLifecycle,
   type ManifestEntry,
   type Manifest,
 } from "@mr/section-library-ui";
@@ -86,22 +83,6 @@ export async function DELETE(
     return NextResponse.json(
       { ok: false, error: `section "${id}" not found in marketplace`, code: "not_found" },
       { status: 404 },
-    );
-  }
-
-  // Archive-first gate. Designer must move the section to Archived before
-  // it can be purged. Prevents accidental destruction of in-review or
-  // approved sections — Archive is the soft "off" switch, Delete is the
-  // permanent purge.
-  const lifecycle = getLifecycle(entry);
-  if (lifecycle !== "Archived") {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: `Archive this section before deleting (currently ${lifecycle})`,
-        code: "lifecycle_required",
-      },
-      { status: 409 },
     );
   }
 
