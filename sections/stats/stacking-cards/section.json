@@ -1,0 +1,38 @@
+{
+  "id": "stacking-cards",
+  "name": "Stacking — scroll-pinned cards",
+  "category": "stats",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Centered headline above a tall list of three image cards that sticky-stack on scroll. Each card carries a frosted-glass tile in its bottom-left corner with a stat number and short caption — a unique read-as-you-scroll experience for showcasing capabilities or principles.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/stacking-cards/preview.png"
+  },
+  "tags": [],
+  "created": "2026-05-25",
+  "updated": "2026-05-25",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-halden-miller",
+    "submittedAt": "2026-05-25"
+  },
+  "context": "mr-halden-miller",
+  "controller": {
+    "label": "Stacking cards",
+    "defaultProps": "{\n            cards: STACKING_CARDS_DEFAULTS,\n            headlineAlign: \"center\",\n            cardHeightVh: 70,\n            cardRadiusPx: 12,\n            cardPaddingPx: 32,\n            baseTopPx: 120,\n            stickyStaggerPx: 60,\n            cardGapPx: 24,\n            tilePaddingPx: 24,\n            tileRadiusPx: 8,\n            headlineGapPx: 120,\n            showGradient: true,\n            scaleStep: 0.04,\n            gridSpan: 12,\n          }",
+    "imports": [
+      {
+        "spec": "import { DEFAULT_CARDS as STACKING_CARDS_DEFAULTS } from \"@/sections/stacking-cards\";"
+      }
+    ]
+  }
+}
