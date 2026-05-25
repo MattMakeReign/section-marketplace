@@ -4,7 +4,7 @@
   "category": "gallery",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Interactive 3D image cluster arranged via Fibonacci spiral distribution on a virtual sphere surface. Mixed-size image tiles and labeled color cards float on a dark background; drag, swipe, or scroll rotates the sphere with inertia easing.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-gsap-lab",
-    "submittedAt": "2026-05-25"
+    "submittedAt": "2026-05-25",
+    "approvedAt": "2026-05-25"
   },
   "context": "mr-gsap-lab",
   "controller": {
