@@ -1,0 +1,114 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "eyebrow": "What we do",
+    "sentence": "We create bold and [audacious] clothing that empowers [individuality], blends modern fashion with [timeless] style",
+    "items": [
+      {
+        "id": "01.jpg",
+        "src": "/api/section-asset/hover-spray-prose/01.jpg",
+        "filename": "01.jpg",
+        "alt": ""
+      },
+      {
+        "id": "02.jpg",
+        "src": "/api/section-asset/hover-spray-prose/02.jpg",
+        "filename": "02.jpg",
+        "alt": ""
+      },
+      {
+        "id": "03.jpg",
+        "src": "/api/section-asset/hover-spray-prose/03.jpg",
+        "filename": "03.jpg",
+        "alt": ""
+      },
+      {
+        "id": "04.jpg",
+        "src": "/api/section-asset/hover-spray-prose/04.jpg",
+        "filename": "04.jpg",
+        "alt": ""
+      },
+      {
+        "id": "05.jpg",
+        "src": "/api/section-asset/hover-spray-prose/05.jpg",
+        "filename": "05.jpg",
+        "alt": ""
+      },
+      {
+        "id": "06.jpg",
+        "src": "/api/section-asset/hover-spray-prose/06.jpg",
+        "filename": "06.jpg",
+        "alt": ""
+      },
+      {
+        "id": "07.jpg",
+        "src": "/api/section-asset/hover-spray-prose/07.jpg",
+        "filename": "07.jpg",
+        "alt": ""
+      },
+      {
+        "id": "08.jpg",
+        "src": "/api/section-asset/hover-spray-prose/08.jpg",
+        "filename": "08.jpg",
+        "alt": ""
+      },
+      {
+        "id": "09.jpg",
+        "src": "/api/section-asset/hover-spray-prose/09.jpg",
+        "filename": "09.jpg",
+        "alt": ""
+      },
+      {
+        "id": "10.jpg",
+        "src": "/api/section-asset/hover-spray-prose/10.jpg",
+        "filename": "10.jpg",
+        "alt": ""
+      },
+      {
+        "id": "11.jpg",
+        "src": "/api/section-asset/hover-spray-prose/11.jpg",
+        "filename": "11.jpg",
+        "alt": ""
+      },
+      {
+        "id": "12.jpg",
+        "src": "/api/section-asset/hover-spray-prose/12.jpg",
+        "filename": "12.jpg",
+        "alt": ""
+      },
+      {
+        "id": "13.jpg",
+        "src": "/api/section-asset/hover-spray-prose/13.jpg",
+        "filename": "13.jpg",
+        "alt": ""
+      },
+      {
+        "id": "14.jpg",
+        "src": "/api/section-asset/hover-spray-prose/14.jpg",
+        "filename": "14.jpg",
+        "alt": ""
+      },
+      {
+        "id": "15.jpg",
+        "src": "/api/section-asset/hover-spray-prose/15.jpg",
+        "filename": "15.jpg",
+        "alt": ""
+      }
+    ],
+    "heightVh": 100,
+    "background": "dark",
+    "sentenceSizeVw": 4.9,
+    "sentenceWidthPct": 72,
+    "imageSizeVw": 20,
+    "imageRadiusPx": 10,
+    "spawnIntervalMs": 230,
+    "appearSeconds": 0.4,
+    "scaleOutSeconds": 0.2,
+    "scaleOutDelay": 0.5,
+    "popOutScale": 0.45,
+    "jitterPx": 114,
+    "rotationDeg": 10,
+    "yOffsetPx": 53,
+    "eyebrowSizeVw": 1.25
+  }
+}

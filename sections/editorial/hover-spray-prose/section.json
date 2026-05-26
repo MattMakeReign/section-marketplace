@@ -1,0 +1,40 @@
+{
+  "id": "hover-spray-prose",
+  "name": "Hover Spray Prose",
+  "category": "editorial",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Full-viewport dark statement section with a small spaced eyebrow label above a large centred multi-line prose block. Select words within the prose are underlined as interactive triggers — hovering each word continuously sprays media tiles at that word's position via GSAP spring animations.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "high"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/hover-spray-prose/preview.png"
+  },
+  "tags": [
+    "editorial",
+    "headline-led",
+    "centered",
+    "interactive-hover",
+    "spray-animation",
+    "dark-bg"
+  ],
+  "created": "2026-05-26",
+  "updated": "2026-05-26",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-05-26"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Hover Spray Prose",
+    "defaultProps": "hspSample.props"
+  }
+}
