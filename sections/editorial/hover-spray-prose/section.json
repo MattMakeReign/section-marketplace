@@ -4,7 +4,7 @@
   "category": "editorial",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Full-viewport dark statement section with a small spaced eyebrow label above a large centred multi-line prose block. Select words within the prose are underlined as interactive triggers — hovering each word continuously sprays media tiles at that word's position via GSAP spring animations.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-gsap-lab-dialkit",
-    "submittedAt": "2026-05-26"
+    "submittedAt": "2026-05-26",
+    "approvedAt": "2026-05-26"
   },
   "context": "mr-gsap-lab-dialkit",
   "controller": {
