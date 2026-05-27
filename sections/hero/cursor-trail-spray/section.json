@@ -4,7 +4,7 @@
   "category": "hero",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Full-viewport hero with a fixed nav strip, oversized centered italic serif headline, and a small spaced-caps subtitle below. Cursor movement spawns image tiles along the trail at fixed travel-distance intervals — each tile springs in elastically, drifts in the direction of motion, then scales out.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-gsap-lab-dialkit",
-    "submittedAt": "2026-05-27"
+    "submittedAt": "2026-05-27",
+    "approvedAt": "2026-05-27"
   },
   "context": "mr-gsap-lab-dialkit",
   "controller": {
