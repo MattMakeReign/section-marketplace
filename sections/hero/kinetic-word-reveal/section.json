@@ -1,0 +1,40 @@
+{
+  "id": "kinetic-word-reveal",
+  "name": "Kinetic Word Reveal",
+  "category": "hero",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Full-viewport centered display word where each letter is an interactive slot — on hover, the letter expands into a media tile while neighbours spring aside to make room; tile holds briefly then retracts with a tilt-and-pop. Layout is typographic-only at rest, image-grid on interaction.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "experience"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/kinetic-word-reveal/preview.png"
+  },
+  "tags": [
+    "headline-led",
+    "kinetic-type",
+    "hover-interaction",
+    "letter-swap",
+    "dark-bg",
+    "full-viewport"
+  ],
+  "created": "2026-05-27",
+  "updated": "2026-05-27",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-05-27"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Kinetic Word Reveal",
+    "defaultProps": "kwrSample.props"
+  }
+}

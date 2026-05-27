@@ -1,0 +1,114 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "items": [
+      {
+        "id": "m1779716749360-0",
+        "src": "/api/section-asset/kinetic-word-reveal/Natalie_2x.jpg?v=1779716749516",
+        "filename": "Natalie_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749360-1",
+        "src": "/api/section-asset/kinetic-word-reveal/Dillan_5_2x.jpg?v=1779716749473",
+        "filename": "Dillan_5_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749363-2",
+        "src": "/api/section-asset/kinetic-word-reveal/Lauren_7_2x.jpg?v=1779716749503",
+        "filename": "Lauren_7_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749363-3",
+        "src": "/api/section-asset/kinetic-word-reveal/Zama_2x.jpg?v=1779716749473",
+        "filename": "Zama_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749364-4",
+        "src": "/api/section-asset/kinetic-word-reveal/Matt_7_2x.jpg?v=1779716749473",
+        "filename": "Matt_7_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749364-5",
+        "src": "/api/section-asset/kinetic-word-reveal/Grant_2x.jpg?v=1779716749473",
+        "filename": "Grant_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749364-6",
+        "src": "/api/section-asset/kinetic-word-reveal/Luke_2_2x.jpg?v=1779716749473",
+        "filename": "Luke_2_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749364-7",
+        "src": "/api/section-asset/kinetic-word-reveal/Justin_2x.jpg?v=1779716749473",
+        "filename": "Justin_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749364-8",
+        "src": "/api/section-asset/kinetic-word-reveal/Hadley_2x.jpg?v=1779716749473",
+        "filename": "Hadley_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749365-9",
+        "src": "/api/section-asset/kinetic-word-reveal/Christia_2x.jpg?v=1779716749473",
+        "filename": "Christia_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749366-10",
+        "src": "/api/section-asset/kinetic-word-reveal/Georgie_2x.jpg?v=1779716749490",
+        "filename": "Georgie_2x.jpg",
+        "alt": ""
+      },
+      {
+        "id": "m1779716749366-11",
+        "src": "/api/section-asset/kinetic-word-reveal/Shelby_2x.jpg?v=1779716749479",
+        "filename": "Shelby_2x.jpg",
+        "alt": ""
+      }
+    ],
+    "word": "MakeReign",
+    "fontFamily": "Inter",
+    "fontWeight": 700,
+    "fontSizeVw": 9,
+    "mediaWidthVw": 6.75,
+    "mediaAspect": "portrait",
+    "mediaRadiusVw": 0.3,
+    "mediaGapVw": 0.8,
+    "heightVh": 105,
+    "background": "dark",
+    "pushSeconds": 0.2,
+    "holdSeconds": 1.2,
+    "tiltDeg": 16,
+    "popScale": 1.08,
+    "letterSpacingEm": -0.06,
+    "imageSizeVw": 6,
+    "imageSizeVwMobile": 11.5,
+    "imageRadiusPx": 0,
+    "sphereRadiusFactor": 0.4,
+    "sphereRadiusFactorMobile": 0.3,
+    "perspectiveVw": 78,
+    "perspectiveVwMobile": 70,
+    "inertiaSeconds": 1.7,
+    "dragSensitivity": 9.5,
+    "wheelEnabled": false,
+    "wheelSensitivity": 18.5,
+    "autoSpin": true,
+    "autoSpinSpeed": 19,
+    "rows": 3,
+    "pinLengthVh": 400,
+    "tileGapPx": 8,
+    "rowGapPx": 8,
+    "edgePaddingPx": 8,
+    "direction": "left",
+    "scrollBias": 1
+  }
+}
