@@ -4,7 +4,7 @@
   "category": "gallery",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Freeform scattered image grid where each tile carries randomised rotation jitter. Cursor proximity triggers an inverse-square magnetic repulsion — the nearest tile scales up while neighbours are pushed outward via GSAP elastic tweens. No text slots; pure image collection layout.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-gsap-lab-dialkit",
-    "submittedAt": "2026-05-27"
+    "submittedAt": "2026-05-27",
+    "approvedAt": "2026-05-27"
   },
   "context": "mr-gsap-lab-dialkit",
   "controller": {
