@@ -32,7 +32,14 @@ import { useDialkitTheme } from "@mr/canonical-stack";
 // its own `Required<Pick<…>>` shape; the mount is plumbing.
 type AnyProps = Record<string, unknown>;
 
-const STICKY_TOP_PX = 16;
+// The marketplace detail page floats its own top-right toolbar (info /
+// edit / refresh / controller-toggle / close) at the very top of the
+// page, OUTSIDE the iframe. The default project-mount inset (16px from
+// the iframe's own top) would land the dialkit bubble + panel at the
+// same y as that toolbar, so the parent buttons paint OVER the panel
+// header. Push the inset down past the toolbar's bottom edge (toolbar
+// height ≈ 42, top ≈ 24, so ~70px clears it comfortably).
+const STICKY_TOP_PX = 72;
 const BOTTOM_GAP_PX = 16;
 
 export function SectionEditorMount({
