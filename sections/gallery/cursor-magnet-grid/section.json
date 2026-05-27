@@ -14,7 +14,8 @@
     "experience"
   ],
   "previews": {
-    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/cursor-magnet-grid/preview.png"
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/cursor-magnet-grid/preview.png?v=1779909388473",
+    "video": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/cursor-magnet-grid/preview.webm?v=1779909388473"
   },
   "tags": [
     "scattered-grid",
