@@ -1,0 +1,125 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "items": [
+      {
+        "id": "01.jpg",
+        "src": "/api/section-asset/sphere-rotate/01.jpg",
+        "filename": "01.jpg",
+        "alt": ""
+      },
+      {
+        "id": "02.jpg",
+        "src": "/api/section-asset/sphere-rotate/02.jpg",
+        "filename": "02.jpg",
+        "alt": ""
+      },
+      {
+        "id": "03.png",
+        "src": "/api/section-asset/sphere-rotate/03.png",
+        "filename": "03.png",
+        "alt": ""
+      },
+      {
+        "id": "04.png",
+        "src": "/api/section-asset/sphere-rotate/04.png",
+        "filename": "04.png",
+        "alt": ""
+      },
+      {
+        "id": "05.png",
+        "src": "/api/section-asset/sphere-rotate/05.png",
+        "filename": "05.png",
+        "alt": ""
+      },
+      {
+        "id": "06.jpg",
+        "src": "/api/section-asset/sphere-rotate/06.jpg",
+        "filename": "06.jpg",
+        "alt": ""
+      },
+      {
+        "id": "07.jpg",
+        "src": "/api/section-asset/sphere-rotate/07.jpg",
+        "filename": "07.jpg",
+        "alt": ""
+      },
+      {
+        "id": "08.png",
+        "src": "/api/section-asset/sphere-rotate/08.png",
+        "filename": "08.png",
+        "alt": ""
+      },
+      {
+        "id": "09.jpg",
+        "src": "/api/section-asset/sphere-rotate/09.jpg",
+        "filename": "09.jpg",
+        "alt": ""
+      },
+      {
+        "id": "10.jpg",
+        "src": "/api/section-asset/sphere-rotate/10.jpg",
+        "filename": "10.jpg",
+        "alt": ""
+      },
+      {
+        "id": "11.png",
+        "src": "/api/section-asset/sphere-rotate/11.png",
+        "filename": "11.png",
+        "alt": ""
+      },
+      {
+        "id": "12.png",
+        "src": "/api/section-asset/sphere-rotate/12.png",
+        "filename": "12.png",
+        "alt": ""
+      },
+      {
+        "id": "13.jpg",
+        "src": "/api/section-asset/sphere-rotate/13.jpg",
+        "filename": "13.jpg",
+        "alt": ""
+      },
+      {
+        "id": "14.png",
+        "src": "/api/section-asset/sphere-rotate/14.png",
+        "filename": "14.png",
+        "alt": ""
+      },
+      {
+        "id": "15.jpg",
+        "src": "/api/section-asset/sphere-rotate/15.jpg",
+        "filename": "15.jpg",
+        "alt": ""
+      }
+    ],
+    "heightVh": 120,
+    "background": "dark",
+    "imageSizeVw": 14.5,
+    "imageSizeVwMobile": 9,
+    "imageRadiusPx": 0,
+    "sphereRadiusFactor": 0.42,
+    "sphereRadiusFactorMobile": 0.3,
+    "perspectiveVw": 70,
+    "perspectiveVwMobile": 70,
+    "inertiaSeconds": 1.7,
+    "dragSensitivity": 2,
+    "wheelEnabled": false,
+    "wheelSensitivity": 18.5,
+    "autoSpin": true,
+    "autoSpinSpeed": 19,
+    "word": "MakeReign",
+    "fontFamily": "Inter",
+    "fontWeight": 700,
+    "fontSizeVw": 8.25,
+    "mediaWidthVw": 6.75,
+    "mediaAspect": "portrait",
+    "mediaRadiusVw": 0.3,
+    "mediaGapVw": 0.8,
+    "pushSeconds": 0.2,
+    "holdSeconds": 1.2,
+    "tiltDeg": 16,
+    "popScale": 1.08,
+    "letterSpacingEm": -0.06
+  }
+}
