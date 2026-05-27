@@ -14,7 +14,8 @@
     "experience"
   ],
   "previews": {
-    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/sphere-rotate/preview.png"
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/sphere-rotate/preview.png?v=1779909814152",
+    "video": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/sphere-rotate/preview.webm?v=1779909814152"
   },
   "tags": [
     "3d-sphere",
