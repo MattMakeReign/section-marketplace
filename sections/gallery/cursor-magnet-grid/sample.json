@@ -1,0 +1,123 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "items": [
+      {
+        "id": "01.png",
+        "src": "/api/section-asset/cursor-magnet-grid/01.png",
+        "filename": "01.png",
+        "alt": ""
+      },
+      {
+        "id": "02.png",
+        "src": "/api/section-asset/cursor-magnet-grid/02.png",
+        "filename": "02.png",
+        "alt": ""
+      },
+      {
+        "id": "03.png",
+        "src": "/api/section-asset/cursor-magnet-grid/03.png",
+        "filename": "03.png",
+        "alt": ""
+      },
+      {
+        "id": "04.png",
+        "src": "/api/section-asset/cursor-magnet-grid/04.png",
+        "filename": "04.png",
+        "alt": ""
+      },
+      {
+        "id": "05.png",
+        "src": "/api/section-asset/cursor-magnet-grid/05.png",
+        "filename": "05.png",
+        "alt": ""
+      },
+      {
+        "id": "06.jpg",
+        "src": "/api/section-asset/cursor-magnet-grid/06.jpg",
+        "filename": "06.jpg",
+        "alt": ""
+      },
+      {
+        "id": "07.png",
+        "src": "/api/section-asset/cursor-magnet-grid/07.png",
+        "filename": "07.png",
+        "alt": ""
+      },
+      {
+        "id": "08.png",
+        "src": "/api/section-asset/cursor-magnet-grid/08.png",
+        "filename": "08.png",
+        "alt": ""
+      },
+      {
+        "id": "09.png",
+        "src": "/api/section-asset/cursor-magnet-grid/09.png",
+        "filename": "09.png",
+        "alt": ""
+      },
+      {
+        "id": "10.png",
+        "src": "/api/section-asset/cursor-magnet-grid/10.png",
+        "filename": "10.png",
+        "alt": ""
+      },
+      {
+        "id": "11.png",
+        "src": "/api/section-asset/cursor-magnet-grid/11.png",
+        "filename": "11.png",
+        "alt": ""
+      },
+      {
+        "id": "12.png",
+        "src": "/api/section-asset/cursor-magnet-grid/12.png",
+        "filename": "12.png",
+        "alt": ""
+      },
+      {
+        "id": "13.jpg",
+        "src": "/api/section-asset/cursor-magnet-grid/13.jpg",
+        "filename": "13.jpg",
+        "alt": ""
+      },
+      {
+        "id": "14.png",
+        "src": "/api/section-asset/cursor-magnet-grid/14.png",
+        "filename": "14.png",
+        "alt": ""
+      },
+      {
+        "id": "15.jpg",
+        "src": "/api/section-asset/cursor-magnet-grid/15.jpg",
+        "filename": "15.jpg",
+        "alt": ""
+      }
+    ],
+    "columns": 5,
+    "background": "dark",
+    "tileSizeVw": 12,
+    "tileGapPx": 0,
+    "imageRadiusPx": 8,
+    "baseScale": 1.1,
+    "activeScale": 1.6,
+    "pushForce": 80,
+    "jitterPercent": 20,
+    "jitterRotation": 30,
+    "durationSec": 0.8,
+    "eyebrow": "What we do",
+    "sentence": "We create bold and [audacious] clothing that empowers [individuality], blends modern fashion with [timeless] style",
+    "heightVh": 100,
+    "sentenceSizeVw": 4.9,
+    "sentenceWidthPct": 72,
+    "imageSizeVw": 20,
+    "spawnIntervalMs": 230,
+    "appearSeconds": 0.4,
+    "scaleOutSeconds": 0.2,
+    "scaleOutDelay": 0.5,
+    "popOutScale": 0.45,
+    "jitterPx": 114,
+    "rotationDeg": 10,
+    "yOffsetPx": 53,
+    "eyebrowSizeVw": 1.25
+  }
+}

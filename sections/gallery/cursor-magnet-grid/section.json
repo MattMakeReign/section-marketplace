@@ -1,0 +1,40 @@
+{
+  "id": "cursor-magnet-grid",
+  "name": "Cursor Magnet Grid",
+  "category": "gallery",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Freeform scattered image grid where each tile carries randomised rotation jitter. Cursor proximity triggers an inverse-square magnetic repulsion — the nearest tile scales up while neighbours are pushed outward via GSAP elastic tweens. No text slots; pure image collection layout.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "experience"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/cursor-magnet-grid/preview.png"
+  },
+  "tags": [
+    "scattered-grid",
+    "cursor-interactive",
+    "image-only",
+    "magnetic-repulsion",
+    "dark-background",
+    "portfolio"
+  ],
+  "created": "2026-05-27",
+  "updated": "2026-05-27",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-05-27"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Cursor Magnet Grid",
+    "defaultProps": "cmgSample.props"
+  }
+}
