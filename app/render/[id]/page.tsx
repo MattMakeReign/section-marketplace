@@ -6,7 +6,7 @@
  * travels with its own pre-compiled CSS bundle (`sections/<cat>/<id>/
  * compiled.css`) produced at submit time inside the source project's
  * Tailwind build. The marketplace renders sections PIXEL-IDENTICAL to their
- * origin project \u2014 we just inline the compiled CSS as a <style> tag and
+ * origin project — we just inline the compiled CSS as a <style> tag and
  * let the browser render the React component on top of it. No brand-context
  * CSS injection, no scoped wrappers, no neutral baseline transformation.
  *
@@ -14,6 +14,12 @@
  * page server-resolves the category by scanning, then hands the `cat/id`
  * pair to a client component for `next/dynamic` to expand into one webpack
  * chunk per section.
+ *
+ * If the section ships an `editor.tsx` (the dialkit controller it travelled
+ * with from its source project), the client mounts <SectionEditorMount> so
+ * the marketplace preview shows the EXACT SAME dialkit panel the user will
+ * get when they install the section into a new project. sample.json
+ * provides the defaults — same bytes the section was last saved with.
  */
 
 import { Suspense } from "react";
@@ -48,6 +54,18 @@ function readSectionContext(category: string, id: string): string | null {
   }
 }
 
+function readSectionName(category: string, id: string): string {
+  const manifestPath = path.join(SECTIONS_DIR, category, id, "section.json");
+  if (!existsSync(manifestPath)) return id;
+  try {
+    const raw = readFileSync(manifestPath, "utf8");
+    const parsed = JSON.parse(raw) as { name?: string };
+    return typeof parsed.name === "string" && parsed.name ? parsed.name : id;
+  } catch {
+    return id;
+  }
+}
+
 function readCompiledCss(category: string, id: string): string | null {
   const cssPath = path.join(SECTIONS_DIR, category, id, "compiled.css");
   if (!existsSync(cssPath)) return null;
@@ -58,6 +76,25 @@ function readCompiledCss(category: string, id: string): string | null {
   }
 }
 
+function readSampleProps(
+  category: string,
+  id: string,
+): Record<string, unknown> | null {
+  const samplePath = path.join(SECTIONS_DIR, category, id, "sample.json");
+  if (!existsSync(samplePath)) return null;
+  try {
+    const raw = readFileSync(samplePath, "utf8");
+    const parsed = JSON.parse(raw) as { props?: Record<string, unknown> };
+    return parsed?.props && typeof parsed.props === "object" ? parsed.props : null;
+  } catch {
+    return null;
+  }
+}
+
+function hasEditor(category: string, id: string): boolean {
+  return existsSync(path.join(SECTIONS_DIR, category, id, "editor.tsx"));
+}
+
 export default async function RenderPage({ params }: { params: RouteParams }) {
   const { id } = await params;
   const category = findCategoryForSection(id);
@@ -65,10 +102,13 @@ export default async function RenderPage({ params }: { params: RouteParams }) {
 
   const contextRef = readSectionContext(category, id);
   const compiledCss = readCompiledCss(category, id);
+  const sampleProps = readSampleProps(category, id);
+  const editorAvailable = hasEditor(category, id);
+  const sectionName = readSectionName(category, id);
 
   return (
     <>
-      {/* Section's frozen Tailwind build \u2014 same bytes that the source
+      {/* Section's frozen Tailwind build — same bytes that the source
        * project's CSS pipeline emitted at submit time. Pixel-identical
        * to the origin. Inlined so there's no second round trip and no
        * dependency on serving from public/. */}
@@ -86,7 +126,13 @@ export default async function RenderPage({ params }: { params: RouteParams }) {
       >
         <SectionsContainer>
           <Suspense fallback={<div className="mr-render-loading" />}>
-            <LiveRenderClient category={category} id={id} />
+            <LiveRenderClient
+              category={category}
+              id={id}
+              label={sectionName}
+              defaultProps={sampleProps}
+              editorAvailable={editorAvailable}
+            />
           </Suspense>
         </SectionsContainer>
       </main>

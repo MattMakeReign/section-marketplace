@@ -21,6 +21,8 @@ export * from "./wireframe";
 export { MotionProvider } from "./motion-provider";
 export { useReveal } from "./reveal";
 export type { RevealOptions } from "./reveal";
+export { useDialkitTheme } from "./dialkit-theme";
+export type { DialkitTheme } from "./dialkit-theme";
 export { Section, selectorForSlug } from "./section";
 export type { SectionProps } from "./section";
 export { SectionGrid } from "./section-grid";

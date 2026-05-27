@@ -25,7 +25,9 @@
       "@mr/tools-ui/section-library": ["./lib/tools-ui/section-library/index.ts"],
       "@mr/tools-ui/section-library/styles.css": ["./lib/tools-ui/section-library/styles.css"],
       "@mr/canonical-stack": ["./lib/canonical-stack/index.ts"],
-      "@mr/canonical-stack/styles.css": ["./lib/canonical-stack/styles.css"]
+      "@mr/canonical-stack/styles.css": ["./lib/canonical-stack/styles.css"],
+      "@mr/section-editors": ["./lib/section-editors/index.ts"],
+      "@mr/section-editors/styles.css": ["./lib/section-editors/styles.css"]
     }
   },
   "include": ["scripts/**/*.ts", "app/**/*.ts", "app/**/*.tsx", "components/**/*.tsx", "sections/**/*.tsx", "lib/**/*.ts", "lib/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],

@@ -30,6 +30,8 @@
 
 import { MotionProvider } from "@/components/motion-provider";
 import "@mr/canonical-stack/styles.css";
+import "@mr/section-editors/styles.css";
+import "dialkit/styles.css";
 import "./render.css";
 
 export const metadata = {

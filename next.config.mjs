@@ -83,6 +83,13 @@ const nextConfig = {
       // repos/canonical-stack/src/; sync via the canonical-source pattern.
       "@mr/canonical-stack/styles.css": path.resolve(__dirname, "lib/canonical-stack/styles.css"),
       "@mr/canonical-stack": path.resolve(__dirname, "lib/canonical-stack/index.ts"),
+      // @mr/section-editors — vendored same reason: each shipped section's
+      // editor.tsx imports `MediaManager`, `SectionEditor` type, etc. from
+      // this package, and the marketplace mounts those editors at
+      // /render/[id] so the dialkit panel shows up in the preview iframe.
+      // Source of truth is repos/section-editors/src/.
+      "@mr/section-editors/styles.css": path.resolve(__dirname, "lib/section-editors/styles.css"),
+      "@mr/section-editors": path.resolve(__dirname, "lib/section-editors/index.ts"),
     };
     return config;
   },

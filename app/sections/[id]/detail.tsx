@@ -199,8 +199,38 @@ export function Detail({
   //   a device-frame preview with breathing room on a wide stage.
   const [viewport, setViewport] = useState<Viewport>("desktop");
   const frameRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [scale, setScale] = useState(1);
   const [iframeKey, setIframeKey] = useState(0);
+
+  // Controller-panel state — the standalone circle next to Close toggles
+  // the section's dialkit panel INSIDE the iframe via postMessage. The
+  // iframe's <SectionEditorMount> echoes `mr:editor-state` back whenever
+  // its open state changes (e.g. user hits Esc, clicks the panel's × close)
+  // so the button's pressed state mirrors reality.
+  const [controllerOpen, setControllerOpen] = useState(false);
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      const data = e.data;
+      if (!data || typeof data !== "object") return;
+      if (data.type === "mr:editor-state" && typeof data.open === "boolean") {
+        setControllerOpen(data.open);
+      }
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+  // Reset on section change / iframe reload — the new iframe starts closed
+  // and won't send a state message until the user toggles, so the button
+  // would otherwise stay stuck "pressed" across nav.
+  useEffect(() => {
+    setControllerOpen(false);
+  }, [current.id, iframeKey, viewport]);
+  const toggleController = () => {
+    const win = iframeRef.current?.contentWindow;
+    if (!win) return;
+    win.postMessage({ type: "mr:editor-toggle" }, "*");
+  };
   useEffect(() => {
     if (viewport === "desktop") {
       setScale(1);
@@ -249,6 +279,7 @@ export function Detail({
       <div ref={stageRef} className="mr-mk-detail__stage" data-panel-open={panelOpen}>
         <div className="mr-mk-detail__frame" ref={frameRef}>
           <iframe
+            ref={iframeRef}
             key={`${current.id}-${viewport}-${iframeKey}`}
             src={`/render/${current.id}`}
             title={`${current.name} preview`}
@@ -354,6 +385,27 @@ export function Detail({
             </svg>
           </button>
         </div>
+        {/* Controller-settings circle — sits between the in-view toolbar
+         * and the navigation Close button (separated from both with the
+         * topright cluster's gap). Posts `mr:editor-toggle` into the
+         * iframe so the section's dialkit panel opens / closes — same
+         * panel a designer gets when they install this section into a
+         * project. */}
+        <button
+          type="button"
+          className={`mr-mk-detail__controller${controllerOpen ? " mr-mk-detail__controller--active" : ""}`}
+          aria-pressed={controllerOpen}
+          aria-label="Controller settings"
+          title="Controller settings"
+          onClick={toggleController}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <line x1="2.5" y1="5" x2="13.5" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="2.5" y1="11" x2="13.5" y2="11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="10" cy="5" r="1.75" fill="currentColor" />
+            <circle cx="6" cy="11" r="1.75" fill="currentColor" />
+          </svg>
+        </button>
         <Link
           href="/"
           className="mr-mk-detail__close"
