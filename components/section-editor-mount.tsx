@@ -32,14 +32,15 @@ import { useDialkitTheme } from "@mr/canonical-stack";
 // its own `Required<Pick<…>>` shape; the mount is plumbing.
 type AnyProps = Record<string, unknown>;
 
-// The marketplace detail page floats its own top-right toolbar (info /
-// edit / refresh / controller-toggle / close) at the very top of the
-// page, OUTSIDE the iframe. The default project-mount inset (16px from
-// the iframe's own top) would land the dialkit bubble + panel at the
-// same y as that toolbar, so the parent buttons paint OVER the panel
-// header. Push the inset down past the toolbar's bottom edge (toolbar
-// height ≈ 42, top ≈ 24, so ~70px clears it comfortably).
-const STICKY_TOP_PX = 72;
+// The marketplace detail page floats its own top-right toolbar (viewport
+// toggle on the left, info / edit / refresh / controller-toggle / close
+// on the right) at the very top of the page, OUTSIDE the iframe. The
+// project-mount inset (16px from the iframe's own top) would land the
+// panel at the same y as that toolbar, so the parent buttons paint OVER
+// the panel header. 88px clears the toolbar (top ≈ 24, height ≈ 42 →
+// bottom ≈ 66) by ~22px so the panel reads as clearly "below" the
+// toolbar rather than abutting it.
+const STICKY_TOP_PX = 88;
 const BOTTOM_GAP_PX = 16;
 
 export function SectionEditorMount({
@@ -175,41 +176,10 @@ export function SectionEditorMount({
 
   return (
     <div ref={mountRef} className="mr-editor-mount" style={{ position: "relative" }}>
-      {/* CLOSED — circular dialkit bubble with sliders icon. */}
-      {!isOpen ? (
-        <button
-          ref={bubbleRef}
-          type="button"
-          onClick={toggleOpen}
-          aria-pressed={false}
-          aria-label={`Edit ${label}`}
-          title={`Edit ${label}`}
-          className="dialkit-root"
-          data-theme={dialkitTheme}
-          style={{
-            position: isPinned ? "fixed" : "absolute",
-            top: isPinned ? effectiveTopPx : STICKY_TOP_PX,
-            right: 16,
-            zIndex: 20,
-            width: 40,
-            height: 40,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 0,
-            borderRadius: "50%",
-            background: "var(--dial-glass-bg, #212121)",
-            color: "var(--dial-text-focus, #ffffff)",
-            border: "1px solid var(--dial-border, rgba(255,255,255,0.1))",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            boxShadow: "var(--dial-shadow-collapsed, 0 4px 16px rgba(0,0,0,0.25))",
-            cursor: "pointer",
-          }}
-        >
-          <SlidersIcon />
-        </button>
-      ) : null}
+      {/* No CLOSED-state bubble in the marketplace mount. The detail page's
+       * top-right Controller circle is the only entry point — keeping the
+       * project mount's in-iframe Edit bubble here would duplicate the
+       * affordance (parent circle + iframe bubble both visible at once). */}
 
       {/* OPEN — dialkit panel with slim toolbar: [title] [× close]. The
        * project mount also shows Save + ⋯ here; both are project-only and
