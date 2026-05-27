@@ -1,0 +1,253 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "items": [
+      {
+        "id": "01.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/01.png",
+        "filename": "01.png",
+        "alt": ""
+      },
+      {
+        "id": "02.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/02.png",
+        "filename": "02.png",
+        "alt": ""
+      },
+      {
+        "id": "03.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/03.png",
+        "filename": "03.png",
+        "alt": ""
+      },
+      {
+        "id": "04.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/04.jpg",
+        "filename": "04.jpg",
+        "alt": ""
+      },
+      {
+        "id": "05.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/05.png",
+        "filename": "05.png",
+        "alt": ""
+      },
+      {
+        "id": "06.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/06.png",
+        "filename": "06.png",
+        "alt": ""
+      },
+      {
+        "id": "07.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/07.jpg",
+        "filename": "07.jpg",
+        "alt": ""
+      },
+      {
+        "id": "08.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/08.png",
+        "filename": "08.png",
+        "alt": ""
+      },
+      {
+        "id": "09.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/09.jpg",
+        "filename": "09.jpg",
+        "alt": ""
+      },
+      {
+        "id": "10.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/10.png",
+        "filename": "10.png",
+        "alt": ""
+      },
+      {
+        "id": "11.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/11.jpg",
+        "filename": "11.jpg",
+        "alt": ""
+      },
+      {
+        "id": "12.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/12.jpg",
+        "filename": "12.jpg",
+        "alt": ""
+      },
+      {
+        "id": "13.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/13.png",
+        "filename": "13.png",
+        "alt": ""
+      },
+      {
+        "id": "14.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/14.png",
+        "filename": "14.png",
+        "alt": ""
+      },
+      {
+        "id": "15.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/15.png",
+        "filename": "15.png",
+        "alt": ""
+      },
+      {
+        "id": "16.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/16.png",
+        "filename": "16.png",
+        "alt": ""
+      },
+      {
+        "id": "17.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/17.png",
+        "filename": "17.png",
+        "alt": ""
+      },
+      {
+        "id": "18.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/18.png",
+        "filename": "18.png",
+        "alt": ""
+      },
+      {
+        "id": "19.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/19.jpg",
+        "filename": "19.jpg",
+        "alt": ""
+      },
+      {
+        "id": "20.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/20.png",
+        "filename": "20.png",
+        "alt": ""
+      },
+      {
+        "id": "21.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/21.png",
+        "filename": "21.png",
+        "alt": ""
+      },
+      {
+        "id": "22.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/22.png",
+        "filename": "22.png",
+        "alt": ""
+      },
+      {
+        "id": "23.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/23.png",
+        "filename": "23.png",
+        "alt": ""
+      },
+      {
+        "id": "24.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/24.png",
+        "filename": "24.png",
+        "alt": ""
+      },
+      {
+        "id": "25.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/25.png",
+        "filename": "25.png",
+        "alt": ""
+      },
+      {
+        "id": "26.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/26.png",
+        "filename": "26.png",
+        "alt": ""
+      },
+      {
+        "id": "27.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/27.jpg",
+        "filename": "27.jpg",
+        "alt": ""
+      },
+      {
+        "id": "28.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/28.png",
+        "filename": "28.png",
+        "alt": ""
+      },
+      {
+        "id": "29.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/29.png",
+        "filename": "29.png",
+        "alt": ""
+      },
+      {
+        "id": "30.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/30.png",
+        "filename": "30.png",
+        "alt": ""
+      },
+      {
+        "id": "31.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/31.png",
+        "filename": "31.png",
+        "alt": ""
+      },
+      {
+        "id": "32.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/32.png",
+        "filename": "32.png",
+        "alt": ""
+      },
+      {
+        "id": "33.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/33.png",
+        "filename": "33.png",
+        "alt": ""
+      },
+      {
+        "id": "34.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/34.png",
+        "filename": "34.png",
+        "alt": ""
+      },
+      {
+        "id": "35.jpg",
+        "src": "/api/section-asset/horizontal-scroll-rows/35.jpg",
+        "filename": "35.jpg",
+        "alt": ""
+      },
+      {
+        "id": "36.png",
+        "src": "/api/section-asset/horizontal-scroll-rows/36.png",
+        "filename": "36.png",
+        "alt": ""
+      }
+    ],
+    "rows": 2,
+    "pinLengthVh": 400,
+    "background": "dark",
+    "tileGapPx": 8,
+    "rowGapPx": 8,
+    "imageRadiusPx": 10,
+    "edgePaddingPx": 8,
+    "direction": "left",
+    "scrollBias": 1,
+    "heightVh": 104,
+    "imageSizeVw": 6,
+    "imageSizeVwMobile": 11.5,
+    "sphereRadiusFactor": 0.4,
+    "sphereRadiusFactorMobile": 0.3,
+    "perspectiveVw": 78,
+    "perspectiveVwMobile": 70,
+    "inertiaSeconds": 1.7,
+    "dragSensitivity": 9.5,
+    "wheelEnabled": false,
+    "wheelSensitivity": 18.5,
+    "autoSpin": true,
+    "autoSpinSpeed": 19,
+    "columns": 5,
+    "tileSizeVw": 12,
+    "baseScale": 1.1,
+    "activeScale": 1.6,
+    "pushForce": 80,
+    "jitterPercent": 20,
+    "jitterRotation": 30,
+    "durationSec": 0.8
+  }
+}

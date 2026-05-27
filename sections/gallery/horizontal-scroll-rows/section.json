@@ -1,0 +1,40 @@
+{
+  "id": "horizontal-scroll-rows",
+  "name": "Horizontal Scroll Rows",
+  "category": "gallery",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Pinned multi-row horizontal scroll gallery. Section locks to viewport for several scroll heights; each image row translates horizontally at a rate proportional to its own overflow width. Supports mixed-width image tiles and a statement text/label tile inline with the image rows.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "experience"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/horizontal-scroll-rows/preview.png"
+  },
+  "tags": [
+    "horizontal-scroll",
+    "multi-row",
+    "pinned-scroll",
+    "gallery",
+    "image-grid",
+    "editorial"
+  ],
+  "created": "2026-05-27",
+  "updated": "2026-05-27",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-05-27"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Horizontal Scroll Rows",
+    "defaultProps": "hsrSample.props"
+  }
+}
