@@ -4,7 +4,7 @@
   "category": "hero",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Full-viewport centered display word where each letter is an interactive slot — on hover, the letter expands into a media tile while neighbours spring aside to make room; tile holds briefly then retracts with a tilt-and-pop. Layout is typographic-only at rest, image-grid on interaction.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-gsap-lab-dialkit",
-    "submittedAt": "2026-05-27"
+    "submittedAt": "2026-05-27",
+    "approvedAt": "2026-05-27"
   },
   "context": "mr-gsap-lab-dialkit",
   "controller": {
