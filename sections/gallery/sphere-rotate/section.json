@@ -4,7 +4,7 @@
   "category": "gallery",
   "version": "0.0.1",
   "track": "experimental",
-  "lifecycle": "Submitted",
+  "lifecycle": "Approved",
   "description": "Interactive 3D image sphere with items distributed along a Fibonacci spiral across a dark canvas. Drag, swipe, or scroll to rotate the sphere; inertia eases motion to a stop. Accepts a variable-length array of image slots with no fixed grid structure.",
   "dependencies": [
     "@/components/section",
@@ -30,7 +30,8 @@
   "attribution": {
     "originalCreator": "mattthompson",
     "originatingProject": "mr-gsap-lab-dialkit",
-    "submittedAt": "2026-05-27"
+    "submittedAt": "2026-05-27",
+    "approvedAt": "2026-05-27"
   },
   "context": "mr-gsap-lab-dialkit",
   "controller": {
