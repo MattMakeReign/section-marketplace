@@ -1,0 +1,299 @@
+/*
+ * tokens.css — canonical CSS custom properties for this project.
+ *
+ * Flavour: DARK LAB — neutral mono palette on near-black surface.
+ * This is a sections lab for GSAP-driven motion effects. No brand identity,
+ * no client voice. Sections are visual showcases first.
+ *
+ * Two layers:
+ *   1. RAW SCALE     — primitive values (neutral-50 … neutral-950, accent-500 …)
+ *   2. SEMANTIC      — meaning-bearing tokens components consume (--surface, --fg, --border …)
+ *
+ * Components MUST consume semantic tokens (or Tailwind utilities mapped to them in theme.css).
+ * Do not reference raw-scale values from components — they're override-only.
+ *
+ * Categories:
+ *   Colour · Typography · Spacing · Section rhythm · Radii · Shadows ·
+ *   Motion · Grid · Component-level
+ */
+
+/* ─────────────────────────────────────────────────────────────
+ * Default theme (light · editorial)
+ * ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Raw colour scale ──────────────────────────────────────── */
+  /* Warm neutrals — slight stone undertone. Editorial defaults. */
+  --neutral-0: #fdfcfc;     /* eggshell — not pure white */
+  --neutral-50: #f7f5f3;
+  --neutral-100: #f0ede9;
+  --neutral-200: #e5e1dc;   /* chalk-ish hairline */
+  --neutral-300: #c9c3bb;
+  --neutral-400: #a59f97;   /* slate */
+  --neutral-500: #777169;   /* gravel */
+  --neutral-600: #5a544c;
+  --neutral-700: #403c36;
+  --neutral-800: #2a2724;
+  --neutral-900: #1a1816;
+  --neutral-950: #0a0908;   /* near-obsidian */
+
+  --accent-400: #ff6a35;
+  --accent-500: #ff4704;    /* ember — restrained accent default */
+  --accent-600: #d63300;
+  --accent-700: #a82500;
+
+  --danger-500: #c1271a;
+  --success-500: #4d7c52;
+  --warning-500: #b58400;
+
+  /* ── Lab dark scale (neutral, slightly cool) ──────────────── */
+  --lab-0: #121212;       /* page ground — matches mwg refs */
+  --lab-50: #181818;      /* subtle elevated band */
+  --lab-100: #1f1f1f;     /* card / panel surface */
+  --lab-200: #2a2a2a;     /* hairline border */
+  --lab-300: #3a3a3a;
+  --lab-400: #6b6b6b;     /* tertiary text */
+  --lab-500: #8a8a8a;     /* secondary text */
+  --lab-700: #c9c9c9;
+  --lab-900: #f5f5f5;     /* primary text — not pure white */
+
+  /* ── Semantic colour ───────────────────────────────────────── */
+  --surface: var(--lab-0);                /* #121212 page ground */
+  --surface-muted: var(--lab-50);
+  --surface-elevated: var(--lab-100);
+  --surface-inverse: var(--neutral-0);    /* eggshell band if a section needs to invert */
+
+  --fg: var(--lab-900);                   /* primary on dark */
+  --fg-muted: var(--lab-500);
+  --fg-subtle: var(--lab-400);
+  --fg-inverse: var(--neutral-950);       /* on inverted/light fills */
+
+  --border: var(--lab-200);
+  --border-strong: var(--lab-300);
+
+  --accent: var(--lab-900);               /* neutral mono — no chroma accent */
+  --accent-fg: var(--lab-0);
+  --accent-hover: var(--lab-700);
+
+  --danger: var(--danger-500);
+  --success: var(--success-500);
+  --warning: var(--warning-500);
+
+  /* ── Typography: families ──────────────────────────────────── */
+  /* Sans stays system (neutral grotesque baseline). Serif + Mono adopt
+   * licensed Google webfonts loaded at app/globals.css — Instrument Serif
+   * (italic-only display) and IBM Plex Mono (mid-weight technical). System
+   * fallbacks remain in the stack for paint-before-font-load and offline. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, "Iowan Old Style", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+
+  /* ── Typography: role-based scale ──────────────────────────── */
+  /* Role tokens (heading-0..6, body-large/medium/small, button-large/small,
+   * label-large/small) are defined once in `theme.css` under @theme. Each
+   * carries size + --line-height + --letter-spacing + --font-weight
+   * sub-tokens. Apply via Tailwind utility (`text-heading-1`) to bundle
+   * the four properties; reference `var(--text-heading-1)` directly for
+   * size only. Inline-edit any sub-token via the explorer. */
+
+  /* ── Typography: weights ───────────────────────────────────── */
+  /* Four weights, editorial discipline. Light is the display signature. */
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* ── Typography: line-height (free utility scale) ──────────── */
+  /* For ad-hoc use — most components should use role tokens which
+   * carry their own line-height. */
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* ── Typography: tracking (free utility scale) ─────────────── */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+
+  /* ── Button vocab (Cargo-derived) ──────────────────────────── */
+  /* Visual primitives consumed by foundational button components.
+   * Inline-edit these to flip every button instance in the project. */
+  --button-primary-bg: var(--lab-900);
+  --button-primary-fg: var(--lab-0);
+  --button-primary-border: transparent;
+  --button-primary-bg-hover: var(--lab-700);
+
+  --button-secondary-bg: rgb(255 255 255 / 0.08);
+  --button-secondary-fg: var(--lab-900);
+  --button-secondary-border: transparent;
+  --button-secondary-bg-hover: rgb(255 255 255 / 0.16);
+
+  --button-tertiary-fg: var(--lab-900);
+  --button-tertiary-fg-hover: rgb(245 245 245 / 0.7);
+
+  /* Sizes & shape (default base — pill button is the editorial signature). */
+  --button-large-px: 1.25rem;     /* 20 */
+  --button-large-py: 0.75rem;     /* 12 */
+  --button-small-px: 0.75rem;     /* 12 */
+  --button-small-py: 0.5rem;      /* 8 */
+  --button-radius-rect: var(--radius-sm);    /* rectangle radius */
+  --button-radius-circle: var(--radius-full); /* circle / pill radius */
+
+  /* ── Spacing (4px base — component-internal) ─────────────────
+   * For section vertical rhythm use --section-py-* below. */
+  --space-0: 0;
+  --space-px: 1px;
+  --space-1: 0.25rem;     /* 4 */
+  --space-2: 0.5rem;      /* 8 */
+  --space-3: 0.75rem;     /* 12 */
+  --space-4: 1rem;        /* 16 */
+  --space-5: 1.25rem;     /* 20 */
+  --space-6: 1.5rem;      /* 24 */
+  --space-8: 2rem;        /* 32 */
+  --space-10: 2.5rem;     /* 40 */
+  --space-12: 3rem;       /* 48 */
+  --space-16: 4rem;       /* 64 */
+  --space-20: 5rem;       /* 80 */
+  --space-24: 6rem;       /* 96 */
+
+  /* ── Section vertical rhythm ───────────────────────────────── */
+  /* Use these on <Section className="…"> or via Tailwind `py-section-*`.
+   * Web sections live or die on this scale. Don't use --space-* for it. */
+  --section-py-sm: 4rem;     /* 64  — tight band */
+  --section-py-md: 6rem;     /* 96  — default */
+  --section-py-lg: 7.5rem;   /* 120 — generous */
+  --section-py-xl: 10rem;    /* 160 — hero / showpiece */
+
+  /* ── Prose ─────────────────────────────────────────────────── */
+  --prose-max: 65ch;          /* long-form copy column width */
+
+  /* ── Radii (small · editorial) ─────────────────────────────── */
+  --radius-none: 0;
+  --radius-sm: 0.1875rem;     /* 3  — input fields */
+  --radius-md: 0.375rem;      /* 6  — small components */
+  --radius-lg: 0.625rem;      /* 10 — cards */
+  --radius-xl: 0.875rem;      /* 14 — panels */
+  --radius-full: 9999px;      /* pills, avatars */
+
+  /* ── Shadows (hairline-first) ──────────────────────────────── */
+  /* Editorial elevation: cards float by 1px, not by depth. */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-hairline: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  --shadow-hairline-strong: rgba(0, 0, 0, 0.4) 0px 0px 1px 0px,
+                            rgba(0, 0, 0, 0.04) 0px 2px 4px 0px;
+
+  /* ── Motion ───────────────────────────────────────────────── */
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+  --duration-deliberate: 800ms;
+
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Motion density — a categorical descriptor of how much motion shows in
+   * the layout. Five tiers ordered low-to-high:
+   *   static × 0      — nothing animates
+   *   low × 0.4       — quiet, occasional reveals
+   *   medium × 1      — typical (default)
+   *   high × 1.5      — busy, multiple ScrollTriggers
+   *   experience × 2  — showpiece, parallax / pinned hero / decorative motion
+   * The multiplier is used by reveal()/scrollIn() to default-scale themselves.
+   * The canonical meaning lives in the *amount of motion shown*, not the
+   * speed of each tween. See ai-context/MOTION_RULES.md. */
+  --motion-density: medium;
+  --motion-density-multiplier: 1;
+  --motion-distance-sm: 8px;
+  --motion-distance-md: 16px;
+  --motion-distance-lg: 32px;
+
+  /* ── Grid: breakpoints ────────────────────────────────────── */
+  --breakpoint-sm: 40rem;   /* 640 */
+  --breakpoint-md: 48rem;   /* 768 */
+  --breakpoint-lg: 64rem;   /* 1024 */
+  --breakpoint-xl: 80rem;   /* 1280 */
+  --breakpoint-2xl: 96rem;  /* 1536 */
+
+  /* ── Grid: section-internal layout ────────────────────────── */
+  --grid-max: 90rem;          /* 1440 — content max-width */
+  --grid-columns: 12;
+  --grid-gutter: 1.5rem;      /* 24 */
+  --grid-margin: 1.5rem;      /* 24 */
+
+  /* ── Component-level ──────────────────────────────────────── */
+  /* ── Input vocab — bordered, editorial, accessible ─────────── */
+  /* Field — text input / select / textarea. Hairline border on all sides,
+   * surface-elevated bg, clear focus state with subtle ring. */
+  --input-bg: var(--surface-elevated);
+  --input-bg-disabled: var(--surface-muted);
+  --input-fg: var(--fg);
+  --input-fg-disabled: var(--fg-subtle);
+  --input-placeholder: var(--fg-subtle);
+  --input-label: var(--fg);
+  --input-helper: var(--fg-muted);
+  --input-error-fg: var(--danger);
+
+  --input-border: var(--border);
+  --input-border-hover: var(--border-strong);
+  --input-border-active: var(--fg);
+  --input-border-error: var(--danger);
+  --input-ring: rgb(0 0 0 / 0.06);
+  --input-ring-error: rgb(193 39 26 / 0.14);
+
+  --input-padding-y: var(--space-3);     /* 12 */
+  --input-padding-x: var(--space-4);     /* 16 */
+  --input-radius: var(--radius-sm);      /* 3 */
+  --input-height-sm: 2rem;               /* 32 */
+  --input-height-md: 2.75rem;            /* 44 */
+  --input-height-lg: 3.25rem;            /* 52 */
+
+  --textarea-min-h: 6rem;                /* 96 */
+
+  --select-chevron-fg: var(--fg-muted);
+
+  /* Checkbox — square with rounded corners + check mark. */
+  --checkbox-size: 1.125rem;             /* 18 */
+  --checkbox-radius: 0.25rem;            /* 4 */
+  --checkbox-bg: var(--surface-elevated);
+  --checkbox-bg-checked: var(--fg);
+  --checkbox-border: var(--border-strong);
+  --checkbox-border-checked: var(--fg);
+  --checkbox-check-fg: var(--surface-elevated);
+
+  /* Radio — circle with inner dot. */
+  --radio-size: 1.125rem;                /* 18 */
+  --radio-bg: var(--surface-elevated);
+  --radio-bg-checked: var(--surface-elevated);
+  --radio-border: var(--border-strong);
+  --radio-border-checked: var(--fg);
+  --radio-dot-fg: var(--fg);
+  --radio-dot-size: 0.5rem;              /* 8 */
+
+  /* Switch — pill track + sliding thumb. */
+  --switch-track-w: 2.5rem;              /* 40 */
+  --switch-track-h: 1.5rem;              /* 24 */
+  --switch-track-bg: var(--surface-muted);
+  --switch-track-bg-on: var(--fg);
+  --switch-track-border: var(--border-strong);
+  --switch-thumb-size: 1.125rem;         /* 18 */
+  --switch-thumb-bg: var(--surface-elevated);
+
+  --card-radius: var(--radius-lg);
+  --card-padding: var(--space-6);
+}
+
+/* Dark mode was removed at the project root. These sites are marketing
+ * surfaces with a single light voice. Sections that need a dark surface
+ * (e.g. an obsidian hero on a light page) use the `--surface-inverse` /
+ * `--fg-inverse` tokens above as a per-section colour choice — they are
+ * NOT mode-driven. No `[data-theme="dark"]` attribute, no
+ * `prefers-color-scheme` listener, no time-of-day flip. */

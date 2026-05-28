@@ -1,0 +1,32 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "items": [
+      { "id": "01.png", "src": "/api/section-asset/drifting-cards/01.png", "filename": "01.png", "alt": "" },
+      { "id": "02.jpg", "src": "/api/section-asset/drifting-cards/02.jpg", "filename": "02.jpg", "alt": "" },
+      { "id": "03.png", "src": "/api/section-asset/drifting-cards/03.png", "filename": "03.png", "alt": "" },
+      { "id": "04.png", "src": "/api/section-asset/drifting-cards/04.png", "filename": "04.png", "alt": "" },
+      { "id": "05.png", "src": "/api/section-asset/drifting-cards/05.png", "filename": "05.png", "alt": "" },
+      { "id": "06.png", "src": "/api/section-asset/drifting-cards/06.png", "filename": "06.png", "alt": "" },
+      { "id": "07.png", "src": "/api/section-asset/drifting-cards/07.png", "filename": "07.png", "alt": "" },
+      { "id": "08.png", "src": "/api/section-asset/drifting-cards/08.png", "filename": "08.png", "alt": "" },
+      { "id": "09.png", "src": "/api/section-asset/drifting-cards/09.png", "filename": "09.png", "alt": "" },
+      { "id": "10.png", "src": "/api/section-asset/drifting-cards/10.png", "filename": "10.png", "alt": "" },
+      { "id": "11.png", "src": "/api/section-asset/drifting-cards/11.png", "filename": "11.png", "alt": "" },
+      { "id": "12.png", "src": "/api/section-asset/drifting-cards/12.png", "filename": "12.png", "alt": "" }
+    ],
+    "headline": "Images drifting",
+    "subhead": "around the center",
+    "cardWidthVw": 12,
+    "cardWidthVwMobile": 30,
+    "cardGapVw": 1,
+    "cardRadiusPx": 10,
+    "edgePaddingVw": 105,
+    "background": "dark",
+    "headlineSizeVh": 5,
+    "driftAmplitude": 0.48,
+    "driftAmplitudeMobile": 0.38,
+    "scalePeak": 1.4,
+    "rotationJitterDeg": 3
+  }
+}
