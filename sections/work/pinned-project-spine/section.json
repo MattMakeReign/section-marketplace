@@ -1,0 +1,45 @@
+{
+  "id": "pinned-project-spine",
+  "name": "Pinned Project Spine",
+  "category": "work",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Horizontally-pinned scroll-scrub project index. Collapsed items render as narrow vertical label spines (title rotated 90°); the active item expands to reveal a portrait image with a year label. Desktop layout; mobile falls back to a vertical stack.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "experience"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/pinned-project-spine/preview.png"
+  },
+  "tags": [
+    "scroll-pinned",
+    "horizontal-scrub",
+    "spine-labels",
+    "image-reveal",
+    "project-index",
+    "editorial"
+  ],
+  "created": "2026-06-01",
+  "updated": "2026-06-01",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-06-01"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Pinned Project Spine",
+    "defaultProps": "spineSample.props",
+    "imports": [
+      {
+        "spec": "import spineSample from \"@/sections/pinned-project-spine/sample.json\";"
+      }
+    ]
+  }
+}
