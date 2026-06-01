@@ -1,0 +1,45 @@
+{
+  "id": "scrub-testimonial-cards",
+  "name": "Scrub Testimonial Cards",
+  "category": "testimonials",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Pinned horizontal scrub of testimonial cards with a velocity-lag effect — each card's inner content slides in from the left with intensity tied to scroll speed. Four alternating background colours rhythm the row. Adapted from mwg_087.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [
+    "testimonials",
+    "horizontal-scroll",
+    "pinned",
+    "scrub",
+    "velocity-lag",
+    "interactive"
+  ],
+  "created": "2026-06-01",
+  "updated": "2026-06-01",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-06-01"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Scrub Testimonial Cards",
+    "defaultProps": "scrubSample.props",
+    "imports": [
+      {
+        "spec": "import scrubSample from \"@/sections/scrub-testimonial-cards/sample.json\";"
+      }
+    ]
+  }
+}
