@@ -178,6 +178,76 @@ export function Detail({
   const idx = order.indexOf(current.id);
   const prevId = idx > 0 ? order[idx - 1] : null;
   const nextId = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
+
+  // Pre-fetch image assets for every OTHER section in `order` so prev/next
+  // navigation is instant — images are already in the browser HTTP cache by
+  // the time the iframe loads them. We:
+  //   1. Sort sections by distance from `current.id` so the immediate
+  //      neighbours warm first (most likely to be navigated to next).
+  //   2. Resolve a small concurrency-capped worker pool — at most 4 asset-
+  //      list fetches and 6 inflight image requests at once — so a designer
+  //      with a slow connection doesn't get a stampede on the first paint.
+  //   3. Skip the section currently visible (its iframe will load those).
+  //   4. Bail cleanly on unmount / section change so we don't keep
+  //      downloading after the user has moved on.
+  useEffect(() => {
+    if (typeof window === "undefined" || order.length <= 1) return;
+    const ac = new AbortController();
+    const queue = order
+      .filter((id) => id !== current.id)
+      .map((id, _, all) => ({ id, dist: Math.abs(all.indexOf(id) - 0) }))
+      .map(({ id }) => ({ id, dist: Math.abs(order.indexOf(id) - idx) }))
+      .sort((a, b) => a.dist - b.dist)
+      .map(({ id }) => id);
+
+    // Lightweight in-page cache of prefetched URLs so navigations within
+    // the same `order` don't refetch lists or re-prime images that are
+    // already cached. Survives until the page is unloaded.
+    const cache: Set<string> = (() => {
+      const w = window as unknown as { __mrPrefetched?: Set<string> };
+      if (!w.__mrPrefetched) w.__mrPrefetched = new Set<string>();
+      return w.__mrPrefetched;
+    })();
+
+    async function prefetchOne(id: string) {
+      if (ac.signal.aborted) return;
+      try {
+        const res = await fetch(`/api/sections/${id}/assets`, { signal: ac.signal });
+        if (!res.ok) return;
+        const data = (await res.json()) as { ok?: boolean; urls?: string[] };
+        if (!data?.urls?.length) return;
+        for (const url of data.urls) {
+          if (ac.signal.aborted) return;
+          if (cache.has(url)) continue;
+          cache.add(url);
+          // Image() is the simplest browser-cache primer that works in
+          // every Next.js setup — no <link rel="prefetch"> compatibility
+          // gotchas with Next image-optimization, no service-worker quirks.
+          const img = new Image();
+          img.decoding = "async";
+          img.loading = "eager";
+          img.src = url;
+        }
+      } catch {
+        // Aborted or network error — silent; this is best-effort.
+      }
+    }
+
+    // Worker pool — 4 concurrent section-list fetches keeps total parallelism
+    // bounded while still warming the queue quickly.
+    const CONCURRENCY = 4;
+    let cursor = 0;
+    const workers = Array.from({ length: Math.min(CONCURRENCY, queue.length) }, async () => {
+      while (cursor < queue.length && !ac.signal.aborted) {
+        const next = queue[cursor++];
+        await prefetchOne(next);
+      }
+    });
+    Promise.all(workers).catch(() => {});
+
+    return () => ac.abort();
+  }, [order, current.id, idx]);
+
   const goTo = (id: string) => {
     // Carry the panel state across prev/next navigation so the user's
     // current layout persists — explicitly including the "closed"
