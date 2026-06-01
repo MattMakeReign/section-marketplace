@@ -1,0 +1,64 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "items": [
+      {
+        "id": "1.png",
+        "src": "/api/section-asset/magnet-cluster-reveal/1.png",
+        "filename": "1.png",
+        "alt": ""
+      },
+      {
+        "id": "2.png",
+        "src": "/api/section-asset/magnet-cluster-reveal/2.png",
+        "filename": "2.png",
+        "alt": ""
+      },
+      {
+        "id": "3.png",
+        "src": "/api/section-asset/magnet-cluster-reveal/3.png",
+        "filename": "3.png",
+        "alt": ""
+      },
+      {
+        "id": "4.png",
+        "src": "/api/section-asset/magnet-cluster-reveal/4.png",
+        "filename": "4.png",
+        "alt": ""
+      },
+      {
+        "id": "5.jpg",
+        "src": "/api/section-asset/magnet-cluster-reveal/5.jpg",
+        "filename": "5.jpg",
+        "alt": ""
+      },
+      {
+        "id": "6.png",
+        "src": "/api/section-asset/magnet-cluster-reveal/6.png",
+        "filename": "6.png",
+        "alt": ""
+      },
+      {
+        "id": "7.png",
+        "src": "/api/section-asset/magnet-cluster-reveal/7.png",
+        "filename": "7.png",
+        "alt": ""
+      },
+      {
+        "id": "8.jpg",
+        "src": "/api/section-asset/magnet-cluster-reveal/8.jpg",
+        "filename": "8.jpg",
+        "alt": ""
+      }
+    ],
+    "pinLengthVh": 380,
+    "background": "dark",
+    "imageSizeVw": 18,
+    "imageSizeVwMobile": 25,
+    "imageRadiusPx": 8,
+    "forceStrength": 0.0012,
+    "airFriction": 0.03,
+    "popStartScale": 0.6,
+    "popDurationSec": 0.2
+  }
+}

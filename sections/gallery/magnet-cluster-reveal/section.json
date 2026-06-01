@@ -1,0 +1,45 @@
+{
+  "id": "magnet-cluster-reveal",
+  "name": "Magnet Cluster Reveal",
+  "category": "gallery",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Pinned full-viewport scroll section that progressively drops image items into a Matter.js physics simulation. Items are pulled toward a central magnetic attractor and collide/stack against each other as the user scrolls. Exposes a configurable item slot array (image + optional metadata).",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "experience"
+  ],
+  "previews": {
+    "static": "https://iqmrrjqggqvyzcpdrxkz.supabase.co/storage/v1/object/public/section-previews/magnet-cluster-reveal/preview.png"
+  },
+  "tags": [
+    "scroll-pinned",
+    "physics-driven",
+    "image-cluster",
+    "dark-bg",
+    "scroll-triggered",
+    "experience"
+  ],
+  "created": "2026-06-01",
+  "updated": "2026-06-01",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-06-01"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Magnet Cluster Reveal",
+    "defaultProps": "magnetSample.props",
+    "imports": [
+      {
+        "spec": "import magnetSample from \"@/sections/magnet-cluster-reveal/sample.json\";"
+      }
+    ]
+  }
+}
