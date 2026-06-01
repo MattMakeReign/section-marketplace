@@ -1,8 +1,8 @@
 # Magnet Cluster Reveal
 
-Pinned full-viewport scroll section that progressively drops image items into a Matter.js physics simulation. Items are pulled toward a central magnetic attractor and collide/stack against each other as the user scrolls. Exposes a configurable item slot array (image + optional metadata).
+Pinned scroll section that progressively reveals images into a Matter.js physics world. Each image is pulled toward the centre by a magnetic force and bounces against its neighbours. Adapted from mwg_096.
 
-Motion density: experience.
+Motion density: low.
 
 ## Tokens consumed
 
