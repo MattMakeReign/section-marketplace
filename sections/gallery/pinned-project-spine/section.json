@@ -1,0 +1,46 @@
+{
+  "id": "pinned-project-spine",
+  "name": "Pinned Project Spine",
+  "category": "gallery",
+  "version": "0.0.1",
+  "track": "experimental",
+  "lifecycle": "Submitted",
+  "description": "Pinned horizontal scrub of a project index. Inactive projects collapse to thin label spines (rotated 90°); the one closest to scroll progress activates and reveals its image at full width. Desktop-only effect; mobile falls back to a vertical stack. Adapted from mwg_038.",
+  "dependencies": [
+    "@/components/section",
+    "@/components/section-grid"
+  ],
+  "motionDensity": [
+    "low"
+  ],
+  "previews": {
+    "static": "preview.png"
+  },
+  "tags": [
+    "portfolio",
+    "project-index",
+    "horizontal-scroll",
+    "pinned",
+    "scrub",
+    "spine-labels",
+    "interactive"
+  ],
+  "created": "2026-06-01",
+  "updated": "2026-06-01",
+  "submittedBy": "mattthompson",
+  "attribution": {
+    "originalCreator": "mattthompson",
+    "originatingProject": "mr-gsap-lab-dialkit",
+    "submittedAt": "2026-06-01"
+  },
+  "context": "mr-gsap-lab-dialkit",
+  "controller": {
+    "label": "Pinned Project Spine",
+    "defaultProps": "spineSample.props",
+    "imports": [
+      {
+        "spec": "import spineSample from \"@/sections/pinned-project-spine/sample.json\";"
+      }
+    ]
+  }
+}
