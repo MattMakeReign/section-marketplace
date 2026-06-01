@@ -1,8 +1,8 @@
 # Pinned Project Spine
 
-Horizontally-pinned scroll-scrub project index. Collapsed items render as narrow vertical label spines (title rotated 90°); the active item expands to reveal a portrait image with a year label. Desktop layout; mobile falls back to a vertical stack.
+Horizontally pinned scroll-scrub project index. Inactive items collapse to vertical rotated-text label spines; the active item expands to reveal a full-height portrait image with year and title metadata. Falls back to vertical stack on mobile.
 
-Motion density: experience.
+Motion density: high.
 
 ## Tokens consumed
 
