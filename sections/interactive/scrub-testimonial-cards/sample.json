@@ -1,0 +1,89 @@
+{
+  "$schema": "https://makereign.dev/schema/section-sample/v1.json",
+  "props": {
+    "items": [
+      {
+        "id": "1.png",
+        "quote": "A beautiful resource for crafting stunning, well-made animations. It pushes your creative limits and you'll be building high-end work in minutes.",
+        "name": "Alex Rivera",
+        "role": "Creative Developer",
+        "company": "Studio Atlas",
+        "avatar": {
+          "src": "/api/section-asset/scrub-testimonial-cards/1.png",
+          "filename": "1.png"
+        }
+      },
+      {
+        "id": "2.png",
+        "quote": "This is a total gem. The effects are gorgeous, the tutorials are clear, and the code is beautifully structured.",
+        "name": "Sam Okonkwo",
+        "role": "Developer Education",
+        "company": "Greenshift",
+        "avatar": {
+          "src": "/api/section-asset/scrub-testimonial-cards/2.png",
+          "filename": "2.png"
+        }
+      },
+      {
+        "id": "3.png",
+        "quote": "It taught me new ways to approach things and improve my animations. I wish a tool like this had existed when I was starting out.",
+        "name": "Henri Lemaitre",
+        "role": "Creative Developer",
+        "company": "Propagande",
+        "avatar": {
+          "src": "/api/section-asset/scrub-testimonial-cards/3.png",
+          "filename": "3.png"
+        }
+      },
+      {
+        "id": "4.png",
+        "quote": "Plug-and-play. No bloated code, no overengineering — just efficient code. Easily the best resource for creative developers I know.",
+        "name": "Reksa Andhika",
+        "role": "Creative Developer",
+        "company": "Freelance",
+        "avatar": {
+          "src": "/api/section-asset/scrub-testimonial-cards/4.png",
+          "filename": "4.png"
+        }
+      },
+      {
+        "id": "5.png",
+        "quote": "An enormous ally in crafting memorable experiences. It's a tool that was missing from our creative community, and I'm glad we now have it.",
+        "name": "Victoria Wren",
+        "role": "Creative Developer",
+        "company": "Field Studio",
+        "avatar": {
+          "src": "/api/section-asset/scrub-testimonial-cards/5.png",
+          "filename": "5.png"
+        }
+      },
+      {
+        "id": "6.png",
+        "quote": "Performance tips, explanations, accessibility, mobile adjustments. You can pick effects and combine them. Really opened my eyes.",
+        "name": "Eli Bodak",
+        "role": "Webflow Developer",
+        "company": "Bodak Studio",
+        "avatar": {
+          "src": "/api/section-asset/scrub-testimonial-cards/6.png",
+          "filename": "6.png"
+        }
+      }
+    ],
+    "background": "dark",
+    "cardWidthPx": 365,
+    "cardWidthVwMobile": 70,
+    "cardAspectRatio": 0.75,
+    "cardRadiusPx": 7,
+    "cardGapPx": 24,
+    "cardPaddingPx": 21,
+    "quoteFontSizePx": 28,
+    "palette": [
+      "#faffb8",
+      "#F1F1F1",
+      "#f3ff4d",
+      "#323232"
+    ],
+    "lagMultiplier": 3.75,
+    "lagDurationSec": 0.75
+  }
+}
