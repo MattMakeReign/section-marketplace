@@ -1,0 +1,78 @@
+/*
+ * fonts.css — Builders Table self-hosted typefaces.
+ *
+ * Source of truth from the Figma (MR10 — Builders Table):
+ *   Headings   → Lay Grotesk   (flare-serif grotesk; the brand display voice)
+ *   Body       → Geist         (variable, 100–900)
+ *   Components → Geist Mono    (variable; uppercase micro-labels, numbers)
+ *
+ * Files live in public/fonts/ and are @font-face'd here (no CDN). NOTE:
+ * the Lay Grotesk files are TRIAL weights — fine for development, must be
+ * licensed before launch.
+ *
+ * Family names referenced by --font-display / --font-body / --font-mono
+ * in tokens.css. Don't redeclare fonts in components.
+ */
+
+@font-face {
+  font-family: "Lay Grotesk";
+  src: url("/fonts/LayGrotesk-Trial-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lay Grotesk";
+  src: url("/fonts/LayGrotesk-Trial-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lay Grotesk";
+  src: url("/fonts/LayGrotesk-Trial-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lay Grotesk";
+  src: url("/fonts/LayGrotesk-Trial-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lay Grotesk";
+  src: url("/fonts/LayGrotesk-Trial-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Meso — the display ACCENT face. The heading pattern's closing line(s)
+ * render in Meso against Lay Grotesk leading lines. TRIAL file — license
+ * before launch (user will swap in the licensed cut later). */
+@font-face {
+  font-family: "Meso";
+  src: url("/fonts/MesoTRIAL-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMono-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}

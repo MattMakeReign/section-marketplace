@@ -1,0 +1,12 @@
+{
+  "id": "builders-table",
+  "name": "Builders Table",
+  "version": "1.0.0",
+  "description": "Auto-registered for project \"builders-table\" on 2026-06-13. Ships design-system source (tokens, theme, components, fonts, globals) for marketplace-side compiled.css regeneration on every deploy.",
+  "author": "mattthompson",
+  "originatingProject": "builders-table",
+  "created": "2026-06-13",
+  "updated": "2026-06-13",
+  "status": "active",
+  "sectionsUsing": []
+}

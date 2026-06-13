@@ -1,0 +1,47 @@
+{
+  "props": {
+    "eyebrow": "The Programme",
+    "heading": "Five key areas\nacross three days.",
+    "items": [
+      {
+        "label": "industry dinner",
+        "heading": "Start the conversation.",
+        "body": "An intimate opening dinner bringing together sponsors, partners, founders, clients and industry leaders. Designed to create meaningful connections, shared perspectives and conversations before the event begins.",
+        "href": "/industry-dinner",
+        "imageTitle": "Intimate\nIndustry Dinner",
+        "imageSrc": "/api/section-asset/programme/bg-industry-dinner.png"
+      },
+      {
+        "label": "fireside chats & workshops",
+        "heading": "Ideas from the people building them.",
+        "body": "A curated programme of fireside conversations, demonstrations and practical workshops exploring the technologies, workflows and ideas shaping the future of digital experiences.",
+        "imageTitle": "Fireside Chats\n& Workshops",
+        "imageSrc": "/api/section-asset/programme/https://picsum.photos/seed/programme-asset-0/1600/1067"
+      },
+      {
+        "label": "installations & experiences",
+        "heading": "Technology you can experience firsthand.",
+        "body": "Interactive installations, demonstrations and showcases exploring how AI, emerging tools and creative technology are changing the way products and experiences are built.",
+        "imageTitle": "Installations\n& Experiences",
+        "imageSrc": "/api/section-asset/programme/https://picsum.photos/seed/programme-asset-1/1600/1067"
+      },
+      {
+        "label": "24hr builders hackathon",
+        "heading": "Build, test and showcase new ideas.",
+        "body": "Multidisciplinary teams respond to a future facing brief, developing concepts, prototypes and working demonstrations over two days of focused collaboration.",
+        "imageTitle": "24hr Builders\nHackathon",
+        "imageSrc": "/api/section-asset/programme/bg-hackathon.png"
+      },
+      {
+        "label": "awards & celebrations",
+        "heading": "Recognise the work worth backing.",
+        "body": "The event concludes with finalist presentations, awards and a closing celebration recognising standout ideas, innovation and the people behind them.",
+        "imageTitle": "Awards &\nCelebration",
+        "imageSrc": "/api/section-asset/programme/bg-awards.png"
+      }
+    ],
+    "imageHeightVh": 52,
+    "parallaxPx": 48,
+    "revealStaggerMs": 110
+  }
+}
